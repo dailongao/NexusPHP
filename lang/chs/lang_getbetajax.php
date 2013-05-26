@@ -1,1 +1,0 @@
-<?php$lang_getbetajax = array(	'text_pm_title' => "您下注的盘口结果已出",	'text_pm_cong' => "恭喜你! 你赢得了",	'text_pm_bonus' => "点魔力值从盘口: ",	'text_pm_loss' => "你输了",	'text_pm_push' => "盘口走水，返还您",);?>
