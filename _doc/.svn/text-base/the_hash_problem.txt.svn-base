@@ -1,0 +1,241 @@
+﻿The.Bank.Job.1080p.Bluray.x264-1920(on www.nexushd.org)
+info_hash
+in details.php: 				FF4C5E0A  102F7D289BC27E6FA61FBF81486E3720
+in Azureus2.5.0.4:			FF4C5E0A5C102F7D289BC27E6FA61FBF81486E37
+in uTorrent1.8(11564):	FF4C5E0A5C102F7D289BC27E6FA61FBF81486E37	
+
+Bob Dylan Limited edition Catalog[16 disk Box Set](on www.nexushd.org)
+info_hash
+in details.php: 				EF0C16C496200DD2A07C757D3574F0  98DE172020
+in Azureus2.5.0.4:			EF0C16C496200DD2A07C757D3574F05C98DE5C17
+in uTorrent1.8(11564):	EF0C16C496200DD2A07C757D3574F05C98DE5C17
+
+Moulin.Rouge!.2001.1080p.DTheater.DTS.x264-CtrlHD (on www.nexushd.org)
+info_hash
+in details.php: 			  D3740649A513579DF24FE88286E5BFE098DF00  20
+in Azureus2.5.0.4:			D3740649A513579DF24FE88286E5BFE098DF005C
+in uTorrent1.8(11564):	D3740649A513579DF24FE88286E5BFE098DF005C
+
+Moulin.Rouge!.2001.1080p.DTheater.DTS.x264-CtrlHD (on www.nexushd.org)
+info_hash
+in details.php: 			  6689F474C5FF225E781F  178E77431107DECC7D20
+in Azureus2.5.0.4:			6689F474C5FF225E781F5C178E77431107DECC7D
+in uTorrent1.8(11564):	6689F474C5FF225E781F5C178E77431107DECC7D
+
+Kamelot - One Cold Winters Night - DVD (on www.nexushd.org)
+info_hash
+in details.php: 			  1A4371D10DDBD0E4B16000784D9D2428  F9967120
+in Azureus2.5.0.4:			1A4371D10DDBD0E4B16000784D9D24285CF99671
+in uTorrent1.8(11564):	1A4371D10DDBD0E4B16000784D9D24285CF99671
+
+The.Mist.2007.DVD5.720p.HDTV.x264-NBS(on zantetsu.ninth.biz)
+info_hash
+in details.php: 				E9  FF21ECE8F666156295AA1F74CCAA7815BA2920
+in Azureus2.5.0.4:			E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+in uTorrent1.8(11564):	E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+
+all lost 5C!! (additional 20 is space due to str_pad)
+
+Q: what is the hex 5C character?
+A: "\"
+
+Q: how Info hash is obtained in details.php? and is there anything wrong?
+A: 
+preg_replace_callback('/./s', "hex_esc", hash_pad($row["info_hash"]))
+function hex_esc($matches) 
+{
+	return sprintf("%02x", ord($matches[0]));
+}
+it's no problem here..
+
+Q: So, what?
+A: If we execute a command in mysql, we get:
+
+mysql> SELECT hex(info_hash) FROM `torrents` WHERE id=2100
+
+E9  FF21ECE8F666156295AA1F74CCAA7815BA29
+
+while 
+The.Mist.2007.DVD5.720p.HDTV.x264-NBS(on zantetsu.ninth.biz)
+(direct from mysql)			E9  FF21ECE8F666156295AA1F74CCAA7815BA29
+in details.php: 				E9  FF21ECE8F666156295AA1F74CCAA7815BA2920
+in Azureus2.5.0.4:			E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+in uTorrent1.8(11564):	E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+
+the 5C character is already lost since insertion, and all torrents that have
+missing hash problems in scrape all lost a specific character in hex "5C", so it must
+be not by chance, but a bug in the code of inserting info_hash
+
+but the same torrent get corrent info_hash on other site,
+
+The.Mist.2007.DVD5.720p.HDTV.x264-NBS(on www.nexushd.org)
+info_hash
+in details.php: 			  DA1152A3277D489D17F527995A3FBCF29EB932E4
+in Azureus2.5.0.4:			DA1152A3277D489D17F527995A3FBCF29EB932E4
+in uTorrent1.8(11564):	DA1152A3277D489D17F527995A3FBCF29EB932E4
+
+so, it's not a problem related to the torrent, i.e. not because of a corrupted torrent,
+but indeed a problem of how the info_hash is generated(calulated) from a torrent file or 
+a problem of insert the info_hash into the database
+
+and also, we could prove that this is not a problem of probability, but each time system generates 
+the same (wrong) info_hash for the same file since when we try to uplaod the same torrent file, 
+system says torrents already exists, remember only field info_hash is unique besides primary field id, 
+and no matter mnay times.
+
+if you don't believe, we could delete the torrnt and re-upload, and see what we get:
+
+The.Mist.2007.DVD5.720p.HDTV.x264-NBS(on zantetsu.ninth.biz)
+in details.php(after): 		E9  FF21ECE8F666156295AA1F74CCAA7815BA2920
+in details.php(before): 	E9  FF21ECE8F666156295AA1F74CCAA7815BA2920
+
+,exactly(and the previously downloaded torrent in uTorrent could still work, :P)!
+
+So, not of probability means if we could solve the problem of torrent The.Mist.2007.DVD5.720p.HDTV.x264-NBS 
+we fix the bug.
+
+Q: Then, where is the problem and why?
+A: 
+
+The.Mist.2007.DVD5.720p.HDTV.x264-NBS(on zantetsu.ninth.biz)
+
+if we put the following line of code just after the info_hash is generated, 
+die(preg_replace_callback('/./s', "hex_esc", $infohash));
+
+we get:
+
+in die():									E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+correct: 									E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+in details.php(before): 	E9  FF21ECE8F666156295AA1F74CCAA7815BA2920
+
+we could see, the generating is correct, so the only problem could be the insertion of this info_hash.
+
+add sqlesc()
+die(preg_replace_callback('/./s', "hex_esc", sqlesc($infohash)));
+
+we get:
+
+in die():									E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+correct: 									E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+in details.php(before): 	E9  FF21ECE8F666156295AA1F74CCAA7815BA2920
+
+the info_hash is still correct after sqlesc..
+
+Q: So that means mysql always discard the 5C character on insertion, but why? Where is wrong?
+A: 
+
+yes, let's try and see
+1. no sqlesc() for $info_hash on insertion
+system says :
+mysql puked: Invalid utf8 character string: '�'
+
+doesn't find anything direct,
+but we know it's the '\' character caused the insertion faliure, and mysql says there string not belong to utf8.
+
+2. die("\\' pos:" . strpos($infohash,"\\") . ", after sqlesc:" . (strpos(sqlesc($infohash),"\\") == false ? "gone" : strpos(sqlesc($infohash),"\\")));
+result: \' pos:1, after sqlesc:gone
+
+where
+
+function sqlesc($value) {
+	// Stripslashes
+	if (get_magic_quotes_gpc()) {
+		$value = stripslashes($value);
+	}
+	// Quote if not a number or a numeric string
+	if (!is_numeric($value)) {
+		$value = "'" . mysql_real_escape_string($value) . "'";
+	}
+	return $value;
+}
+
+it means magic_quotes_gpc is on and the \ is stripped, but what we need is add another \ to
+escape the existing \, but addslashs() does not work, mysql_real_escape_string() does not work too,
+since magic_quotes_gpc is on and we have no way to change it on the runtime on the shitty PHP5!! :P
+
+Q: so what's the work around?
+A: 
+The easiest way is, Turn it off..
+
+After turn it off:
+correct: 									E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+in details.php(now): 			E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+
+
+as you could invent a new way to add slash
+
+Q: But.. why does anounce does not affected? and why the older scrape that does not supoort multiscrape has no problem?
+A: Good question!
+
+
+look the line: 
+$res = mysql_query("SELECT id, name, category, banned, sp_state, seeders + leechers AS numpeers, UNIX_TIMESTAMP(added) AS ts FROM torrents WHERE " . hash_where("info_hash", $info_hash));
+
+function hash_where($name, $hash) {
+	$shhash = preg_replace('/ *$/s', "", $hash);
+	return "($name = " . sqlesc($hash) . " OR $name = " . sqlesc($shhash) . ")";
+}
+
+and 
+
+function sqlesc($value) {
+	// Stripslashes
+	if (get_magic_quotes_gpc()) {
+		$value = stripslashes($value);
+	}
+	// Quote if not a number or a numeric string
+	if (!is_numeric($value)) {
+		$value = "'" . mysql_real_escape_string($value) . "'";
+	}
+	return $value;
+}
+
+it use the function stripslashes to stripe the corrrent slash (5C) from torrent client and makes it as wrong as that stored in database..
+
+by adding the fowllowing in announce,
+
+function hex_esc($matches) 
+{
+	return sprintf("%02x", ord($matches[0]));
+}
+
+
+we get,
+1. err(preg_replace_callback('/./s', "hex_esc", $info_hash));
+uTorrent(Tracker Status): Failure:E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+
+2.err(preg_replace_callback('/./s', "hex_esc", urldecode($info_hash)));
+uTorrent(Tracker Status): Failure:E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+
+3. err(preg_replace_callback('/./s', "hex_esc", sqlesc($info_hash)));
+uTorrent(Tracker Status): Failure:27 E9  FF21ECE8F666156295AA1F74CCAA7815BA29 27
+
+4.err(preg_replace_callback('/./s', "hex_esc", sqlesc(urldecode($info_hash))));
+uTorrent(Tracker Status): Failure:27 E9  FF21ECE8F666156295AA1F74CCAA7815BA29 27
+
+correct: 													E95CFF21ECE8F666156295AA1F74CCAA7815BA29
+
+27 is apostrophe(')
+which means, when magic_quotes_gpc is on, single '\' is added slash any more whereas $info_hash is assigned by $_GET
+and if we urldecode() the $info_hash, the result is same
+
+if we add,
+preg_match_all('/info_hash=([^&]*)/i', $_SERVER["QUERY_STRING"], $info_hash_array);
+1. err(addslashes($info_hash_array[0][1]));
+nothing returned
+
+2. err($info_hash_array[0][1]);
+sending invalid data
+
+
+Q: After thoughts?
+A:
+
+yes, it's a major design flaw of php, hopefully, there would be no problem in the future PHP6 which ceased support for magic quotes,
+so we could see it also affects the signup and confirmation hash generation process, hence we could calculate our casualty here..
+
+1) 7.56% -- scrape hash missing(not of much problem)
+2) 6.09% -- confirm error
+3) 6.09% -- password differs from initial setting
+
+since now we have 8854 users registered, and 11.82%(1046) users are lost due to this bug

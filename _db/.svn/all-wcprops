@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/SVN/nexusold/!svn/ver/329/trunk/_db
+END
+__nexus.project.database.structure.20090622__.sql
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/SVN/nexusold/!svn/ver/295/trunk/_db/__nexus.project.database.structure.20090622__.sql
+END
+sql_update_from_v1.0.20090622.sql
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/SVN/nexusold/!svn/ver/329/trunk/_db/sql_update_from_v1.0.20090622.sql
+END
+.htaccess
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/SVN/nexusold/!svn/ver/293/trunk/_db/.htaccess
+END

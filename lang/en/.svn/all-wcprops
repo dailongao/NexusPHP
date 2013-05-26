@@ -1,0 +1,515 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/SVN/nexusold/!svn/ver/358/trunk/lang/en
+END
+lang_attachment.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_attachment.php
+END
+lang_takemessage.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/291/trunk/lang/en/lang_takemessage.php
+END
+lang_mybonus.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/326/trunk/lang/en/lang_mybonus.php
+END
+lang_aboutnexus.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_aboutnexus.php
+END
+lang_admanage.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_admanage.php
+END
+lang_settings.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/358/trunk/lang/en/lang_settings.php
+END
+lang_makepoll.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/284/trunk/lang/en/lang_makepoll.php
+END
+lang_messages.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/330/trunk/lang/en/lang_messages.php
+END
+lang_getrss.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_getrss.php
+END
+lang_index.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_index.php
+END
+lang_functions.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/342/trunk/lang/en/lang_functions.php
+END
+lang_report.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/281/trunk/lang/en/lang_report.php
+END
+lang_news.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/SVN/nexusold/!svn/ver/284/trunk/lang/en/lang_news.php
+END
+lang_takelogin.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_takelogin.php
+END
+lang_catmanage.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_catmanage.php
+END
+lang_userdetails.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_userdetails.php
+END
+lang_edit.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/SVN/nexusold/!svn/ver/345/trunk/lang/en/lang_edit.php
+END
+lang_deletedisabled.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_deletedisabled.php
+END
+lang_iphistory.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/285/trunk/lang/en/lang_iphistory.php
+END
+lang_getusertorrentlistajax.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_getusertorrentlistajax.php
+END
+lang_bitbucket-upload.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_bitbucket-upload.php
+END
+lang_reports.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/285/trunk/lang/en/lang_reports.php
+END
+lang_userhistory.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/274/trunk/lang/en/lang_userhistory.php
+END
+lang_takecontact.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_takecontact.php
+END
+lang_usercp.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/342/trunk/lang/en/lang_usercp.php
+END
+lang_viewsnatches.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_viewsnatches.php
+END
+lang_staff.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/342/trunk/lang/en/lang_staff.php
+END
+lang_recover.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/291/trunk/lang/en/lang_recover.php
+END
+lang_faq.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_faq.php
+END
+lang_login.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/290/trunk/lang/en/lang_login.php
+END
+lang_donate.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/314/trunk/lang/en/lang_donate.php
+END
+lang_forums.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_forums.php
+END
+lang_casino.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/342/trunk/lang/en/lang_casino.php
+END
+lang_checkuser.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_checkuser.php
+END
+lang_staffbox.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/285/trunk/lang/en/lang_staffbox.php
+END
+lang_contactstaff.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_contactstaff.php
+END
+lang_preview.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/274/trunk/lang/en/lang_preview.php
+END
+lang_viewpeerlist.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_viewpeerlist.php
+END
+lang_mailtest.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_mailtest.php
+END
+lang_upload.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_upload.php
+END
+lang_bitbucket-list.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/SVN/nexusold/!svn/ver/362/trunk/lang/en/lang_bitbucket-list.php
+END
+lang_takeflush.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_takeflush.php
+END
+lang_fun.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_fun.php
+END
+lang_moresmilies.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/274/trunk/lang/en/lang_moresmilies.php
+END
+lang_takeupload.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/283/trunk/lang/en/lang_takeupload.php
+END
+lang_rules.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_rules.php
+END
+lang_confirm_resend.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/SVN/nexusold/!svn/ver/291/trunk/lang/en/lang_confirm_resend.php
+END
+lang_polloverview.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_polloverview.php
+END
+lang_uploaders.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_uploaders.php
+END
+lang_ipsearch.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/285/trunk/lang/en/lang_ipsearch.php
+END
+lang_tags.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/SVN/nexusold/!svn/ver/284/trunk/lang/en/lang_tags.php
+END
+lang_comment.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/274/trunk/lang/en/lang_comment.php
+END
+lang_takeconfirm.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_takeconfirm.php
+END
+lang_viewfilelist.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_viewfilelist.php
+END
+lang_shoutbox.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/369/trunk/lang/en/lang_shoutbox.php
+END
+lang_viewnfo.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_viewnfo.php
+END
+lang_getbetajax.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/329/trunk/lang/en/lang_getbetajax.php
+END
+lang_magic.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/362/trunk/lang/en/lang_magic.php
+END
+lang_torrents.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/282/trunk/lang/en/lang_torrents.php
+END
+lang_offers.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/345/trunk/lang/en/lang_offers.php
+END
+lang_polls.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_polls.php
+END
+lang_linksmanage.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_linksmanage.php
+END
+lang_friends.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/283/trunk/lang/en/lang_friends.php
+END
+lang_takeedit.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/274/trunk/lang/en/lang_takeedit.php
+END
+lang_sendmessage.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_sendmessage.php
+END
+lang_invite.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_invite.php
+END
+lang_forummanage.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_forummanage.php
+END
+lang_users.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/SVN/nexusold/!svn/ver/342/trunk/lang/en/lang_users.php
+END
+lang_delete.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_delete.php
+END
+lang_takeinvite.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_takeinvite.php
+END
+lang_promotionlink.php
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_promotionlink.php
+END
+lang_signup.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/348/trunk/lang/en/lang_signup.php
+END
+lang_moforums.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/SVN/nexusold/!svn/ver/284/trunk/lang/en/lang_moforums.php
+END
+lang_deletemessage.php
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/SVN/nexusold/!svn/ver/253/trunk/lang/en/lang_deletemessage.php
+END
+lang_topten.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_topten.php
+END
+lang_downloadnotice.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/SVN/nexusold/!svn/ver/298/trunk/lang/en/lang_downloadnotice.php
+END
+lang_ok.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_ok.php
+END
+lang_takesignup.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_takesignup.php
+END
+lang_adredir.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_adredir.php
+END
+lang_takereseed.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/282/trunk/lang/en/lang_takereseed.php
+END
+lang_subtitles.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/SVN/nexusold/!svn/ver/293/trunk/lang/en/lang_subtitles.php
+END
+lang_fastdelete.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/287/trunk/lang/en/lang_fastdelete.php
+END
+lang_log.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/SVN/nexusold/!svn/ver/292/trunk/lang/en/lang_log.php
+END
+lang_cheaterbox.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/SVN/nexusold/!svn/ver/285/trunk/lang/en/lang_cheaterbox.php
+END
+lang_details.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/SVN/nexusold/!svn/ver/362/trunk/lang/en/lang_details.php
+END

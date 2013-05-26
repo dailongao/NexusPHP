@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/SVN/nexusold/!svn/ver/356/trunk/classes
+END
+class_attachment.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/SVN/nexusold/!svn/ver/293/trunk/classes/class_attachment.php
+END
+class_advertisement.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/SVN/nexusold/!svn/ver/293/trunk/classes/class_advertisement.php
+END
+.htaccess
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/SVN/nexusold/!svn/ver/293/trunk/classes/.htaccess
+END
+class_cache.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/SVN/nexusold/!svn/ver/356/trunk/classes/class_cache.php
+END
