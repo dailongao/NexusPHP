@@ -1,0 +1,8 @@
+*.svn*
+config/*
+douban/*
+pic/*
+styles/*
+_doc/*
+_dev/*
+_db/*

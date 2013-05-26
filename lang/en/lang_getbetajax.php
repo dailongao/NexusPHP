@@ -1,0 +1,1 @@
+<?php$lang_getbetajax = array(	'text_pm_title' => "Lottery you laid bets had result!",	'text_pm_cong' => "Congratulation! You win ",	'text_pm_bonus' => " bonus points from Lottery: ",	'text_pm_loss' => "You lose ",	'text_pm_push' => "Handicap push, return you ",);?>
