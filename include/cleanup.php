@@ -613,6 +613,37 @@ function user_to_peasant($down_floor_gb, $minratio){
 	if ($printProgress) {
 		printProgress("delete torrents that have been dead for a long time");
 	}
+	
+	// 2013/6/6: Update Casino Ranking
+	function update_casino_ranking(){
+		$res = sql_query("SELECT stake, odds, user_id FROM casino AS c, casinolog AS log WHERE c.win = log.choice AND c.id = log.id AND c.state=4") or sqlerr(__FILE__, __LINE__);
+		unset($winnercount);
+		$winnercount = array();
+		unset($tkcount);
+		$tkcount = array();
+		
+		if(mysql_num_rows($res) > 0){
+			while($arr = mysql_fetch_assoc($res)){
+				$winnercount[$arr['user_id']] += $arr['stake']*$arr['odds'] - $arr['stake'];
+				$tkcount[$arr['user_id']]++;
+			}
+			$res = sql_query("SELECT stake, odds, user_id FROM casino AS c, casinolog AS log WHERE c.win != log.choice AND c.id = log.id AND c.state=4") or sqlerr(__FILE__, __LINE__);
+			
+			while($arr = mysql_fetch_assoc($res)){
+				$winnercount[$arr['user_id']] -= $arr['stake'];
+				$tkcount[$arr['user_id']]++;
+			}
+			
+			foreach($winnercount as $winnername => $winnerbouns){
+				if(!get_user_row($winnername)) continue;
+				sql_query("REPLACE INTO casinorank(id, bonus, lotterycount) VALUES($winnername, $winnerbouns, " . $tkcount[$winnername] . ");") or sqlerr(__FILE__, __LINE__);
+			}
+		}
+	}
+	update_casino_ranking();
+	if ($printProgress) {
+		printProgress("update casino ranking");
+	}
 
 //Priority Class 5: cleanup every 15 days
 	$res = sql_query("SELECT value_u FROM avps WHERE arg = 'lastcleantime5'");
