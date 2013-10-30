@@ -359,38 +359,48 @@ else
 			</div>
 			
 <?php
-		print("<table class=\"casino-list\" align=\"center\"><thead><tr><td>".$lang_casino['col_ranking']."</td><td>".$lang_casino['col_username']."</td><td>".$lang_casino['col_bonus_count']."</td><td>".$lang_casino['col_takecount']."</td></tr></thead>");
-		$showlimit = 20;
-		$res = sql_query("SELECT * FROM casinorank ORDER by bonus DESC LIMIT $showlimit") or sqlerr(__FILE__, __LINE__);
-				if(mysql_num_rows($res) > 0){		
-					$nowuser = 0;
-					while($arr = mysql_fetch_assoc($res)){
-						$nowuser++;
-						$twname = get_username($arr['id']);
-						$twbonus = $arr['bonus'];
-						$twcount = $arr['lotterycount'];
-						print "<tr><td>$nowuser</td><td>$twname</td><td>$twbonus</td><td>$twcount</td></tr>";
-					}
+		$cachename = "casino_ranking";
+		$cachetime = 60 * 60;
+		// START CACHE
+		$Cache->new_page($cachename, $cachetime, true);
+		if (!$Cache->get_page()){
+			$Cache->add_whole_row();
+			print("<table class=\"casino-list\" align=\"center\"><thead><tr><td>".$lang_casino['col_ranking']."</td><td>".$lang_casino['col_username']."</td><td>".$lang_casino['col_bonus_count']."</td><td>".$lang_casino['col_takecount']."</td></tr></thead>");
+			$showlimit = 20;
+			$res = sql_query("SELECT * FROM casinorank ORDER by bonus DESC LIMIT $showlimit") or sqlerr(__FILE__, __LINE__);
+					if(mysql_num_rows($res) > 0){		
+						$nowuser = 0;
+						while($arr = mysql_fetch_assoc($res)){
+							$nowuser++;
+							$twname = get_username($arr['id']);
+							$twbonus = $arr['bonus'];
+							$twcount = $arr['lotterycount'];
+							print "<tr><td>$nowuser</td><td>$twname</td><td>$twbonus</td><td>$twcount</td></tr>";
+						}
+					
+						print("</table>");
 				
-					print("</table>");
-			
-					print("<table class=\"casino-list\" align=\"center\"><thead><tr><td>".$lang_casino['col_ranking']."</td><td>".$lang_casino['col_username']."</td><td>".$lang_casino['col_bonus_count']."</td><td>".$lang_casino['col_takecount']."</td></tr></thead>");
-					
-					$res = sql_query("SELECT * FROM casinorank ORDER by bonus LIMIT $showlimit") or sqlerr(__FILE__, __LINE__);
-					$nowuser = 0;
-					while($arr = mysql_fetch_assoc($res)){
-						$nowuser++;
-						$twname = get_username($arr['id']);
-						$twbonus = $arr['bonus'];
-						$twcount = $arr['lotterycount'];
-						print "<tr><td>$nowuser</td><td>$twname</td><td>$twbonus</td><td>$twcount</td></tr>";
+						print("<table class=\"casino-list\" align=\"center\"><thead><tr><td>".$lang_casino['col_ranking']."</td><td>".$lang_casino['col_username']."</td><td>".$lang_casino['col_bonus_count']."</td><td>".$lang_casino['col_takecount']."</td></tr></thead>");
+						
+						$res = sql_query("SELECT * FROM casinorank ORDER by bonus LIMIT $showlimit") or sqlerr(__FILE__, __LINE__);
+						$nowuser = 0;
+						while($arr = mysql_fetch_assoc($res)){
+							$nowuser++;
+							$twname = get_username($arr['id']);
+							$twbonus = $arr['bonus'];
+							$twcount = $arr['lotterycount'];
+							print "<tr><td>$nowuser</td><td>$twname</td><td>$twbonus</td><td>$twcount</td></tr>";
+						}
+						
+						print("</table>");
+					} else {
+						print "<tr><td colspan=\"8\" align=\"center\"><span>".$lang_casino['text_no_record']."</span></td></tr>";
+						print "</table>";
 					}
-					
-					print("</table>");
-				} else {
-					print "<tr><td colspan=\"8\" align=\"center\"><span>".$lang_casino['text_no_record']."</span></td></tr>";
-					print "</table>";
-				}
+			$Cache->end_whole_row();
+			$Cache->cache_page();
+		}
+		echo $Cache->next_row();
 ?>
 		<?php
 		print "</div></div>";

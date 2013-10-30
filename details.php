@@ -15,7 +15,7 @@ int_check($id);
 if (!isset($id) || !$id)
 die();
 
-$res = sql_query("SELECT torrents.sp_state, torrents.promotion_time_type, torrents.promotion_until, torrents.cache_stamp, torrents.sp_state, torrents.url, torrents.small_descr, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, nfo, LENGTH(torrents.nfo) AS nfosz, torrents.last_action, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.numfiles, torrents.anonymous, categories.name AS cat_name, sources.name AS source_name, media.name AS medium_name, codecs.name AS codec_name, standards.name AS standard_name, processings.name AS processing_name, teams.name AS team_name, audiocodecs.name AS audiocodec_name FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN sources ON torrents.source = sources.id LEFT JOIN media ON torrents.medium = media.id LEFT JOIN codecs ON torrents.codec = codecs.id LEFT JOIN standards ON torrents.standard = standards.id LEFT JOIN processings ON torrents.processing = processings.id LEFT JOIN teams ON torrents.team = teams.id LEFT JOIN audiocodecs ON torrents.audiocodec = audiocodecs.id WHERE torrents.id = $id LIMIT 1")
+$res = sql_query("SELECT torrents.sp_state, torrents.promotion_time_type, torrents.promotion_until, torrents.cache_stamp, torrents.sp_state, torrents.url, torrents.douban_url, torrents.small_descr, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, nfo, LENGTH(torrents.nfo) AS nfosz, torrents.last_action, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.numfiles, torrents.anonymous, categories.name AS cat_name, sources.name AS source_name, media.name AS medium_name, codecs.name AS codec_name, standards.name AS standard_name, processings.name AS processing_name, teams.name AS team_name, audiocodecs.name AS audiocodec_name FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN sources ON torrents.source = sources.id LEFT JOIN media ON torrents.medium = media.id LEFT JOIN codecs ON torrents.codec = codecs.id LEFT JOIN standards ON torrents.standard = standards.id LEFT JOIN processings ON torrents.processing = processings.id LEFT JOIN teams ON torrents.team = teams.id LEFT JOIN audiocodecs ON torrents.audiocodec = audiocodecs.id WHERE torrents.id = $id LIMIT 1")
 or sqlerr();
 $row = mysql_fetch_array($res);
 
@@ -150,7 +150,7 @@ else {
 			}
 		}
 		
-		print("<td class=\"embedded\"><form method=\"get\" action=\"http://shooter.cn/sub/\" target=\"_blank\"><input type=\"text\" name=\"searchword\" id=\"keyword\" style=\"width: 250px\" value=\"".$moviename."\" /><input type=\"submit\" value=\"".$lang_details['submit_search_at_shooter']."\" /></form></td><td class=\"embedded\"><form method=\"get\" action=\"http://www.opensubtitles.org/en/search2/\" target=\"_blank\"><input type=\"hidden\" id=\"moviename\" name=\"MovieName\" /><input type=\"hidden\" name=\"action\" value=\"search\" /><input type=\"hidden\" name=\"SubLanguageID\" value=\"all\" /><input onclick=\"document.getElementById('moviename').value=document.getElementById('keyword').value;\" type=\"submit\" value=\"".$lang_details['submit_search_at_opensubtitles']."\" /></form></td>\n");
+		print("<td class=\"embedded\"><form method=\"get\" action=\"http://shooter.cn/sub/\" target=\"_blank\"><input type=\"text\" name=\"searchword\" id=\"keyword\" style=\"width: 250px\" value=\"".$moviename."\" /><input type=\"submit\" value=\"".$lang_details['submit_search_at_shooter']."\" /></form></td><td class=\"embedded\"><form method=\"get\" action=\"http://www.opensubtitles.org/en/search2/\" target=\"_blank\"><input type=\"hidden\" id=\"moviename\" name=\"MovieName\" /><input type=\"hidden\" name=\"action\" value=\"search\" /><input type=\"hidden\" name=\"SubLanguageID\" value=\"all\" /><input onclick=\"document.getElementById('moviename').value=document.getElementById('keyword').value;\" type=\"submit\" value=\"".$lang_details['submit_search_at_opensubtitles']."\" /></form></td><td class=\"embedded\"><form method=\"get\" action=\"http://www.yyets.com/search/index/\" target=\"_blank\"><input type=\"hidden\" id=\"yyets\" name=\"keyword\" /><input type=\"hidden\" name=\"search_type\" value=\"subtitle\" /><input onclick=\"document.getElementById('yyets').value=document.getElementById('keyword').value;\" type=\"submit\" value=\"".$lang_details['submit_search_at_yyets']."\" /></form></td>\n");
 		print("</tr></table>");
 		print("</td></tr>\n");
 		// ---------------- end subtitle block -------------------//
@@ -397,7 +397,7 @@ else {
 	
 	$douban_id = parse_douban_id($row["douban_url"]);
 	$douban_type = parse_douban_type($row["douban_url"]);
-		
+	
 	if ($douban_id && $douban_type && $showextinfo['douban'] == 'yes' && $CURUSER['showdouban'] != 'no')
 	{
 		$Cache->new_page('douban_id_'.$douban_id.'_large', 1296000, true);
@@ -495,7 +495,7 @@ else {
 						
 						if($raters >9 )
 						{
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$rating."<br />\n";
+							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$rating->average."<br />\n";
 						}
 						else
 						{
@@ -528,8 +528,14 @@ else {
 						}
 						$autodata .= rtrim(trim($temp), ",");
 						$autodata .= "<br />\n";
-											
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_director']."</font></strong>" . "".$director."<br />\n";
+						
+						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_director']."</font></strong>";
+						
+						for($i = 0; $i < count($director); $i++){
+							$autodata .= $director[$i]->name." ";
+						}
+						
+						$autodata .= "<br />\n";
 
 						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_written_by']."</font></strong>";
 						$temp = "";
@@ -565,7 +571,7 @@ else {
 							{
 								break;
 							}
-							$autodata .= "<font color=\"DarkRed\">.</font> " . $cast[$i] . "<br />\n";
+							$autodata .= "<font color=\"DarkRed\">.</font> " . $cast[$i]->name . "<br />\n";
 						}
 
 						$douban_cache_time = $douban->get_cache_time();

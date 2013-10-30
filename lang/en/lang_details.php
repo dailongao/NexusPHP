@@ -204,6 +204,7 @@ $lang_details = array
 	'text_creator' => "Creator: ",
 	'submit_search_at_shooter' => "Search at Shooter",
 	'submit_search_at_opensubtitles' => "Search at Opensubtitles",
+	'submit_search_at_yyets' => "Search at YYeTs",
 	'title_show_or_hide' => "Show&nbsp;or&nbsp;Hide",
 	'title_bookmark' => "Bookmark",
 	'text_album_information' => "Album Information: ",

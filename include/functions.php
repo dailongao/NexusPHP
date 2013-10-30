@@ -272,6 +272,13 @@ function format_urls($text, $newWindow = false) {
 	return preg_replace("/((https?|ftp|gopher|news|telnet|mms|rtsp):\/\/[^()\[\]<>\s]+)/ei",
 	"formatUrl('\\1', ".($newWindow==true ? 1 : 0).", '', 'faqlink')", $text);
 }
+
+function formatBox($title, $content){
+	// Show a fold box in the content
+	// By Dai, 2013.9
+	return addTempCode("<div class=\"spoiler\"><div class=\"spoiler_head\" onclick=\"return toggleSpoiler(this);\">$title</div><div class=\"spoiler_body\" style=\"display: none;\">$content</div></div>");
+}
+
 function format_comment($text, $strip_html = true, $xssclean = false, $newtab = false, $imageresizer = true, $image_max_width = 700, $enableimage = true, $enableflash = true , $imagenum = -1, $image_max_height = 0, $adid = 0)
 {
 	global $lang_functions;
@@ -293,8 +300,8 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 		$s = preg_replace("/\[code\](.+?)\[\/code\]/eis","formatCode('\\1')", $s);
 	}
 
-	$originalBbTagArray = array('[siteurl]', '[site]','[*]', '[b]', '[/b]', '[i]', '[/i]', '[u]', '[/u]', '[pre]', '[/pre]', '[/color]', '[/font]', '[/size]', "  ");
-	$replaceXhtmlTagArray = array(get_protocol_prefix().$BASEURL, $SITENAME, '<img class="listicon listitem" src="pic/trans.gif" alt="list" />', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>', '<pre>', '</pre>', '</span>', '</font>', '</font>', ' &nbsp;');
+	$originalBbTagArray = array('[siteurl]', '[site]','[*]', '[b]', '[/b]', '[i]', '[/i]', '[u]', '[/u]', '[pre]', '[/pre]', '[/color]', '[/font]', '[/size]', '[del]', '[/del]', "  ");
+	$replaceXhtmlTagArray = array(get_protocol_prefix().$BASEURL, $SITENAME, '<img class="listicon listitem" src="pic/trans.gif" alt="list" />', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>', '<pre>', '</pre>', '</span>', '</font>', '</font>', '<del>', '</del>', ' &nbsp;');
 	$s = str_replace($originalBbTagArray, $replaceXhtmlTagArray, $s);
 
 	$originalBbTagArray = array("/\[font=([^\[\(&\\;]+?)\]/is", "/\[color=([#0-9a-z]{1,15})\]/is", "/\[color=([a-z]+)\]/is", "/\[size=([1-7])\]/is");
@@ -322,6 +329,7 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 			$s = preg_replace("/\[flash(\,([1-9][0-9]*)\,([1-9][0-9]*))?\]((http|ftp):\/\/[^\s'\"<>]+(\.(swf)))\[\/flash\]/i", '', $s);
 		}
 	}
+
 	//[flv,320,240]http://www/a.flv[/flv]
 	if (strpos($s,"[flv") !== false) { //flv is not often used. Better check if it exist before hand
 		if ($enableflash) {
@@ -359,6 +367,13 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 	$s = preg_replace("/\[tex\]([\s\S]*?)\[\/tex\]/", "<img class=\"tex\" src=\"/cgi-bin/mimetex.cgi?\\1\" alt=\"\\1\" \/>", $s);
 
 	$s = format_urls($s, $newtab);
+	
+	// [box]Content[/box]
+	$s = preg_replace("/\[box\]([\s\S]*?)\[\/box\]/ei","formatBox('".$lang_functions['text_collapsed_text']."', '\\1')", $s);
+	
+	// [box=Title]Content[/box]
+	$s = preg_replace("/\[box=([^\n]+?)\]([\s\S]*?)\[\/box\]/ei","formatBox('\\1', '\\2')", $s);
+	
 	// Quotes
 	if (strpos($s,"[quote") !== false && strpos($s,"[/quote]") !== false) { //format_quote is kind of slow. Better check if [quote] exists beforehand
 		$s = format_quotes($s);
@@ -1113,10 +1128,10 @@ function parse_imdb_id($url)
 
 function parse_douban_id($url)
 {
-	if ($url != "" && preg_match("/[0-9]{7}/i", $url, $matches)) {
+	if ($url != "" && preg_match("/[0-9]+/i", $url, $matches)) {
 		return $matches[0];
-	} elseif ($url && is_numeric($url) && strlen($url) < 7) {
-		return str_pad($url, 7, '0', STR_PAD_LEFT);
+	} elseif ($url && is_numeric($url) && strlen($url) < 8) {
+		return str_pad($url, 8, '0', STR_PAD_LEFT);
 	} else {
 		return false;
 	}

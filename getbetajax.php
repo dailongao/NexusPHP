@@ -61,10 +61,26 @@ else
 			$choice = 0+$_POST['choice'];
 			$stake = 0+$_POST['stake'];
 			
-			if($choice < 1 || $choice > 9 || $stake > 2000 || $stake < 100)
+			//Different limit for different level
+			$stakelimit = 0;
+			$userclass = get_user_class();
+			if($userclass == UC_POWER_USER) $stakelimit = 2000;
+			elseif($userclass == UC_ELITE_USER || $userclass == UC_CRAZY_USER) $stakelimit = 3000;
+			elseif($userclass == UC_INSANE_USER || $userclass == UC_VETERAN_USER) $stakelimit = 4000;
+			elseif($userclass >= UC_EXTREME_USER) $stakelimit = 5000;
+			
+			if($choice < 1 || $choice > 9 || $stake > $stakelimit || $stake < 100)
 			{
 				echo 403; 
-				write_log("User " . $CURUSER["username"] . "," . $CURUSER["ip"] . " is hacking casino system",'mod');
+				//write_log("User " . $CURUSER["username"] . "," . $CURUSER["ip"] . " is hacking casino system",'mod');
+				die;
+			}
+			
+			$res = sql_query("SELECT seedbonus FROM users WHERE id = ".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
+			$arr = mysql_fetch_assoc($res);
+			$nowbonus = $arr['seedbonus'];
+			if($nowbonus < $stake){
+				echo 403;
 				die;
 			}
 			

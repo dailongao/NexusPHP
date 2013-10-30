@@ -307,6 +307,7 @@ $lang_functions = array
 	'text_track' => "音轨",
 	'text_tag' => "标签",
 	'text_pubdate' => "首发日期",
+	'text_collapsed_text' => "隐藏内容",
 );
 
 ?>

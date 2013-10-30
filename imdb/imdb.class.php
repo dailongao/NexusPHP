@@ -193,6 +193,10 @@
     $this->page[$wt] = "cannot open page";
     return;
    }
+   // try to block all new request
+   /*$this->page[$wt] = "cannot open page";
+   return;*/
+   
    switch ($wt){
     case "Title"   : $urlname="/"; break;
     case "Credits" : $urlname="/fullcredits"; break;

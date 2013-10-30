@@ -41,6 +41,7 @@ else {
 
 $url = parse_imdb_id($_POST['url']);
 $douban_url = $_POST['douban_url'];
+if(substr($douban_url, -1) != "/") $douban_url = $douban_url . "/";
 
 $nfo = '';
 if ($enablenfo_main=='yes'){

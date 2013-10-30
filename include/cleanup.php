@@ -259,24 +259,41 @@ function torrent_promotion_expire($days, $type = 2, $targettype = 1){
 		else write_log("Promotion type for torrent $arr[id] ($arr[name]) is changed to ".$become." (time expired)",'normal');
 	}
 }
-	if ($expirehalfleech_torrent)
-		torrent_promotion_expire($expirehalfleech_torrent, 5, $halfleechbecome_torrent);
-	if ($expirefree_torrent)
-		torrent_promotion_expire($expirefree_torrent, 2, $freebecome_torrent);
-	if ($expiretwoup_torrent)
-		torrent_promotion_expire($expiretwoup_torrent, 3, $twoupbecome_torrent);
-	if ($expiretwoupfree_torrent)
-		torrent_promotion_expire($expiretwoupfree_torrent, 4, $twoupfreebecome_torrent);
-	if ($expiretwouphalfleech_torrent)
-		torrent_promotion_expire($expiretwouphalfleech_torrent, 6, $twouphalfleechbecome_torrent);
-	if ($expirethirtypercentleech_torrent)
-		torrent_promotion_expire($expirethirtypercentleech_torrent, 7, $thirtypercentleechbecome_torrent);
-	if ($expirenormal_torrent)
-		torrent_promotion_expire($expirenormal_torrent, 1, $normalbecome_torrent);
 
-	//expire individual torrent promotion
-	sql_query("UPDATE torrents SET sp_state = 1, promotion_time_type=0, promotion_until='0000-00-00 00:00:00' WHERE promotion_time_type=2 AND promotion_until < ".sqlesc(date("Y-m-d H:i:s",TIMENOW))) or sqlerr(__FILE__, __LINE__);
+	//2013.7.17: Magic Torrent Promotion
+	$res = sql_query("SELECT * FROM magiclog WHERE endtime < " . sqlesc(date("Y-m-d H:i:s",TIMENOW))) or sqlerr(__FILE__, __LINE__);
+	if(mysql_num_rows($res) > 0){
+		while($arr = mysql_fetch_assoc($res)){
+			$torupdate = sql_query("SELECT * FROM magiclog WHERE endtime >= " . sqlesc(date("Y-m-d H:i:s",TIMENOW)) . "ORDER BY endtime LIMIT 1") or sqlerr(__FILE__, __LINE__);
+			
+			write_log("Magic",'normal');
+		}
+	} else {
+	
+		if ($expirehalfleech_torrent)
+			torrent_promotion_expire($expirehalfleech_torrent, 5, $halfleechbecome_torrent);
+		if ($expirefree_torrent)
+			torrent_promotion_expire($expirefree_torrent, 2, $freebecome_torrent);
+		if ($expiretwoup_torrent)
+			torrent_promotion_expire($expiretwoup_torrent, 3, $twoupbecome_torrent);
+		if ($expiretwoupfree_torrent)
+			torrent_promotion_expire($expiretwoupfree_torrent, 4, $twoupfreebecome_torrent);
+		if ($expiretwouphalfleech_torrent)
+			torrent_promotion_expire($expiretwouphalfleech_torrent, 6, $twouphalfleechbecome_torrent);
+		if ($expirethirtypercentleech_torrent)
+			torrent_promotion_expire($expirethirtypercentleech_torrent, 7, $thirtypercentleechbecome_torrent);
+		if ($expirenormal_torrent)
+			torrent_promotion_expire($expirenormal_torrent, 1, $normalbecome_torrent);
 
+		//expire individual torrent promotion
+		sql_query("UPDATE torrents SET sp_state = 1, promotion_time_type=0, promotion_until='0000-00-00 00:00:00' WHERE promotion_time_type=2 AND promotion_until < ".sqlesc(date("Y-m-d H:i:s",TIMENOW))) or sqlerr(__FILE__, __LINE__);
+	
+	
+	}
+	
+
+	
+	
 	//End: expire torrent promotion
 	if ($printProgress) {
 		printProgress("expire torrent promotion");

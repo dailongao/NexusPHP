@@ -106,7 +106,9 @@ if ($action){
 					$avatar = htmlspecialchars( trim( $avatar ) );
 					$updateset[] = "avatar = " . sqlesc($avatar);
 				}
-				$info = htmlspecialchars(trim($_POST["info"]));
+				//$info = htmlspecialchars(trim($_POST["info"]));
+				//2013.9.24 Try to fix a small bug in modify info. I hope it will not lead XSS's bug...
+				$info = htmlspecialchars_decode(trim($_POST["info"]));
 				$showonline = $_POST["showonline"];
 				if ($showonline != 'no')
 					$showonline = 'yes';
@@ -774,7 +776,14 @@ http://$BASEURL/confirmemail.php/{$CURUSER["id"]}/$hash/$obemail
 EOD;
 
 					sent_mail($email,$SITENAME,$SITEEMAIL,change_email_encode(get_langfolder_cookie(), $subject),change_email_encode(get_langfolder_cookie(),str_replace("<br />","<br />",nl2br($body))),"profile change",false,false,'',get_email_encode(get_langfolder_cookie()));
-
+					
+					// Add comment for email change
+					/*$res = sql_query("SELECT * FROM users WHERE id = ".sqlesc($CURUSER["id"])) or sqlerr(__FILE__, __LINE__);
+					$arr = mysql_fetch_assoc($res);
+					$modcomment = $arr['modcomment'];*/
+					$modcomment = $CURUSER['modcomment'];
+					$modcomment = date("Y-m-d") . " - " . "change email address: " . $CURUSER["email"] . " -> " . $email . "\n" . $modcomment;
+					sql_query("UPDATE users SET modcomment = ".sqlesc($modcomment)." WHERE id = ".$CURUSER["id"]) or sqlerr(__FILE__, __LINE__);
 				}
 				if ($privacy != "normal" && $privacy != "low" && $privacy != "strong")
 				die("whoops");

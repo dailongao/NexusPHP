@@ -8,6 +8,7 @@ function ai_response($content){
 	# AI Module V0.1.20130409
 	# Test only. 
 	global $ai_library, $function_library;
+	global $CURUSER;
 	foreach($ai_library as $value){
 		foreach($value['keyword'] as $kw){
 			if(preg_match($kw, $content)){
@@ -20,6 +21,27 @@ function ai_response($content){
 						}else{
 							$ret = $function_library['date']['fail'];
 						}
+					}
+					if($ret == "function:midautumn"){ // mid autumn
+						$res = sql_query("SELECT * FROM midautumn WHERE userid = " . sqlesc($CURUSER['id'])) or sqlerr(__FILE__,__LINE__);
+						if(mysql_num_rows($res) != 0){
+							$ret = $function_library['midautumn']['fail'];
+						}else{
+							$bscom = date("Y-m-d") . " - " . " 500 Points for Mid-autumn Festival.\n " . $CURUSER['bonuscomment'];
+							sql_query("UPDATE users SET seedbonus = seedbonus + 500, bonuscomment = " . sqlesc($bscom) . " WHERE id = ".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
+							sql_query("INSERT into midautumn (userid) VALUES (".sqlesc($CURUSER['id']).")") or sqlerr(__FILE__,__LINE__);
+							$ret = $function_library['midautumn']['success'];
+						}
+					}
+					if($ret == "function:closenhdrobot"){ // close NHDRobot
+						sql_query("UPDATE users SET shownhdrobot = 'no' WHERE id = ".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
+						//$ret = $function_library['closenhdrobot'];
+						$ret = "norep";
+					}
+					if($ret == "function:opennhdrobot"){ // open NHDRobot
+						sql_query("UPDATE users SET shownhdrobot = 'yes' WHERE id = ".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
+						//$ret = $function_library['opennhdrobot'];
+						$ret = "norep";
 					}
 				}
 				return $ret;
@@ -116,26 +138,40 @@ else
 	$date=sqlesc(time());
 	$text=trim($_GET["shbox_text"]);
 
-	sql_query("INSERT INTO shoutbox (userid, date, text, type, ip) VALUES (" . sqlesc($userid) . ", $date, " . sqlesc($text) . ", ".sqlesc($type). ", " . sqlesc(getip()) . ")") or sqlerr(__FILE__, __LINE__);
 	$ai_text = ai_response($text);
 	if($ai_text != ""){
+		sql_query("INSERT INTO shoutbox (userid, date, text, type, ip, robotmsg) VALUES (" . sqlesc($userid) . ", $date, " . sqlesc($text) . ", ".sqlesc($type). ", " . sqlesc(getip()) . ", " . sqlesc("yes") . ")") or sqlerr(__FILE__, __LINE__);
+	} else {
+		sql_query("INSERT INTO shoutbox (userid, date, text, type, ip) VALUES (" . sqlesc($userid) . ", $date, " . sqlesc($text) . ", ".sqlesc($type). ", " . sqlesc(getip()) . ")") or sqlerr(__FILE__, __LINE__);
+	}
+	
+	if($ai_text != "" && $ai_text != "norep"){
 		$aidate = $date + 1;
-		sql_query("INSERT INTO shoutbox (userid, date, text, type, ip) VALUES (" . sqlesc($aiuserid) . ", $aidate, " . sqlesc($ai_text) . ", ".sqlesc($type). ", " . sqlesc(getip()) . ")") or sqlerr(__FILE__, __LINE__);
+		sql_query("INSERT INTO shoutbox (userid, date, text, type, ip, robotmsg) VALUES (" . sqlesc($aiuserid) . ", $aidate, " . sqlesc($ai_text) . ", ".sqlesc($type). ", " . sqlesc(getip()) . ", " . sqlesc("yes") . ")") or sqlerr(__FILE__, __LINE__);
 	}
 	print "<script type=\"text/javascript\">parent.document.forms['shbox'].shbox_text.value='';</script>";
 }
 }
 
+//Annoucement
+print($lang_shoutbox['announcement']);
+
 $limit = ($CURUSER['sbnum'] ? $CURUSER['sbnum'] : 70); 
-if ($where == "helpbox")
-{
-$sql = "SELECT * FROM shoutbox WHERE type='hb' ORDER BY date DESC LIMIT ".$limit;
+
+if ($where == "helpbox"){
+	$sql = "SELECT * FROM shoutbox WHERE type='hb' ORDER BY date DESC LIMIT ".$limit;
 }
 elseif ($CURUSER['hidehb'] == 'yes' || $showhelpbox_main != 'yes'){
-$sql = "SELECT * FROM shoutbox WHERE type='sb' ORDER BY date DESC LIMIT ".$limit;
+	if($CURUSER['shownhdrobot'] == "yes")
+		$sql = "SELECT * FROM shoutbox WHERE type='sb' ORDER BY date DESC LIMIT ".$limit;
+	else
+		$sql = "SELECT * FROM shoutbox WHERE type='sb' AND robotmsg='no' ORDER BY date DESC LIMIT ".$limit;
 }
 elseif ($CURUSER){
-$sql = "SELECT * FROM shoutbox ORDER BY date DESC LIMIT ".$limit;
+	if($CURUSER['shownhdrobot'] == "yes")
+		$sql = "SELECT * FROM shoutbox ORDER BY date DESC LIMIT ".$limit;
+	else
+		$sql = "SELECT * FROM shoutbox WHERE robotmsg='no' ORDER BY date DESC LIMIT ".$limit;
 }
 else {
 die("<h1>".$lang_shoutbox['std_access_denied']."</h1>"."<p>".$lang_shoutbox['std_access_denied_note']."</p></body></html>");
@@ -156,9 +192,10 @@ else
 				$del="[<a href=\"shoutbox.php?del=".$arr[id]."\">".$lang_shoutbox['text_del']."</a>]";		
 		}
 		if ($arr["userid"]) {
-			if($arr["userid"] == $aiuserid)
+			if($arr["userid"] == $aiuserid){
+				//if($CURUSER['shownhdrobot'] == "no") continue;
 				$username = $lang_shoutbox['text_robot_name'];
-			else
+			} else
 				$username = get_username($arr["userid"],false,true,true,true,false,false,"",true);
 			if ($_GET["type"] != 'helpbox' && $arr["type"] == 'hb')
 				$username .= $lang_shoutbox['text_to_guest'];

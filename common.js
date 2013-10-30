@@ -72,6 +72,13 @@ document.getElementById("nothanks").innerHTML = "";
 document.getElementById("addcuruser").innerHTML = document.getElementById("curuser").innerHTML;
 }
 
+// Spoiler Box Support
+function toggleSpoiler(root){
+	root = jQuery(root);
+	$(root).parents(".spoiler").children(".spoiler_body").slideToggle("fast");
+	return false;
+} 
+
 // countmagic
 function countmagic(torrentid, form){
 ajax.submit("magic.php?id="+torrentid+"&test=1", "MagicPoint", form);

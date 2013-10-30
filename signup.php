@@ -80,7 +80,7 @@ print("<tr><td class=text align=center colspan=2>".$lang_signup['text_cookies_no
 show_image_code ();
 ?>
 <tr><td class=rowhead><?php echo $lang_signup['row_email_address'] ?></td><td class=rowfollow align=left><input type="text" style="width: 200px" name="email" />
-<table width=250 border=0 cellspacing=0 cellpadding=0><tr><td class=embedded><font class=small><?php echo ($restrictemaildomain == 'yes' ? $lang_signup['text_email_note'].allowedemails() : "") ?></td></tr>
+<table width=250 border=0 cellspacing=0 cellpadding=0><tr><td class=embedded><font class=small><?php echo ($restrictemaildomain == 'yes' ? $lang_signup['text_email_note'] : "") ?></td></tr>
 </font></td></tr></table>
 </td></tr>
 <?php $countries = "<option value=\"8\">---- ".$lang_signup['select_none_selected']." ----</option>n";

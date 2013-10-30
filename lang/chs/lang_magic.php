@@ -5,6 +5,7 @@ $lang_magic = array
 	'head_magic' => "优惠购买",
 	'magic_rule_title' => "优惠购买规则",
 	'set_magic_title' => "优惠购买",
+	'magic_log_title' => "优惠记录",
 	'magic_rule' => "<ul>
 	<li>种子优惠魔力值计算公式：<b>所需魔力值B = 优惠类型常数A × 用户等级常数C × 种子体积S × 优惠时间T</b>，其中：
 	<ul>
@@ -49,8 +50,18 @@ $lang_magic = array
 	'torrent_owner' => "发布者",
 	'cannot_cover' => "优惠不能相互覆盖！",
 	'text_promotion_type' => "优惠种类",
+	'text_normal' => "普通",
 	'text_free' => "免费",
-	'text_2xfree' => "2x免费",
+	'text_two_times_up' => "2X",
+	'text_free_two_times_up' => "2X免费",
+	'text_half_down' => "50%",
+	'text_half_down_two_up' => "2X 50%",
+	'col_username' => "购买者",
+	'col_protype' => "优惠类型",
+	'col_protime' => "结束时间",
+	'col_lasttime' => "持续时间",
+	'text_no_record' => "没有记录",
+	'text_forever' => "永久",
 );
 
 ?>

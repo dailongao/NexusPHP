@@ -205,6 +205,7 @@ $lang_details = array
 	'text_creator' => "主创: ",
 	'submit_search_at_shooter' => "搜索射手网",
 	'submit_search_at_opensubtitles' => "搜索Opensubtitles",
+	'submit_search_at_yyets' => "搜索人人影视",
 	'title_bookmark' => "收藏",
 	'text_album_information' => "专辑信息：",
 	'text_about_album' => "关于该专辑：",

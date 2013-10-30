@@ -31,6 +31,7 @@ $lang_functions = array
 	'std_here_to_request_new' => "<b>here</b></a> to request a new image code.",
 	'row_security_image' => "Security Image:",
 	'row_security_code' => "Security Code:",
+	'row_casinoenable' => "Enable Guessing Mode",
 	'text_slots' => "Slots: ",
 	'text_unlimited' => "Unlimited",
 	'std_server_load_very_high' => "The server load is very high at the moment. Retrying, please wait...",
@@ -73,6 +74,7 @@ $lang_functions = array
 	'text_uploaded' => "Uploaded:",
 	'text_downloaded' => "Downloaded:",
 	'text_active_torrents' => "Active Torrents: ",
+	'text_attachments' => "Attachments",
 	'title_torrents_seeding' => "Torrents&nbsp;Seeding",
 	'title_torrents_leeching' => "Torrents&nbsp;Leeching",
 	'text_connectable' => "Connectable:&nbsp;",
@@ -113,6 +115,9 @@ $lang_functions = array
 	'text_view_original' => "View original",
 	'text_last_edited_by' => "Last edited by ",
 	'text_edited_at' => " at ",
+	'text_seeding' => "Seeding",
+	'text_leeching' => "Leeching",
+	'text_complete' => "Complete",
 	'col_type' => "Type",
 	'col_name' => "Name",
 	'col_dl' => "DL",
@@ -302,6 +307,7 @@ $lang_functions = array
 	'text_track' => "Tracks",
 	'text_tag' => "Tags",
 	'text_pubdate' => "Release Date",
+	'text_collapsed_text' => "collapsed text",
 );
 
 ?>

@@ -94,7 +94,7 @@ $(function() {
 					var choice = $(this).siblings(".bet-choice").val();
 					var stake = $(this).siblings(".bet-stake").val();
 					
-					if( choice >= 1 && choice <= 9 && stake >= 100 && stake <= 2000  )
+					if( choice >= 1 && choice <= 9 && stake >= 100 )
 					{
 						$.post(
 							'getbetajax.php',
@@ -118,7 +118,7 @@ $(function() {
 								{
 									case '403':
 									{
-										$("#casino-msg").html("<p>请输入合法的数据!\n赌注只能为100到2000间的一个数.</p>").hide().slideToggle("slow").delay(2000).slideToggle("slow"); break;
+										$("#casino-msg").html("<p>请输入合法的数据!\n赌注只能为100到下注限额间的一个数,并且请确认你有足够的魔力值下注.</p>").hide().slideToggle("slow").delay(2000).slideToggle("slow"); break;
 									}
 									case '200':
 									{
@@ -142,7 +142,7 @@ $(function() {
 					}
 					else
 					{
-						alert("请输入合法的数据!\n赌注只能为100到2000间的一个数.");
+						alert("请输入合法的数据!\n赌注至少需要100.");
 					}
 				});
 				$(".close").click( function() { $(".bet-submit").die(); });
