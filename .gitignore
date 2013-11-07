@@ -1,6 +1,5 @@
 *.svn*
 config/*
-douban/*
 pic/*
 styles/*
 _doc/*
