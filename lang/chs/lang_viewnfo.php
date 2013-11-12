@@ -8,7 +8,8 @@ $lang_viewnfo = array
 	'title_dos_vy' => "查看DOS样式",
 	'text_dos_vy' => "DOS样式",
 	'title_windows_vy' => "查看Windows样式",
-	'text_windows_vy' => "Windows样式"
+	'text_windows_vy' => "Windows样式",
+	'text_download' => "[下载该nfo文件]",
 );
 
 ?>

@@ -8,6 +8,7 @@ $lang_viewnfo = array
 	'title_dos_vy' => "",
 	'text_dos_vy' => "DOS-vy",
 	'title_windows_vy' => "Latin-1: Inget socker tack!",
-	'text_windows_vy' => "Windows-vy"
+	'text_windows_vy' => "Windows-vy",
+	'text_download' => "[Download nfo file]",
 );
 ?>

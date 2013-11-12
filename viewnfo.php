@@ -13,6 +13,19 @@ $a = mysql_fetch_assoc($r) or die($lang_viewnfo['std_puke']);
 
 //error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
+// Download nfo file
+if(isset($_GET['download']) && (((int)$_GET['download']) == 1)){
+	$nfoinfo = $a['nfo']; //blob
+	//build header
+	header("Cache-Control: public, must-revalidate");
+	header("Content-Type: application/octet-stream");
+	//header("Content-Length: " .(string)(filesize($myFile)) );
+	header('Content-Disposition: attachment; filename="'.$id.'.nfo"');
+	echo $nfoinfo;
+	header("Content-Transfer-Encoding: binary\n");
+	return;
+}
+
 // view might be one of: "magic", "latin-1", "strict" or "fonthack"
 $view = "";
 if (isset($_GET["view"])) {
@@ -37,7 +50,7 @@ $nfo = code($a["nfo"], $view == "magic");
 
 stdhead($lang_viewnfo['head_view_nfo']);
 print($lang_viewnfo['text_nfo_for']."<a href=details.php?id=$id>".htmlspecialchars($a["name"])."</a>\n");
-
+print(" <a href=\"viewnfo.php?id=$id&download=1\">".$lang_viewnfo['text_download']."</a>\n");
 ?>
 <table border="1" cellspacing="0" cellpadding="10" align="center">
 <tr>
