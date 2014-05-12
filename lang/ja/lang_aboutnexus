@@ -1,0 +1,39 @@
+<?php
+
+$lang_aboutnexus = array
+(
+	'text_version' => "ヴァージョン",
+	'text_version_note' => "本サイト".$SITENAME."が使っているソースコードがここからです：".PROJECTNAME."。以下はこのヴァージョンについての詳しい情報です。",
+	'text_main_version' => "メーンバージョン",
+	'text_sub_version' => "マイナーバージョン",
+	'text_release_date' => "リリース日付",
+	'text_authorize_to' => "ライセンスを受ける者",
+	'text_authorization_type' => "ライセンスのタイプ",
+	'text_commercial' => "商用ライセンス",
+	'text_free' => "無料のライセンス",
+	'text_nexus' => "サイト情報",
+	'text_nexus_note' => "Nexusphpは浙江大学からのNexusチームに提出して開発されました。これの目標はTBSourseプロジェクトを代わって、完成で、規則的で、使用者の信用と知識のリソースのシェアリングを重視する仮想共同体の解決プランです。<br /><br />
+".PROJECTNAME."第一段階のバージョンはTBSourceについて開発されました。我々は後者の基礎の上にたいりょうのファンクションを添付して完全にして、ソースコードの効率を極大的に上げました。TBSourc以外、外のprivate trackerの思い方とソースコードを引きました、例えばBit-HDTV、What.cdとSceneTorrents等です。",
+	'text_authorization' => "ライセンスについて",
+	'text_authorization_note' => "".PROJECTNAME."を使って、自分のシェアリングサイトを建立したいなら、<a href=\"#contact\" class=\"faqlink\">で私達に連絡ください。</a>。",
+	'text_translation' => "翻訳について",
+	'text_translation_note' => "ユーザーでの多言語切り替えがサポートされます。私達のメーン言語は英語です。<br /><br />もしあなたの言語はサポートされなければ（unavailable）、しかも翻訳の仕事を希望すれば、翻訳の説明を<a href=\"faq.php#id71\" class=\"faqlink\">読んで</a>から<a href=\"#contact\" class=\"faqlink\">私達に連絡ください。</a>。私達はいつも新しい訳者を歓迎します。そして、もうあった訳文の維持するのは必要です。特に、期限切れ（outdate）、不完成的（outdate）と新しい翻訳が必要（incomplete）と表記された言語です。",
+	'text_flag' => "フラッグ",
+	'text_language' => "言語",
+	'text_state' => "状態",
+	'text_stylesheet' => "インターフェースのスタイルについて",
+	'text_stylesheet_note' => PROJECTNAME."のページレイアウトは完全にCSSについて設計してから、ユーザーがウェブサイトの外観をカスタムするのと新しいインターフェースのスタイルを加えるのを簡単にしました。<br /><br />以下は本サイト".$SITENAME."にあるインターフェースのスタイルのリストです。もしもっとインターフェースのスタイルが欲しくて、自分でデザインしたいなら、私達に<a href=\"#contact\" class=\"faqlink\">連絡ください。</a>。",
+	'text_name' => "名前",
+	'text_designer' => "設計者",
+	'text_comment' => "説明",
+	'text_contact' => "連絡",
+	'text_contact_note' => "加入したい？アドバイスがある？ソースコードのバッグを見つけた？ビジネスを交渉？以下の方式を一つ選べて、私達に連絡ください。",
+	'text_web_site' => "サイト",
+	'text_email' => "メールアドレス",
+	'text_msn' => "MSN",
+	'text_qq' => "QQ",
+	'text_telephone' => "電話番号",
+);
+
+?>
+
