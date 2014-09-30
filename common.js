@@ -84,6 +84,15 @@ function countmagic(torrentid, form){
 ajax.submit("magic.php?id="+torrentid+"&test=1", "MagicPoint", form);
 }
 
+function sendbonus(root, id){
+	$(root).disabled = true;
+	$(root).innerHTML = "...";
+	var prevroot = $(root).previousSibling;
+	var bonuscnt = prevroot.value;
+	var ret = ajax.post('sendbonus.php', function(data){$(root).innerHTML = data;}, 'id='+id+'&bonus='+bonuscnt);
+	$(root).disabled = false;
+}
+
 //edit pro text
 function updateprotime(type){
 	if(type == 2 || type == 4){

@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="32160392-7ace-4b34-a55a-ed4693ac4bd5" name="Default" comment="" />
+    <ignored path="trunk.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="trunk" />
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.63531226">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="casino.php" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/casino.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-6.035714" vertical-offset="135" max-vertical-offset="7942">
+                  <caret line="16" column="44" selection-start-line="16" selection-start-column="44" selection-end-line="16" selection-end-column="44" />
+                  <folding>
+                    <marker date="1370519525077" expanded="true" signature="2226:2372" placeholder="SELECT c.id ..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="2551:2693" placeholder="SELECT * FRO..id..." />
+                    <marker date="1370519525077" expanded="true" signature="2551:2874" placeholder="SELECT * FRO..." />
+                    <marker date="1370519525077" expanded="true" signature="2566:2686" placeholder="SELECT id, t..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="2700:2835" placeholder="SELECT * FRO..id..." />
+                    <marker date="1370519525077" expanded="true" signature="2715:2827" placeholder="SELECT id, t..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="3546:3585" placeholder="UPDATE casin..." />
+                    <marker date="1370519525077" expanded="true" signature="6589:6781" placeholder="SELECT id, t..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="8501:8629" placeholder="SELECT stake..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="8813:8936" placeholder="SELECT stake..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="9239:9396" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="12414:12465" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="14275:14421" placeholder="SELECT id, t..casino..." />
+                    <marker date="1370519525077" expanded="true" signature="16994:17045" placeholder="SELECT * FRO..casinorank..." />
+                    <marker date="1370519525077" expanded="true" signature="17748:17794" placeholder="SELECT * FRO..casinorank..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="getbetajax.php" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/getbetajax.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-11.663366" vertical-offset="7581" max-vertical-offset="8816">
+                  <caret line="27" column="97" selection-start-line="27" selection-start-column="97" selection-end-line="27" selection-end-column="97" />
+                  <folding>
+                    <marker date="1411846629007" expanded="true" signature="1027:1068" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="2073:2112" placeholder="SELECT seedb..users..." />
+                    <marker date="1411846629007" expanded="true" signature="2318:2371" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="2583:2678" placeholder="SELECT * FRO..casinolog..." />
+                    <marker date="1411846629007" expanded="true" signature="2769:2840" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="2913:3122" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="3172:3231" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="3573:3626" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="3899:4109" placeholder="SELECT log.u..casinolog..." />
+                    <marker date="1411846629007" expanded="true" signature="4955:5206" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="5886:5920" placeholder="SELECT title..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="6102:6157" placeholder="DELETE FROM ..." />
+                    <marker date="1411846629007" expanded="true" signature="6208:6239" placeholder="DELETE FROM ..." />
+                    <marker date="1411846629007" expanded="true" signature="7032:7189" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="7788:7887" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="7966:8031" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="8224:8335" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="8422:8583" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="8672:8758" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="9020:9198" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="9480:9593" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="9672:9737" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="10017:10124" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="10217:10347" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="10424:10632" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="10708:10837" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="11139:11317" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="11413:11516" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="11764:11941" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="12588:12629" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="13046:13207" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="13328:13435" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="13544:13577" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="13544:13612" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="13723:13809" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="14061:14244" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="14688:14896" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="15008:15137" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="15248:15355" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="15424:15446" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="15424:15492" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="15603:15689" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="15941:16124" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="16991:17044" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="17246:17433" placeholder="SELECT log.u..casinolog..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="temp_rollback.php" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/temp_rollback.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-6.107143" vertical-offset="0" max-vertical-offset="418">
+                  <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="getbetajax.php" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/getbetajax.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="7.112652" vertical-offset="171" max-vertical-offset="8816">
+                  <caret line="225" column="16" selection-start-line="225" selection-start-column="16" selection-end-line="225" selection-end-column="16" />
+                  <folding>
+                    <marker date="1411846629007" expanded="true" signature="1027:1068" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="2073:2112" placeholder="SELECT seedb..users..." />
+                    <marker date="1411846629007" expanded="true" signature="2318:2371" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="2583:2678" placeholder="SELECT * FRO..casinolog..." />
+                    <marker date="1411846629007" expanded="true" signature="2769:2840" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="2913:3122" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="3172:3231" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="3573:3626" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="3899:4109" placeholder="SELECT log.u..casinolog..." />
+                    <marker date="1411846629007" expanded="true" signature="4955:5206" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="5886:5920" placeholder="SELECT title..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="6102:6157" placeholder="DELETE FROM ..." />
+                    <marker date="1411846629007" expanded="true" signature="6208:6239" placeholder="DELETE FROM ..." />
+                    <marker date="1411846629007" expanded="true" signature="7032:7189" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="7788:7887" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="7966:8031" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="8224:8335" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="8422:8583" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="8672:8758" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="9020:9198" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="9480:9593" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="9672:9737" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="10017:10124" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="10217:10347" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="10424:10632" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="10708:10837" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="11139:11317" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="11413:11516" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="11764:11941" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="12588:12629" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="13046:13207" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="13328:13435" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="13544:13612" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="13723:13809" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="14061:14244" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="14688:14896" placeholder="UPDATE users..." />
+                    <marker date="1411846629007" expanded="true" signature="15008:15137" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="15248:15355" placeholder="UPDATE casin..." />
+                    <marker date="1411846629007" expanded="true" signature="15603:15689" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="15941:16124" placeholder="INSERT INTO ..." />
+                    <marker date="1411846629007" expanded="true" signature="16991:17044" placeholder="SELECT * FRO..casino..." />
+                    <marker date="1411846629007" expanded="true" signature="17246:17433" placeholder="SELECT log.u..casinolog..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="lang_getbetajax.php" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/lang/chs/lang_getbetajax.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-6.785714" vertical-offset="0" max-vertical-offset="361">
+                  <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="true" />
+    </FindUsagesManager>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/lang/chs/lang_getbetajax.php" />
+        <option value="$PROJECT_DIR$/getbetajax.php" />
+        <option value="$PROJECT_DIR$/temp_rollback.php" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="61" />
+    <option name="y" value="-8" />
+    <option name="width" value="1313" />
+    <option name="height" value="784" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lang" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lang" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="chs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="preferences.general" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="FullScreen" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="ChromiumRemoteDebugType" factoryName="Chromium Remote">
+      <option name="name" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="com.intellij.database.run.ConsoleRunConfigurationType" factoryName="Query Language Console">
+      <option name="VM_PARAMETERS" value="" />
+      <option name="USER_CFG_CLASS" />
+      <option name="CONTEXT_PROVIDER" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpBehatConfigurationType" factoryName="Behat">
+      <BehatRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="XSLT" factoryName="XSLT">
+      <option name="myOutputFile" />
+      <option name="myOpenOutputFile" value="false" />
+      <option name="myOpenInBrowser" value="false" />
+      <option name="mySmartErrorHandling" value="true" />
+      <option name="myRunnerPort" value="34873" />
+      <option name="myVmArguments" />
+      <option name="myWorkingDirectory" />
+      <option name="myModule" />
+      <option name="myJdk" />
+      <parameters />
+      <OutputType value="CONSOLE" save-to-file="false" />
+      <FileType name="XML" />
+      <JdkChoice value="FROM_MODULE" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AppEnginePhpConfigurationType" factoryName="App Engine for PHP">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <method />
+    </configuration>
+    <list size="0" />
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="32160392-7ace-4b34-a55a-ed4693ac4bd5" name="Default" comment="" />
+      <created>1411837673320</created>
+      <option name="number" value="Default" />
+      <updated>1411837673320</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="61" y="-8" width="1313" height="784" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24980725" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lang/chs/lang_getbetajax.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.785714" vertical-offset="0" max-vertical-offset="361">
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/casino.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.035714" vertical-offset="135" max-vertical-offset="7942">
+          <caret line="16" column="44" selection-start-line="16" selection-start-column="44" selection-end-line="16" selection-end-column="44" />
+          <folding>
+            <marker date="1370519525077" expanded="true" signature="2226:2372" placeholder="SELECT c.id ..casino..." />
+            <marker date="1370519525077" expanded="true" signature="2551:2693" placeholder="SELECT * FRO..id..." />
+            <marker date="1370519525077" expanded="true" signature="2551:2874" placeholder="SELECT * FRO..." />
+            <marker date="1370519525077" expanded="true" signature="2566:2686" placeholder="SELECT id, t..casino..." />
+            <marker date="1370519525077" expanded="true" signature="2700:2835" placeholder="SELECT * FRO..id..." />
+            <marker date="1370519525077" expanded="true" signature="2715:2827" placeholder="SELECT id, t..casino..." />
+            <marker date="1370519525077" expanded="true" signature="3546:3585" placeholder="UPDATE casin..." />
+            <marker date="1370519525077" expanded="true" signature="6589:6781" placeholder="SELECT id, t..casino..." />
+            <marker date="1370519525077" expanded="true" signature="8501:8629" placeholder="SELECT stake..casino..." />
+            <marker date="1370519525077" expanded="true" signature="8813:8936" placeholder="SELECT stake..casino..." />
+            <marker date="1370519525077" expanded="true" signature="9239:9396" placeholder="SELECT * FRO..casino..." />
+            <marker date="1370519525077" expanded="true" signature="12414:12465" placeholder="SELECT * FRO..casino..." />
+            <marker date="1370519525077" expanded="true" signature="14275:14421" placeholder="SELECT id, t..casino..." />
+            <marker date="1370519525077" expanded="true" signature="16994:17045" placeholder="SELECT * FRO..casinorank..." />
+            <marker date="1370519525077" expanded="true" signature="17748:17794" placeholder="SELECT * FRO..casinorank..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/temp_rollback.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.107143" vertical-offset="0" max-vertical-offset="418">
+          <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getbetajax.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.663366" vertical-offset="7581" max-vertical-offset="8816">
+          <caret line="27" column="97" selection-start-line="27" selection-start-column="97" selection-end-line="27" selection-end-column="97" />
+          <folding>
+            <marker date="1411846629007" expanded="true" signature="1027:1068" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="2073:2112" placeholder="SELECT seedb..users..." />
+            <marker date="1411846629007" expanded="true" signature="2318:2371" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="2583:2678" placeholder="SELECT * FRO..casinolog..." />
+            <marker date="1411846629007" expanded="true" signature="2769:2840" placeholder="UPDATE users..." />
+            <marker date="1411846629007" expanded="true" signature="2913:3122" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="3172:3231" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="3573:3626" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="3899:4109" placeholder="SELECT log.u..casinolog..." />
+            <marker date="1411846629007" expanded="true" signature="4955:5206" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="5886:5920" placeholder="SELECT title..casino..." />
+            <marker date="1411846629007" expanded="true" signature="6102:6157" placeholder="DELETE FROM ..." />
+            <marker date="1411846629007" expanded="true" signature="6208:6239" placeholder="DELETE FROM ..." />
+            <marker date="1411846629007" expanded="true" signature="7032:7189" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="7788:7887" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="7966:8031" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="8224:8335" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="8422:8583" placeholder="UPDATE users..." />
+            <marker date="1411846629007" expanded="true" signature="8672:8758" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="9020:9198" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="9480:9593" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="9672:9737" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="10017:10124" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="10217:10347" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="10424:10632" placeholder="UPDATE users..." />
+            <marker date="1411846629007" expanded="true" signature="10708:10837" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="11139:11317" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="11413:11516" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="11764:11941" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="12588:12629" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="13046:13207" placeholder="UPDATE users..." />
+            <marker date="1411846629007" expanded="true" signature="13328:13435" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="13544:13577" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="13544:13612" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="13723:13809" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="14061:14244" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="14688:14896" placeholder="UPDATE users..." />
+            <marker date="1411846629007" expanded="true" signature="15008:15137" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="15248:15355" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="15424:15446" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="15424:15492" placeholder="UPDATE casin..." />
+            <marker date="1411846629007" expanded="true" signature="15603:15689" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="15941:16124" placeholder="INSERT INTO ..." />
+            <marker date="1411846629007" expanded="true" signature="16991:17044" placeholder="SELECT * FRO..casino..." />
+            <marker date="1411846629007" expanded="true" signature="17246:17433" placeholder="SELECT log.u..casinolog..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+

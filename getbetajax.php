@@ -25,7 +25,7 @@ $id = 0+$_POST['id'];
 $type = $_POST['type'];
 
 
-if ( !in_array($type,array('info', 'bet', 'winner', 'mod', 'add', 'pedding', 'view')) || $casino_tweak == "no")
+if ( !in_array($type,array('info', 'bet', 'winner', 'mod', 'add', 'pedding', 'view', 'undo')) || $casino_tweak == "no")
 {
 	echo 400;
 	write_log("User " . $CURUSER["username"] . "," . $CURUSER["ip"] . " is hacking casino system",'mod');
@@ -64,10 +64,12 @@ else
 			//Different limit for different level
 			$stakelimit = 0;
 			$userclass = get_user_class();
-			if($userclass == UC_POWER_USER) $stakelimit = 2000;
-			elseif($userclass == UC_ELITE_USER || $userclass == UC_CRAZY_USER) $stakelimit = 3000;
-			elseif($userclass == UC_INSANE_USER || $userclass == UC_VETERAN_USER) $stakelimit = 4000;
-			elseif($userclass >= UC_EXTREME_USER) $stakelimit = 5000;
+			if($userclass == UC_POWER_USER) $stakelimit = 5000;
+			elseif($userclass == UC_ELITE_USER) $stakelimit = 6000;
+			elseif($userclass == UC_CRAZY_USER) $stakelimit = 7000;
+			elseif($userclass == UC_INSANE_USER) $stakelimit = 8000;
+			elseif($userclass == UC_VETERAN_USER) $stakelimit = 9000;
+			elseif($userclass >= UC_EXTREME_USER) $stakelimit = 10000;
 			
 			if($choice < 1 || $choice > 9 || $stake > $stakelimit || $stake < 100)
 			{
@@ -345,6 +347,80 @@ else
 				break;
 			}
 		}
+        case('undo'):
+        {
+            if(get_user_class() < UC_MODERATOR)
+            {
+                echo 403;
+                write_log("User " . $CURUSER["username"] . "," . $CURUSER["ip"] . " is hacking casino system",'mod');
+                die;
+            }
+            else
+            {
+                $id = 0+$_POST['id'];
+
+                $res = sql_query("SELECT * FROM casino WHERE id=$id LIMIT 1") or sqlerr(__FILE__, __LINE__);
+
+                if (mysql_num_rows($res) > 0)
+                {
+                    $result = mysql_fetch_object($res);
+                    $game_state = $result->state;
+                    $title = $result->title;
+                    if($game_state == 5){
+                        // undo-push
+
+                        // update users & casinolog
+                        sql_query("UPDATE users AS u, casinolog AS log, casino AS c SET u.seedbonus=u.seedbonus-log.stake, log.result=log.result-1  WHERE log.user_id=u.id AND log.id=c.id AND c.id=".sqlesc($id)) or sqlerr(__FILE__, __LINE__);
+                        // update state
+                        sql_query("UPDATE casino SET winner_count=0, state=2, paid_time='0000-00-00 00:00:00' WHERE id=".sqlesc($id)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
+                        // final update
+                        sql_query("UPDATE casino SET win=0, comment='' WHERE id=".sqlesc($id)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
+
+                        // pm all
+                        $res = sql_query("SELECT * FROM casino AS c, casinolog AS log WHERE c.id=".sqlesc($id)." AND c.id=log.id") or sqlerr(__FILE__, __LINE__);
+                        while ($arr = mysql_fetch_assoc($res))
+                        {
+                            $msg = $arr['title']. " " . $lang_getbetajax['text_pm_undo'];
+                            sql_query("INSERT INTO messages (sender, subject, receiver, msg, added) VALUES(0, '".$lang_getbetajax['text_pm_title_undo']."', ".$arr['user_id'].",". sqlesc($msg) .", '".date("Y-m-d H:i:s")."')") or sqlerr(__FILE__, __LINE__);
+                        }
+                        // write log
+                        write_log("Lottery ".$id." (".$title.") was undo-push by ".$CURUSER["username"].".");
+                        // return
+                        echo 200;
+                    } else if($game_state == 4){
+                        // undo-cleared
+
+                        // rollback winners
+                        sql_query("UPDATE users AS u, casinolog AS log, casino AS c SET u.seedbonus=u.seedbonus-(log.odds*log.stake), log.result=log.result-1  WHERE log.user_id=u.id AND log.id=c.id AND c.id=".sqlesc($id)." AND log.choice=c.win") or sqlerr(__FILE__, __LINE__);
+                        // rollback losers
+                        sql_query("UPDATE casinolog AS log, casino AS c SET log.result=log.result-1 WHERE c.id=".sqlesc($id)." AND c.id=log.id AND log.choice!=c.win") or sqlerr(__FILE__, __LINE__);
+                        // clear all info
+                        sql_query("UPDATE casino SET winner_count=0, state=2, paid_time='0000-00-00 00:00:00' WHERE id=".sqlesc($id)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
+                        sql_query("UPDATE casino SET win=0, comment='' WHERE id=".sqlesc($id)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
+
+                        // pm all
+                        $res = sql_query("SELECT * FROM casino AS c, casinolog AS log WHERE c.id=".sqlesc($id)." AND c.id=log.id") or sqlerr(__FILE__, __LINE__);
+                        while ($arr = mysql_fetch_assoc($res))
+                        {
+                            $msg = $arr['title']. " " . $lang_getbetajax['text_pm_undo'];
+                            sql_query("INSERT INTO messages (sender, subject, receiver, msg, added) VALUES(0, '".$lang_getbetajax['text_pm_title_undo']."', ".$arr['user_id'].",". sqlesc($msg) .", '".date("Y-m-d H:i:s")."')") or sqlerr(__FILE__, __LINE__);
+                        }
+                        write_log("Lottery ".$id." (".$title.") was undo-cleared by ".$CURUSER["username"].".");
+                        // return
+                        echo 200;
+                    } else {
+                        // error state
+                        echo 403;
+                    }
+                }
+                else
+                {
+                    echo 404;
+                }
+
+                break;
+            }
+        }
 		case('view'):
 		{
 			if(get_user_class() < UC_MODERATOR)

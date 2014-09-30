@@ -2405,6 +2405,23 @@ if ($CURUSER){
 <script type="text/javascript" src="jquery.scripts.js<?php echo $cssupdatedate?>"></script>
 </head>
 <body>
+<?php
+//temp for easter egg
+if(rand(1, 100) == 12){
+	$sql = "SELECT eggkey FROM easteregg WHERE userid = 0 LIMIT 1";
+	$res = sql_query($sql) or sqlerr(__FILE__, __LINE__);
+	$arr = mysql_fetch_array($res);
+	$eggkey = $arr['eggkey'];
+?>
+<div style="position:absolute; bottom:20px; right:20px;">
+<a href="easteregg.php?key=<?php echo $eggkey;?>">
+<img src="pic/easteregg.png" />
+</a>
+</div>
+<?php
+}
+//temp end
+?>
 <table class="head" cellspacing="0" cellpadding="0" align="center">
 	<tr>
 		<td class="clear">

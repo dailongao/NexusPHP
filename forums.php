@@ -750,8 +750,18 @@ if ($action == "viewtopic")
 		print("<tr><td class=\"rowfollow\" align=\"center\" valign=\"middle\">".(("'".$arr2['last_access']."'">$dt) && ( $arr2['showonline'] == "yes" ) ?"<img class=\"f_online\" src=\"pic/trans.gif\" alt=\"Online\" title=\"".$lang_forums['title_online']."\" />":"<img class=\"f_offline\" src=\"pic/trans.gif\" alt=\"Offline\" title=\"".$lang_forums['title_offline']."\" />" )."<a href=\"sendmessage.php?receiver=".htmlspecialchars(trim($arr2["id"]))."\"><img class=\"f_pm\" src=\"pic/trans.gif\" alt=\"PM\" title=\"".$lang_forums['title_send_message_to'].htmlspecialchars($arr2["username"])."\" /></a><a href=\"report.php?forumpost=$postid\"><img class=\"f_report\" src=\"pic/trans.gif\" alt=\"Report\" title=\"".$lang_forums['title_report_this_post']."\" /></a></td>");
 		print("<td class=\"toolbox\" align=\"right\">");
 
-		if ($maypost)
-		print("<a href=\"".htmlspecialchars("?action=quotepost&postid=".$postid)."\"><img class=\"f_quote\" src=\"pic/trans.gif\" alt=\"Quote\" title=\"".$lang_forums['title_reply_with_quote']."\" /></a>");
+		if ($maypost){
+			//print("<a id=\"sendbonus\" href=\"".htmlspecialchars("javascript: sendbonus(".$postid.");")."\">送米</a>");
+			print("<div style=\"display:inline-block;vertical-align:top;margin-top:2px;\">");
+			print("<select name=\"bonus\">");
+			print("<option value=500>500</option>");
+			print("<option value=1000 selected=\"selected\">1000</option>");
+			print("<option value=2000 >2000</option>");
+			print("</select>");
+			print("<button id=\"btnbonus\" onclick=\"javascript: sendbonus(this, $posterid);\">赠送魔力值</button>");
+			print("</div>");
+			print("<a href=\"".htmlspecialchars("?action=quotepost&postid=".$postid)."\"><img class=\"f_quote\" src=\"pic/trans.gif\" alt=\"Quote\" title=\"".$lang_forums['title_reply_with_quote']."\" /></a>");
+		}
 
 		if (get_user_class() >= $postmanage_class || $is_forummod)
 		print("<a href=\"".htmlspecialchars("?action=deletepost&postid=".$postid)."\"><img class=\"f_delete\" src=\"pic/trans.gif\" alt=\"Delete\" title=\"".$lang_forums['title_delete_post']."\" /></a>");
