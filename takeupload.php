@@ -340,7 +340,7 @@ if($sp_state != 0){
 		$pro_tp = 2;
 	}else{
 		$pro_tl = "0000-00-00 00:00:00";
-		$pro_tp = 1;
+		$pro_tp = 0;
 	}
 
 }
