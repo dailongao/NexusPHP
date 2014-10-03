@@ -1,6 +1,5 @@
 <?php
 require_once("include/bittorrent.php");
-require_once("specialip.php");
 
 header("Content-Type: text/html; charset=utf-8");
 if (!mkglobal("username:password"))

@@ -11,10 +11,23 @@ if(!defined('IN_TRACKER'))
 include_once($rootpath . 'include/globalfunctions.php');
 include_once($rootpath . 'include/config.php');
 include_once($rootpath . 'classes/class_advertisement.php');
-include_once($rootpath . 'specialip.php');
 
 require_once($rootpath . get_langfile_path("functions.php"));
 require_once($rootpath . get_langfile_path("functions.php"));
+
+/**
+ * 判断当前 IP 是否是特殊 IP。
+ * @return 如果当前 IP 是特殊 IP 返回 true；否则返回 false。
+ */
+
+function is_special_ip(){
+	
+	global $ignoreipchecklist;
+	
+	$ip = getip();
+	return in_array($ip, $ignoreipchecklist);
+}
+
 
 function get_langfolder_cookie()
 {
@@ -1559,7 +1572,7 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$type = "confirmation
 
 function failedloginscheck ($type = 'Login') {
 	
-	if(is_sepcial_ip()){
+	if(is_special_ip()){
 		return;
 	}
 	
@@ -1620,15 +1633,6 @@ function login_failedlogins($type = 'login', $recover = false, $head = true)
 		stderr($lang_functions['std_recover_failed'],$type,false, $head);
 }
 
-/**
- * 返回当前用户 IP 是否是特殊 IP。
- * @return bool 如果当前 IP 是特殊 IP，返回 true；否则返回 false。
- */
-
-function is_sepcial_ip(){
-	$ip = getip();
-	return $ip == "10.15.173.174";
-}
 
 /**
  * 返回当前 IP 的特定操作剩余次数。
@@ -1640,7 +1644,7 @@ function remaining ($type = 'login') {
 	global $maxloginattempts;
 	$total = 0;
 	
-	if(is_sepcial_ip()){
+	if(is_special_ip()){
 		return $maxloginattempts;
 	}
 	
@@ -2908,19 +2912,20 @@ function base64 ($string, $encode=true) {
 
 function loggedinorreturn($mainpage = false) {
 	global $CURUSER,$BASEURL;
-	if (!$CURUSER) {
+	if (!$CURUSER) {	
 		// Fix the bug for cookie affect field
 		if($_SERVER['HTTP_HOST'] != $BASEURL){
 			header("Location: " . get_protocol_prefix() . $BASEURL . $_SERVER["REQUEST_URI"]);
 			exit();
 		}
 
-		if ($mainpage)
-			header("Location: " . get_protocol_prefix() . "$BASEURL/login.php");
+		if ($mainpage){
+			header("Location: " . get_protocol_prefix() . "$BASEURL/login.php", true, 301);
+		}
 		else {
 			$to = $_SERVER["REQUEST_URI"];
 			$to = basename($to);
-			header("Location: " . get_protocol_prefix() . "$BASEURL/login.php?returnto=" . rawurlencode($to));
+			header("Location: " . get_protocol_prefix() . "$BASEURL/login.php?returnto=" . rawurlencode($to), true, 301);
 		}
 		exit();
 	}

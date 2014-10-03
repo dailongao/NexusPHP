@@ -72,8 +72,8 @@ $deleted_sub_title_text = join(", ", array_map($generate_subtitle_info, $subtitl
 $deleter = $row['anonymous'] == 'yes' && $CURUSER["id"] == $row["owner"] ? "anonymous uploader" : $CURUSER[username];
 
 // –¥»Î…æ≥˝œ˚œ¢°£
-$message_format = empty($subtitle_id_list) ? "Torrent {0} ({1}) was deleted by {2}" : "Torrent {0} ({1}) and its subtitles {3} were deleted by {2}";
-write_log(MessageFormatter::formatMessage("", $message_format, array($id, $row['name'], $deleter, $deleted_sub_title_text)), "normal");
+$message_format = empty($subtitle_id_list) ? "Torrent {0} ({1}) was deleted by {2}" : "Torrent {0} ({1}) and its subtitles {3} were deleted by {2}: {4}";
+write_log(MessageFormatter::formatMessage("", $message_format, array($id, $row['name'], $deleter, $deleted_sub_title_text, $reasonstr)), "normal");
 
 
 //===remove karma

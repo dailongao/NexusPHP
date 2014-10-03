@@ -697,6 +697,9 @@ $lang_settings = array
     
   'row_view_bbcode' => "查看简介的 BBCode",
 	'text_view_bbcode' => "允许查看种子“简介”部分的原始 BBCode",
+	
+	'row_ignore_ip_check_list' => "不屏蔽 IP 地址",
+	'text_ignore_ip_check_list' => "在列表中输入 IP 地址，以逗号分开。这个列表中的 IP 地址不会被屏蔽。",
 );
 
 ?>

@@ -1,6 +1,6 @@
 <?php
+
 require_once("include/bittorrent.php");
-require_once("specialip.php");
 
 dbconn();
 
