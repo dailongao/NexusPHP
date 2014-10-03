@@ -1,11 +1,12 @@
 <?php
 require_once("include/bittorrent.php");
+require_once("specialip.php");
+
 header("Content-Type: text/html; charset=utf-8");
 if (!mkglobal("username:password"))
 	die();
 dbconn();
 require_once(get_langfile_path("", false, get_langfolder_cookie()));
-failedloginscheck ();
 cur_user_check () ;
 
 function bark($text = "")
