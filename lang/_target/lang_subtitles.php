@@ -13,6 +13,7 @@ $lang_subtitles_target = array
 	'msg_deleted_your_sub' => "删除了你上传的字幕。",
 	'msg_your_sub_deleted' => "字幕被删除",
 	'msg_reason_is' => "原因：",
+  'msg_reason_deleted_by_source' => '字幕随对应的资源被一并删除',
 	),
 	'cht' => array
 	(

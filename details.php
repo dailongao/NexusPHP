@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 ob_start(); //Do not delete this line
 require_once("include/bittorrent.php");
 dbconn();
@@ -13,27 +13,32 @@ $id = 0 + $_GET["id"];
 
 int_check($id);
 if (!isset($id) || !$id)
-die();
+    die();
 
 $res = sql_query("SELECT torrents.sp_state, torrents.promotion_time_type, torrents.promotion_until, torrents.cache_stamp, torrents.sp_state, torrents.url, torrents.douban_url, torrents.small_descr, torrents.seeders, torrents.banned, torrents.leechers, torrents.info_hash, torrents.filename, nfo, LENGTH(torrents.nfo) AS nfosz, torrents.last_action, torrents.name, torrents.owner, torrents.save_as, torrents.descr, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.type, torrents.numfiles, torrents.anonymous, categories.name AS cat_name, sources.name AS source_name, media.name AS medium_name, codecs.name AS codec_name, standards.name AS standard_name, processings.name AS processing_name, teams.name AS team_name, audiocodecs.name AS audiocodec_name FROM torrents LEFT JOIN categories ON torrents.category = categories.id LEFT JOIN sources ON torrents.source = sources.id LEFT JOIN media ON torrents.medium = media.id LEFT JOIN codecs ON torrents.codec = codecs.id LEFT JOIN standards ON torrents.standard = standards.id LEFT JOIN processings ON torrents.processing = processings.id LEFT JOIN teams ON torrents.team = teams.id LEFT JOIN audiocodecs ON torrents.audiocodec = audiocodecs.id WHERE torrents.id = $id LIMIT 1")
 or sqlerr();
 $row = mysql_fetch_array($res);
 
 if (get_user_class() >= $torrentmanage_class || $CURUSER["id"] == $row["owner"])
-$owned = 1;
+    $owned = 1;
 else $owned = 0;
+
 
 if (!$row)
 	stderr($lang_details['std_error'], $lang_details['std_no_torrent_id']);
 elseif ($row['banned'] == 'yes' && get_user_class() < $seebanned_class)
 	permissiondenied();
 else {
+    
+    
+    $viewbbcode = (get_user_class() >= $viewbbcode_class ||  $CURUSER["id"] == $row["owner"]);
+    
 	if ($_GET["hit"]) {
 		sql_query("UPDATE torrents SET views = views + 1 WHERE id = $id");
 	}
 
 	if (!isset($_GET["cmtpage"])) {
-		stdhead($lang_details['head_details_for_torrent']. "\"" . $row["name"] . "\"");
+		stdhead(sprintf("%s - %s", $lang_details['head_details_for_torrent'], $row["name"]));
 
 		if ($_GET["uploaded"])
 		{
@@ -56,15 +61,18 @@ else {
 		$url = "edit.php?id=" . $row["id"];
 		if (isset($_GET["returnto"])) {
 			$url .= "&returnto=" . rawurlencode($_GET["returnto"]);
-		}
-		$editlink = "a title=\"".$lang_details['title_edit_torrent']."\" href=\"$url\"";
+        }
+        
+        $viewbbcode_link = "<a id=\"copy-bbcode-link\" title=\"" . $lang_details['title_view_bbcode'] . "\" href=\"#\" alt=\"bbcode\" ><img class=\"dt_viewbbcode\" alt=\"BBCode\" src=\"pic/code.png\" />&nbsp;<b><font class=\"small\">" . $lang_details['text_view_bbcode'] . "</font></b></a>&nbsp;|&nbsp;";
+        
+		$editlink = "<a title=\"".$lang_details['title_edit_torrent']."\" href=\"$url\"><img class=\"dt_edit\" src=\"pic/trans.gif\" alt=\"edit\" />&nbsp;<b><font class=\"small\">".$lang_details['text_edit_torrent'] . "</font></b></a>&nbsp;|&nbsp;";
 
 		// ------------- start upped by block ------------------//
 		if($row['anonymous'] == 'yes') {
 			if (get_user_class() < $viewanonymous_class)
-			$uprow = "<i>".$lang_details['text_anonymous']."</i>";
+                $uprow = "<i>".$lang_details['text_anonymous']."</i>";
 			else
-			$uprow = "<i>".$lang_details['text_anonymous']."</i> (" . get_username($row['owner'], false, true, true, false, false, true) . ")";
+                $uprow = "<i>".$lang_details['text_anonymous']."</i> (" . get_username($row['owner'], false, true, true, false, false, true) . ")";
 		}
 		else {
 			$uprow = (isset($row['owner']) ? get_username($row['owner'], false, true, true, false, false, true) : "<i>".$lang_details['text_unknown']."</i>");
@@ -107,8 +115,8 @@ else {
 		if ($CURUSER["downloadpos"] != "no")
 			$download = "<a title=\"".$lang_details['title_download_torrent']."\" href=\"download.php?id=".$id."\"><img class=\"dt_download\" src=\"pic/trans.gif\" alt=\"download\" />&nbsp;<b><font class=\"small\">".$lang_details['text_download_torrent']."</font></b></a>&nbsp;|&nbsp;";
 		else $download = "";
-
-		tr($lang_details['row_action'], $download. ($owned == 1 ? "<$editlink><img class=\"dt_edit\" src=\"pic/trans.gif\" alt=\"edit\" />&nbsp;<b><font class=\"small\">".$lang_details['text_edit_torrent'] . "</font></b></a>&nbsp;|&nbsp;" : "").  (get_user_class() >= $askreseed_class && $row[seeders] == 0 ? "<a title=\"".$lang_details['title_ask_for_reseed']."\" href=\"takereseed.php?reseedid=$id\"><img class=\"dt_reseed\" src=\"pic/trans.gif\" alt=\"reseed\">&nbsp;<b><font class=\"small\">".$lang_details['text_ask_for_reseed'] ."</font></b></a>&nbsp;|&nbsp;" : "") . "<a title=\"".$lang_details['title_report_torrent']."\" href=\"report.php?torrent=$id\"><img class=\"dt_report\" src=\"pic/trans.gif\" alt=\"report\" />&nbsp;<b><font class=\"small\">".$lang_details['text_report_torrent']."</font></b></a>&nbsp;|&nbsp;" ."<a title=\"".$lang_details['title_buy_promotion']."\" href=\"magic.php?id=$id\"><img class=\"dt_magic\" src=\"pic/magic.png\" />&nbsp;<b><font class=\"small\">".$lang_details['buy_promotion_for_torrent']."</font></b></a>" , 1);
+        
+		tr($lang_details['row_action'], $download. ($owned == 1 ? $editlink : ""). ($viewbbcode ? $viewbbcode_link : "") . (get_user_class() >= $askreseed_class && $row[seeders] == 0 ? "<a title=\"".$lang_details['title_ask_for_reseed']."\" href=\"takereseed.php?reseedid=$id\"><img class=\"dt_reseed\" src=\"pic/trans.gif\" alt=\"reseed\">&nbsp;<b><font class=\"small\">".$lang_details['text_ask_for_reseed'] ."</font></b></a>&nbsp;|&nbsp;" : "") . "<a title=\"".$lang_details['title_report_torrent']."\" href=\"report.php?torrent=$id\"><img class=\"dt_report\" src=\"pic/trans.gif\" alt=\"report\" />&nbsp;<b><font class=\"small\">".$lang_details['text_report_torrent']."</font></b></a>&nbsp;|&nbsp;" ."<a title=\"".$lang_details['title_buy_promotion']."\" href=\"magic.php?id=$id\"><img class=\"dt_magic\" src=\"pic/magic.png\" />&nbsp;<b><font class=\"small\">".$lang_details['buy_promotion_for_torrent']."</font></b></a>" , 1);
 
 		// ---------------- start subtitle block -------------------//
 		$r = sql_query("SELECT subs.*, language.flagpic, language.lang_name FROM subs LEFT JOIN language ON subs.lang_id=language.id WHERE torrent_id = " . sqlesc($row["id"]). " ORDER BY subs.lang_id ASC") or sqlerr(__FILE__, __LINE__);
@@ -142,9 +150,9 @@ else {
 				$target = array('Title');
 				switch ($movie->cachestate($target)){
 					case "1":{
-						$moviename = $movie->title (); break;
-						$Cache->cache_value('imdb_id_'.$thenumbers.'_movie_name', $moviename, 1296000);
-					}
+                            $moviename = $movie->title (); break;
+                            $Cache->cache_value('imdb_id_'.$thenumbers.'_movie_name', $moviename, 1296000);
+                        }
 					default: break;
 				}
 			}
@@ -156,8 +164,8 @@ else {
 		// ---------------- end subtitle block -------------------//
 
 		if ($CURUSER['showdescription'] != 'no' && !empty($row["descr"])){
-		$torrentdetailad=$Advertisement->get_ad('torrentdetail');
-		tr("<a href=\"javascript: klappe_news('descr')\"><span class=\"nowrap\"><img class=\"minus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picdescr\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['row_description']."</span></a>", "<div id='kdescr'>".($Advertisement->enable_ad() && $torrentdetailad ? "<div align=\"left\" style=\"margin-bottom: 10px\" id=\"ad_torrentdetail\">".$torrentdetailad[0]."</div>" : "").format_comment($row["descr"])."</div>", 1);
+            $torrentdetailad=$Advertisement->get_ad('torrentdetail');
+            tr("<a href=\"javascript: klappe_news('descr')\"><span class=\"nowrap\"><img class=\"minus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picdescr\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['row_description']."</span></a>", "<div id='kdescr'>".($Advertisement->enable_ad() && $torrentdetailad ? "<div align=\"left\" style=\"margin-bottom: 10px\" id=\"ad_torrentdetail\">".$torrentdetailad[0]."</div>" : "").format_comment($row["descr"])."</div>", 1);
 		}
 
 		if (get_user_class() >= $viewnfo_class && $CURUSER['shownfo'] != 'no' && $row["nfosz"] > 0){
@@ -168,222 +176,222 @@ else {
 			tr("<a href=\"javascript: klappe_news('nfo')\"><img class=\"plus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picnfo\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_nfo']."</a><br /><a href=\"viewnfo.php?id=".$row[id]."\" class=\"sublink\">". $lang_details['text_view_nfo']. "</a>", "<div id='knfo' style=\"display: none;\"><pre style=\"font-size:10pt; font-family: 'Courier New', monospace;\">".$nfo."</pre></div>\n", 1);
 		}
 
-	if ($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no')
-	{
-		$thenumbers = $imdb_id;
+        if ($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no')
+        {
+            $thenumbers = $imdb_id;
 
-		$Cache->new_page('imdb_id_'.$thenumbers.'_large', 1296000, true);
-		if (!$Cache->get_page()){
-			$movie = new imdb ($thenumbers);
-			$movieid = $thenumbers;
-			$movie->setid ($movieid);
-			$target = array('Title', 'Credits', 'Plot');
-			switch ($movie->cachestate($target))
-			{
-				case "0" : //cache is not ready, try to
-				{
-					if($row['cache_stamp']==0 || ($row['cache_stamp'] != 0 && (time()-$row['cache_stamp']) > $auto_obj->timeout))	//not exist or timed out
-						tr($lang_details['text_imdb'] . $lang_details['row_info'] , $lang_details['text_imdb'] . $lang_details['text_not_ready']."<a href=\"retriver.php?id=". $id ."&amp;type=1&amp;siteid=1\">".$lang_details['text_here_to_retrieve'] . $lang_details['text_imdb'],1);
-					else
-						tr($lang_details['text_imdb'] . $lang_details['row_info'] , "<img src=\"pic/progressbar.gif\" alt=\"\" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $lang_details['text_someone_has_requested'] . $lang_details['text_imdb'] . " ".min(max(time()-$row['cache_stamp'],0),$auto_obj->timeout) . $lang_details['text_please_be_patient'],1);
-					break;
-				}
-				case "1" :
-					{
-						reset_cachetimestamp($row['id']);
-						$country = $movie->country ();
-						$director = $movie->director();
-						$creator = $movie->creator(); // For TV series
-						$write = $movie->writing();
-						$produce = $movie->producer();
-						$cast = $movie->cast();
-						$plot = $movie->plot ();
-						$plot_outline = $movie->plotoutline();
-						$compose = $movie->composer();
-						$gen = $movie->genres();
-						//$comment = $movie->comment();
-						$similiar_movies = $movie->similiar_movies();
+            $Cache->new_page('imdb_id_'.$thenumbers.'_large', 1296000, true);
+            if (!$Cache->get_page()){
+                $movie = new imdb ($thenumbers);
+                $movieid = $thenumbers;
+                $movie->setid ($movieid);
+                $target = array('Title', 'Credits', 'Plot');
+                switch ($movie->cachestate($target))
+                {
+                    case "0" : //cache is not ready, try to
+                        {
+                            if($row['cache_stamp']==0 || ($row['cache_stamp'] != 0 && (time()-$row['cache_stamp']) > $auto_obj->timeout))	//not exist or timed out
+                                tr($lang_details['text_imdb'] . $lang_details['row_info'] , $lang_details['text_imdb'] . $lang_details['text_not_ready']."<a href=\"retriver.php?id=". $id ."&amp;type=1&amp;siteid=1\">".$lang_details['text_here_to_retrieve'] . $lang_details['text_imdb'],1);
+                            else
+                                tr($lang_details['text_imdb'] . $lang_details['row_info'] , "<img src=\"pic/progressbar.gif\" alt=\"\" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $lang_details['text_someone_has_requested'] . $lang_details['text_imdb'] . " ".min(max(time()-$row['cache_stamp'],0),$auto_obj->timeout) . $lang_details['text_please_be_patient'],1);
+                            break;
+                        }
+                    case "1" :
+                        {
+                            reset_cachetimestamp($row['id']);
+                            $country = $movie->country ();
+                            $director = $movie->director();
+                            $creator = $movie->creator(); // For TV series
+                            $write = $movie->writing();
+                            $produce = $movie->producer();
+                            $cast = $movie->cast();
+                            $plot = $movie->plot ();
+                            $plot_outline = $movie->plotoutline();
+                            $compose = $movie->composer();
+                            $gen = $movie->genres();
+                            //$comment = $movie->comment();
+                            $similiar_movies = $movie->similiar_movies();
 
-						if (($photo_url = $movie->photo_localurl() ) != FALSE)
-							$smallth = "<img src=\"".$photo_url. "\" width=\"105\" onclick=\"Preview(this);\" alt=\"poster\" />";
-						else
-							$smallth = "<img src=\"pic/imdb_pic/nophoto.gif\" alt=\"no poster\" />";
+                            if (($photo_url = $movie->photo_localurl() ) != FALSE)
+                                $smallth = "<img src=\"".$photo_url. "\" width=\"105\" onclick=\"Preview(this);\" alt=\"poster\" />";
+                            else
+                                $smallth = "<img src=\"pic/imdb_pic/nophoto.gif\" alt=\"no poster\" />";
 
-						$autodata = '<a href="http://www.imdb.com/title/tt'.$thenumbers.'">http://www.imdb.com/title/tt'.$thenumbers."</a><br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_information']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_title']."</font></strong>" . "".$movie->title ()."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_also_known_as']."</font></strong>" . $movie->alsoknow() . "<br />\n";
+                            $autodata = '<a href="http://www.imdb.com/title/tt'.$thenumbers.'">http://www.imdb.com/title/tt'.$thenumbers."</a><br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                            $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_information']."</font><br />\n";
+                            $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_title']."</font></strong>" . "".$movie->title ()."<br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_also_known_as']."</font></strong>" . $movie->alsoknow() . "<br />\n";
 
-						/*
-						$temp = "";
-						foreach ($movie->alsoknow() as $ak)
-						{
+                            /*
+                            $temp = "";
+                            foreach ($movie->alsoknow() as $ak)
+                            {
 							$temp .= $ak["title"].$ak["year"]. ($ak["country"] != "" ? " (".$ak["country"].")" : "") . ($ak["comment"] != "" ? " (" . $ak["comment"] . ")" : "") . ", ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						*/
-						$runtimes = str_replace(" min",$lang_details['text_mins'], $movie->runtime_all());
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_year']."</font></strong>" . "".$movie->year ()."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_runtime']."</font></strong>".$runtimes."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_votes']."</font></strong>" . "".$movie->votes ()."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$movie->rating ()."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_language']."</font></strong>" . "".$movie->language ()."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_country']."</font></strong>";
+                            }
+                            $autodata .= rtrim(trim($temp), ",");
+                             */
+                            $runtimes = str_replace(" min",$lang_details['text_mins'], $movie->runtime_all());
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_year']."</font></strong>" . "".$movie->year ()."<br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_runtime']."</font></strong>".$runtimes."<br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_votes']."</font></strong>" . "".$movie->votes ()."<br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$movie->rating ()."<br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_language']."</font></strong>" . "".$movie->language ()."<br />\n";
+                            $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_country']."</font></strong>";
 
-						$temp = "";
-						for ($i = 0; $i < count ($country); $i++)
-						{
-							$temp .="$country[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
+                            $temp = "";
+                            for ($i = 0; $i < count ($country); $i++)
+                            {
+                                    $temp .="$country[$i], ";
+                                }
+                            $autodata .= rtrim(trim($temp), ",");
 
-						$autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_all_genres']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count($gen); $i++)
-						{
-							$temp .= "$gen[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
+                            $autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_all_genres']."</font></strong>";
+                            $temp = "";
+                            for ($i = 0; $i < count($gen); $i++)
+                            {
+                                $temp .= "$gen[$i], ";
+                            }
+                            $autodata .= rtrim(trim($temp), ",");
 
-						$autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_tagline']."</font></strong>" . "".$movie->tagline ()."<br />\n";
-						if ($director){
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_director']."</font></strong>";
-							$temp = "";
-							for ($i = 0; $i < count ($director); $i++)
-							{
-								$temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$director[$i]["imdb"]."" ."\">" . $director[$i]["name"] . "</a>, ";
-							}
-							$autodata .= rtrim(trim($temp), ",");
-						}
-						elseif ($creator)
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_creator']."</font></strong>".$creator;
+                            $autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_tagline']."</font></strong>" . "".$movie->tagline ()."<br />\n";
+                            if ($director){
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_director']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($director); $i++)
+                                {
+                                    $temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$director[$i]["imdb"]."" ."\">" . $director[$i]["name"] . "</a>, ";
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                            }
+                            elseif ($creator)
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_creator']."</font></strong>".$creator;
 
-						$autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_written_by']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($write); $i++)
-						{
-							$temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$write[$i]["imdb"]."" ."\">" . "".$write[$i]["name"]."" . "</a>, ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
+                            $autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_written_by']."</font></strong>";
+                            $temp = "";
+                            for ($i = 0; $i < count ($write); $i++)
+                            {
+                                $temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$write[$i]["imdb"]."" ."\">" . "".$write[$i]["name"]."" . "</a>, ";
+                            }
+                            $autodata .= rtrim(trim($temp), ",");
 
-						$autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_produced_by']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($produce); $i++)
-						{
-							$temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$produce[$i]["imdb"]."" ." \">" . "".$produce[$i]["name"]."" . "</a>, ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
+                            $autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_produced_by']."</font></strong>";
+                            $temp = "";
+                            for ($i = 0; $i < count ($produce); $i++)
+                            {
+                                $temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$produce[$i]["imdb"]."" ." \">" . "".$produce[$i]["name"]."" . "</a>, ";
+                            }
+                            $autodata .= rtrim(trim($temp), ",");
 
-						$autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_music']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count($compose); $i++)
-						{
-							$temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$compose[$i]["imdb"]."" ." \">" . "".$compose[$i]["name"]."" . "</a>, ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
+                            $autodata .= "<br />\n<strong><font color=\"DarkRed\">".$lang_details['text_music']."</font></strong>";
+                            $temp = "";
+                            for ($i = 0; $i < count($compose); $i++)
+                            {
+                                $temp .= "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$compose[$i]["imdb"]."" ." \">" . "".$compose[$i]["name"]."" . "</a>, ";
+                            }
+                            $autodata .= rtrim(trim($temp), ",");
 
-						$autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_plot_outline']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong>";
+                            $autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                            $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_plot_outline']."</font><br />\n";
+                            $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong>";
 
-						if(count($plot) == 0)
-						{
-							$autodata .= "<br />\n".$plot_outline;
-						}
-						else
-						{
-							for ($i = 0; $i < count ($plot); $i++)
-							{
-								$autodata .= "<br />\n<font color=\"DarkRed\">.</font> ";
-								$autodata .= $plot[$i];
-							}
-						}
-
-
-						$autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_cast']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
-
-						for ($i = 0; $i < count ($cast); $i++)
-						{
-							if ($i > 9)
-							{
-								break;
-							}
-							$autodata .= "<font color=\"DarkRed\">.</font> " . "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$cast[$i]["imdb"]."" ."\">" . $cast[$i]["name"] . "</a> " .$lang_details['text_as']."<strong><font color=\"DarkRed\">" . "".$cast[$i]["role"]."" . " </font></strong><br />\n";
-						}
+                            if(count($plot) == 0)
+                            {
+                                $autodata .= "<br />\n".$plot_outline;
+                            }
+                            else
+                            {
+                                for ($i = 0; $i < count ($plot); $i++)
+                                {
+                                    $autodata .= "<br />\n<font color=\"DarkRed\">.</font> ";
+                                    $autodata .= $plot[$i];
+                                }
+                            }
 
 
-						/*$autodata .= "<br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_may_also_like']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                            $autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                            $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_cast']."</font><br />\n";
+                            $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
 
-						$autodata .=  "<table cellpadding=\"10\"><tr>";
-						if($similiar_movies)
-						{
+                            for ($i = 0; $i < count ($cast); $i++)
+                            {
+                                if ($i > 9)
+                                {
+                                    break;
+                                }
+                                $autodata .= "<font color=\"DarkRed\">.</font> " . "<a target=\"_blank\" href=\"http://www.imdb.com/Name?" . "".$cast[$i]["imdb"]."" ."\">" . $cast[$i]["name"] . "</a> " .$lang_details['text_as']."<strong><font color=\"DarkRed\">" . "".$cast[$i]["role"]."" . " </font></strong><br />\n";
+                            }
+
+
+                            /*$autodata .= "<br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                            $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_may_also_like']."</font><br />\n";
+                            $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+
+                            $autodata .=  "<table cellpadding=\"10\"><tr>";
+                            if($similiar_movies)
+                            {
 							$counter = 0;
 							foreach($similiar_movies as $similiar_movies_each)
 							{
-								$on_site = "";
-								$imdb_config_inst = new imdb_config();
-								if($imdb_id_new = parse_imdb_id($imdb_config_inst->imdbsite . $similiar_movies_each['Link']))
-								{
-									$similiar_res = sql_query("SELECT id FROM torrents WHERE url = " . sqlesc((int)$imdb_id_new) . " AND id != ".sqlesc($id)." ORDER BY RAND() LIMIT 1") or sqlerr(__FILE__, __LINE__);
-									while($similiar_arr = mysql_fetch_array($similiar_res)) {
-										$on_site = "<strong><a href=\"" .htmlspecialchars(get_protocol_prefix() . $BASEURL . "/details.php?id=" . $similiar_arr['id'] . "&hit=1")."\">" . $lang_details['text_local_link'] . "</a></strong>";
-									}
-								}
+                            $on_site = "";
+                            $imdb_config_inst = new imdb_config();
+                            if($imdb_id_new = parse_imdb_id($imdb_config_inst->imdbsite . $similiar_movies_each['Link']))
+                            {
+                            $similiar_res = sql_query("SELECT id FROM torrents WHERE url = " . sqlesc((int)$imdb_id_new) . " AND id != ".sqlesc($id)." ORDER BY RAND() LIMIT 1") or sqlerr(__FILE__, __LINE__);
+                            while($similiar_arr = mysql_fetch_array($similiar_res)) {
+                            $on_site = "<strong><a href=\"" .htmlspecialchars(get_protocol_prefix() . $BASEURL . "/details.php?id=" . $similiar_arr['id'] . "&hit=1")."\">" . $lang_details['text_local_link'] . "</a></strong>";
+                            }
+                            }
 
-								$autodata .=  ($counter == 5 ? "</tr><tr>" : "" ) . "<td align=\"center\" style=\"border: 0px; padding-left: 20px; padding-right: 20px; padding-bottom: 10px\"><a href=\"" . $movie->protocol_prefix . $movie->imdbsite . $similiar_movies_each['Link'] . "\" title=\"\"><img style=\"border:0px;\" src=\"" . $similiar_movies_each['Local'] . "\" alt=\"" . $similiar_movies_each['Name'] . "\" /><br />" . $similiar_movies_each['Name'] . "</a><br />" . ($on_site != "" ? $on_site : "&nbsp;") .  "</td>";
-								$counter++;
+                            $autodata .=  ($counter == 5 ? "</tr><tr>" : "" ) . "<td align=\"center\" style=\"border: 0px; padding-left: 20px; padding-right: 20px; padding-bottom: 10px\"><a href=\"" . $movie->protocol_prefix . $movie->imdbsite . $similiar_movies_each['Link'] . "\" title=\"\"><img style=\"border:0px;\" src=\"" . $similiar_movies_each['Local'] . "\" alt=\"" . $similiar_movies_each['Name'] . "\" /><br />" . $similiar_movies_each['Name'] . "</a><br />" . ($on_site != "" ? $on_site : "&nbsp;") .  "</td>";
+                            $counter++;
 							}
-						}
-						$autodata .=  "</tr></table>";*/
+                            }
+                            $autodata .=  "</tr></table>";*/
 
-						//$autodata .= "<br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						//$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_recommended_comment']."</font><br />\n";
-						//$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong>";
+                            //$autodata .= "<br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                            //$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_recommended_comment']."</font><br />\n";
+                            //$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong>";
 
-						//$autodata .= "<br />".$comment;
-						$cache_time = $movie->getcachetime();
+                            //$autodata .= "<br />".$comment;
+                            $cache_time = $movie->getcachetime();
 
-						$Cache->add_whole_row();
-						print("<tr>");
-						print("<td class=\"rowhead\"><a href=\"javascript: klappe_ext('imdb')\"><span class=\"nowrap\"><img class=\"minus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picimdb\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_imdb'] . $lang_details['row_info'] ."</span></a><div id=\"posterimdb\">".  $smallth."</div></td>");
-						$Cache->end_whole_row();
-						$Cache->add_row();
-						$Cache->add_part();
-						print("<td class=\"rowfollow\" align=\"left\"><div id='kimdb'>".$autodata);
-						$Cache->end_part();
-						$Cache->add_part();
-						print($lang_details['text_information_updated_at'] . date("Y-m-d", $cache_time) . $lang_details['text_might_be_outdated']."<a href=\"".htmlspecialchars("retriver.php?id=". $id ."&type=2&siteid=1")."\">".$lang_details['text_here_to_update']);
-						$Cache->end_part();
-						$Cache->end_row();
-						$Cache->add_whole_row();
-						print("</div></td></tr>");
-						$Cache->end_whole_row();
-						$Cache->cache_page();
-						echo $Cache->next_row();
-						$Cache->next_row();
-						echo $Cache->next_part();
-						if (get_user_class() >= $updateextinfo_class)
-							echo $Cache->next_part();
-						echo $Cache->next_row();
-						break;
-					}
-				case "2" :
-					{
-						tr($lang_details['text_imdb'] . $lang_details['row_info'] ,$lang_details['text_network_error'],1);
-						break;
-					}
-				case "3" :// not a valid imdb url
-				{
-					break;
-				}
-			}
-		}
-		else{
+                            $Cache->add_whole_row();
+                            print("<tr>");
+                            print("<td class=\"rowhead\"><a href=\"javascript: klappe_ext('imdb')\"><span class=\"nowrap\"><img class=\"minus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picimdb\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_imdb'] . $lang_details['row_info'] ."</span></a><div id=\"posterimdb\">".  $smallth."</div></td>");
+                            $Cache->end_whole_row();
+                            $Cache->add_row();
+                            $Cache->add_part();
+                            print("<td class=\"rowfollow\" align=\"left\"><div id='kimdb'>".$autodata);
+                            $Cache->end_part();
+                            $Cache->add_part();
+                            print($lang_details['text_information_updated_at'] . date("Y-m-d", $cache_time) . $lang_details['text_might_be_outdated']."<a href=\"".htmlspecialchars("retriver.php?id=". $id ."&type=2&siteid=1")."\">".$lang_details['text_here_to_update']);
+                            $Cache->end_part();
+                            $Cache->end_row();
+                            $Cache->add_whole_row();
+                            print("</div></td></tr>");
+                            $Cache->end_whole_row();
+                            $Cache->cache_page();
+                            echo $Cache->next_row();
+                            $Cache->next_row();
+                            echo $Cache->next_part();
+                            if (get_user_class() >= $updateextinfo_class)
+                                echo $Cache->next_part();
+                            echo $Cache->next_row();
+                            break;
+                        }
+                    case "2" :
+                        {
+                            tr($lang_details['text_imdb'] . $lang_details['row_info'] ,$lang_details['text_network_error'],1);
+                            break;
+                        }
+                    case "3" :// not a valid imdb url
+                        {
+                            break;
+                        }
+                }
+            }
+            else{
 				echo $Cache->next_row();
 				$Cache->next_row();
 				echo $Cache->next_part();
@@ -391,360 +399,360 @@ else {
 					echo $Cache->next_part();
 				}
 				echo $Cache->next_row();
-		}
-	}
-	
-	
-	$douban_id = parse_douban_id($row["douban_url"]);
-	$douban_type = parse_douban_type($row["douban_url"]);
-	
-	if ($douban_id && $douban_type && $showextinfo['douban'] == 'yes' && $CURUSER['showdouban'] != 'no')
-	{
-		$Cache->new_page('douban_id_'.$douban_id.'_large', 1296000, true);
-		if (!$Cache->get_page())
-		{
-			$douban = "";
-			if($douban_type == "movie")
-				$douban = new douban_movie ($douban_id);
-			else if($douban_type == "music")
-				$douban = new douban_music ($douban_id);
+            }
+        }
+        
+        
+        $douban_id = parse_douban_id($row["douban_url"]);
+        $douban_type = parse_douban_type($row["douban_url"]);
+        
+        if ($douban_id && $douban_type && $showextinfo['douban'] == 'yes' && $CURUSER['showdouban'] != 'no')
+        {
+            $Cache->new_page('douban_id_'.$douban_id.'_large', 1296000, true);
+            if (!$Cache->get_page())
+            {
+                $douban = "";
+                if($douban_type == "movie")
+                    $douban = new douban_movie ($douban_id);
+                else if($douban_type == "music")
+                    $douban = new douban_music ($douban_id);
 				
-			switch ($douban->cache_state())
-			{
-				case "0" : //douban cache is not ready
-				{
-					if($douban_type == "movie")
-					{
-						if($row['douban_cache_stamp']==0 || ($row['douban_cache_stamp'] != 0 && (time()-$row['douban_cache_stamp']) > $douban->timeout))	//not exist or timed out
-							tr($lang_details['text_douban'] . $lang_details['row_info'] , $lang_details['text_douban'] . $lang_details['text_not_ready']."<a href=\"retriver.php?id=". $id ."&amp;type=1&amp;siteid=2\">".$lang_details['text_here_to_retrieve'] . $lang_details['text_douban'],1);
-						else
-							tr($lang_details['text_douban'] . $lang_details['row_info'] , "<img src=\"pic/progressbar.gif\" alt=\"\" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $lang_details['text_someone_has_requested'] . $lang_details['text_douban'] . " ".min(max(time()-$row['douban_cache_stamp'],0),$douban->timeout) . $lang_details['text_please_be_patient'],1);
-					}
-					else if ($douban_type == "music")
-					{
-						if($row['douban_cache_stamp']==0 || ($row['douban_cache_stamp'] != 0 && (time()-$row['douban_cache_stamp']) > $douban->timeout))	//not exist or timed out
-							tr($lang_details['text_douban'] . $lang_details['row_info'] , $lang_details['text_douban'] . $lang_details['text_not_ready']."<a href=\"retriver.php?id=". $id ."&amp;type=1&amp;siteid=2\">".$lang_details['text_here_to_retrieve'] . $lang_details['text_douban'],1);
-						else
-							tr($lang_details['text_douban'] . $lang_details['row_info'] , "<img src=\"pic/progressbar.gif\" alt=\"\" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $lang_details['text_someone_has_requested'] . $lang_details['text_douban'] . " ".min(max(time()-$row['douban_cache_stamp'],0),$douban->timeout) . $lang_details['text_please_be_patient'],1);
-					}
-					
-					break;
-				}
-				
-				case "1" : //douban cache is ready
-				{
-					if($douban_type == "movie")
-					{
-						reset_cachetimestamp($row['id'], "douban_cache_stamp");
-						$title = $douban->title;
-						$director = $douban->director;
-						$summary = $douban->summary;
-						$year = $douban->year;
-						$duration = $douban->duration;
-						$genre = $douban->genre;
-						$language = $douban->language;
-						$country = $douban->country;
-						$aka = $douban->aka;
-						$cast = $douban->cast;
-						$pubdate = $douban->pubdate;
-						$writer = $douban->writer;
-						$tag = $douban->tag;
-						$rating = $douban->rating;
-						$raters = $douban->raters;
-						
-						if ($douban->image_state() != FALSE)
-							$smallth = "<img src=\"".$douban->image_path. "\" width=\"105\" onclick=\"Preview(this);\" alt=\"poster\" />";
-						else
-							$smallth = "<img src=\"pic/imdb_pic/nophoto.gif\" alt=\"no poster\" />";
+                switch ($douban->cache_state())
+                {
+                    case "0" : //douban cache is not ready
+                        {
+                            if($douban_type == "movie")
+                            {
+                                    if($row['douban_cache_stamp']==0 || ($row['douban_cache_stamp'] != 0 && (time()-$row['douban_cache_stamp']) > $douban->timeout))	//not exist or timed out
+                                        tr($lang_details['text_douban'] . $lang_details['row_info'] , $lang_details['text_douban'] . $lang_details['text_not_ready']."<a href=\"retriver.php?id=". $id ."&amp;type=1&amp;siteid=2\">".$lang_details['text_here_to_retrieve'] . $lang_details['text_douban'],1);
+                                    else
+                                        tr($lang_details['text_douban'] . $lang_details['row_info'] , "<img src=\"pic/progressbar.gif\" alt=\"\" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $lang_details['text_someone_has_requested'] . $lang_details['text_douban'] . " ".min(max(time()-$row['douban_cache_stamp'],0),$douban->timeout) . $lang_details['text_please_be_patient'],1);
+                                }
+                            else if ($douban_type == "music")
+                            {
+                                if($row['douban_cache_stamp']==0 || ($row['douban_cache_stamp'] != 0 && (time()-$row['douban_cache_stamp']) > $douban->timeout))	//not exist or timed out
+                                    tr($lang_details['text_douban'] . $lang_details['row_info'] , $lang_details['text_douban'] . $lang_details['text_not_ready']."<a href=\"retriver.php?id=". $id ."&amp;type=1&amp;siteid=2\">".$lang_details['text_here_to_retrieve'] . $lang_details['text_douban'],1);
+                                else
+                                    tr($lang_details['text_douban'] . $lang_details['row_info'] , "<img src=\"pic/progressbar.gif\" alt=\"\" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $lang_details['text_someone_has_requested'] . $lang_details['text_douban'] . " ".min(max(time()-$row['douban_cache_stamp'],0),$douban->timeout) . $lang_details['text_please_be_patient'],1);
+                            }
+                            
+                            break;
+                        }
+                    
+                    case "1" : //douban cache is ready
+                        {
+                            if($douban_type == "movie")
+                            {
+                                    reset_cachetimestamp($row['id'], "douban_cache_stamp");
+                                    $title = $douban->title;
+                                    $director = $douban->director;
+                                    $summary = $douban->summary;
+                                    $year = $douban->year;
+                                    $duration = $douban->duration;
+                                    $genre = $douban->genre;
+                                    $language = $douban->language;
+                                    $country = $douban->country;
+                                    $aka = $douban->aka;
+                                    $cast = $douban->cast;
+                                    $pubdate = $douban->pubdate;
+                                    $writer = $douban->writer;
+                                    $tag = $douban->tag;
+                                    $rating = $douban->rating;
+                                    $raters = $douban->raters;
+                                    
+                                    if ($douban->image_state() != FALSE)
+                                        $smallth = "<img src=\"".$douban->image_path. "\" width=\"105\" onclick=\"Preview(this);\" alt=\"poster\" />";
+                                    else
+                                        $smallth = "<img src=\"pic/imdb_pic/nophoto.gif\" alt=\"no poster\" />";
 
-						$autodata = '<a href="http://movie.douban.com/subject/'.$douban_id.'">http://movie.douban.com/subject/'.$douban_id."</a><br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_information']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_title']."</font></strong>" . "".$douban->title."<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_also_known_as']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($aka); $i++)
-						{
-							$temp .="$aka[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
+                                    $autodata = '<a href="http://movie.douban.com/subject/'.$douban_id.'">http://movie.douban.com/subject/'.$douban_id."</a><br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                                    $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_information']."</font><br />\n";
+                                    $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                                    $autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_title']."</font></strong>" . "".$douban->title."<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_also_known_as']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($aka); $i++)
+                                    {
+                                            $temp .="$aka[$i], ";
+                                        }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
 
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_year']."</font></strong>" . "".$douban->year."<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_pubdate']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($pubdate); $i++)
-						{
-							$temp .="$pubdate[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_runtime']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($duration); $i++)
-						{
-							$temp .="$duration[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_votes']."</font></strong>" . "".$raters."<br />\n";
-						
-						if($raters >9 )
-						{
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$rating->average."<br />\n";
-						}
-						else
-						{
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$lang_details['text_no_enough_votes_yet']."<br />\n";
-						}
-							
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_language']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($language); $i++)
-						{
-							$temp .="$language[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_country']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($country); $i++)
-						{
-							$temp .="$country[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_year']."</font></strong>" . "".$douban->year."<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_pubdate']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($pubdate); $i++)
+                                    {
+                                        $temp .="$pubdate[$i], ";
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_runtime']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($duration); $i++)
+                                    {
+                                        $temp .="$duration[$i], ";
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_votes']."</font></strong>" . "".$raters."<br />\n";
+                                    
+                                    if($raters >9 )
+                                    {
+                                        $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$rating->average."<br />\n";
+                                    }
+                                    else
+                                    {
+                                        $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$lang_details['text_no_enough_votes_yet']."<br />\n";
+                                    }
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_language']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($language); $i++)
+                                    {
+                                        $temp .="$language[$i], ";
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_country']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($country); $i++)
+                                    {
+                                        $temp .="$country[$i], ";
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
 
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_all_genres']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($genre); $i++)
-						{
-							$temp .="$genre[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_director']."</font></strong>";
-						
-						for($i = 0; $i < count($director); $i++){
-							$autodata .= $director[$i]->name." ";
-						}
-						
-						$autodata .= "<br />\n";
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_all_genres']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($genre); $i++)
+                                    {
+                                        $temp .="$genre[$i], ";
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_director']."</font></strong>";
+                                    
+                                    for($i = 0; $i < count($director); $i++){
+                                        $autodata .= $director[$i]->name." ";
+                                    }
+                                    
+                                    $autodata .= "<br />\n";
 
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_written_by']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($writer); $i++)
-						{
-							$temp .="$writer[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_tag']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($tag) && $i <= 5; $i++)
-						{
-							$temp .= $tag[$i][0].'('.$tag[$i][1].'), ';
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_written_by']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($writer); $i++)
+                                    {
+                                        $temp .="$writer[$i], ";
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
+                                    
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_tag']."</font></strong>";
+                                    $temp = "";
+                                    for ($i = 0; $i < count ($tag) && $i <= 5; $i++)
+                                    {
+                                        $temp .= $tag[$i][0].'('.$tag[$i][1].'), ';
+                                    }
+                                    $autodata .= rtrim(trim($temp), ",");
+                                    $autodata .= "<br />\n";
 
-						$autodata .= "<br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_summary']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                                    $autodata .= "<br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                                    $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_summary']."</font><br />\n";
+                                    $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
 
-						$autodata .= $summary."<br />\n";
+                                    $autodata .= $summary."<br />\n";
 
-						$autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_cast']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                                    $autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                                    $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_cast']."</font><br />\n";
+                                    $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
 
-						for ($i = 0; $i < count ($cast); $i++)
-						{
-							if ($i > 9)
-							{
-								break;
-							}
-							$autodata .= "<font color=\"DarkRed\">.</font> " . $cast[$i]->name . "<br />\n";
-						}
+                                    for ($i = 0; $i < count ($cast); $i++)
+                                    {
+                                        if ($i > 9)
+                                        {
+                                            break;
+                                        }
+                                        $autodata .= "<font color=\"DarkRed\">.</font> " . $cast[$i]->name . "<br />\n";
+                                    }
 
-						$douban_cache_time = $douban->get_cache_time();
+                                    $douban_cache_time = $douban->get_cache_time();
 
-						$Cache->add_whole_row();
-						print("<tr>");
-						print("<td class=\"rowhead\"><a href=\"javascript: klappe_ext('douban')\"><span class=\"nowrap\"><img class=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no')? "plus" : "minus" )."\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picdouban\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_douban'] . $lang_details['row_info'] ."</span></a><div id=\"posterdouban\" style=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no')? "display: none;" : "display: block;" )."\">".  $smallth."</div></td>");
-						$Cache->end_whole_row();
-						$Cache->add_row();
-						$Cache->add_part();
-						print("<td class=\"rowfollow\" align=\"left\"><div id='kdouban' style=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no') ? "display: none;" : "display: block;")."\">".$autodata);
-						$Cache->end_part();
-						$Cache->add_part();
-						print($lang_details['text_information_updated_at'] . date("Y-m-d", $douban_cache_time) . $lang_details['text_might_be_outdated']."<a href=\"".htmlspecialchars("retriver.php?id=". $id ."&type=2&siteid=2")."\">".$lang_details['text_here_to_update']);
-						$Cache->end_part();
-						$Cache->end_row();
-						$Cache->add_whole_row();
-						print("</div></td></tr>");
-						$Cache->end_whole_row();
-						$Cache->cache_page();
-						echo $Cache->next_row();
-						$Cache->next_row();
-						echo $Cache->next_part();
-						if (get_user_class() >= $updateextinfo_class)
-							echo $Cache->next_part();
-						echo $Cache->next_row();
-						break;
-					}
-				
-					else if ($douban_type == "music")
-					{
-						reset_cachetimestamp($row['id'], "douban_cache_stamp");
-						$title = $douban->title;
-						$singer = $douban->singer;
-						$summary = $douban->summary;
-						$disc = $douban->disc;
-						$type = $douban->type;
-						$publisher = $douban->publisher;
-						$media = $douban->media;
-						$aka = $douban->aka;
-						$pubdate = $douban->pubdate;
-						$tag = $douban->tag;
-						$track = $douban->track;
-						$rating = $douban->rating;
-						$raters = $douban->raters;
-						
-						if ($douban->image_state() != FALSE)
-							$smallth = "<img src=\"".$douban->image_path. "\" width=\"105\" onclick=\"Preview(this);\" alt=\"poster\" />";
-						else
-							$smallth = "<img src=\"pic/imdb_pic/nophoto.gif\" alt=\"no poster\" />";
+                                    $Cache->add_whole_row();
+                                    print("<tr>");
+                                    print("<td class=\"rowhead\"><a href=\"javascript: klappe_ext('douban')\"><span class=\"nowrap\"><img class=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no')? "plus" : "minus" )."\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picdouban\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_douban'] . $lang_details['row_info'] ."</span></a><div id=\"posterdouban\" style=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no')? "display: none;" : "display: block;" )."\">".  $smallth."</div></td>");
+                                    $Cache->end_whole_row();
+                                    $Cache->add_row();
+                                    $Cache->add_part();
+                                    print("<td class=\"rowfollow\" align=\"left\"><div id='kdouban' style=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no') ? "display: none;" : "display: block;")."\">".$autodata);
+                                    $Cache->end_part();
+                                    $Cache->add_part();
+                                    print($lang_details['text_information_updated_at'] . date("Y-m-d", $douban_cache_time) . $lang_details['text_might_be_outdated']."<a href=\"".htmlspecialchars("retriver.php?id=". $id ."&type=2&siteid=2")."\">".$lang_details['text_here_to_update']);
+                                    $Cache->end_part();
+                                    $Cache->end_row();
+                                    $Cache->add_whole_row();
+                                    print("</div></td></tr>");
+                                    $Cache->end_whole_row();
+                                    $Cache->cache_page();
+                                    echo $Cache->next_row();
+                                    $Cache->next_row();
+                                    echo $Cache->next_part();
+                                    if (get_user_class() >= $updateextinfo_class)
+                                        echo $Cache->next_part();
+                                    echo $Cache->next_row();
+                                    break;
+                                }
+                            
+                            else if ($douban_type == "music")
+                            {
+                                reset_cachetimestamp($row['id'], "douban_cache_stamp");
+                                $title = $douban->title;
+                                $singer = $douban->singer;
+                                $summary = $douban->summary;
+                                $disc = $douban->disc;
+                                $type = $douban->type;
+                                $publisher = $douban->publisher;
+                                $media = $douban->media;
+                                $aka = $douban->aka;
+                                $pubdate = $douban->pubdate;
+                                $tag = $douban->tag;
+                                $track = $douban->track;
+                                $rating = $douban->rating;
+                                $raters = $douban->raters;
+                                
+                                if ($douban->image_state() != FALSE)
+                                    $smallth = "<img src=\"".$douban->image_path. "\" width=\"105\" onclick=\"Preview(this);\" alt=\"poster\" />";
+                                else
+                                    $smallth = "<img src=\"pic/imdb_pic/nophoto.gif\" alt=\"no poster\" />";
 
-						$autodata = '<a href="http://music.douban.com/subject/'.$douban_id.'">http://music.douban.com/subject/'.$douban_id."</a><br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_information']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_title']."</font></strong>" . "".$douban->title."<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_also_known_as']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($aka); $i++)
-						{
-							$temp .="$aka[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_singer']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($singer); $i++)
-						{
-							$temp .="$singer[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
+                                $autodata = '<a href="http://music.douban.com/subject/'.$douban_id.'">http://music.douban.com/subject/'.$douban_id."</a><br /><strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                                $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_information']."</font><br />\n";
+                                $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                                $autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_title']."</font></strong>" . "".$douban->title."<br />\n";
+                                
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_also_known_as']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($aka); $i++)
+                                {
+                                    $temp .="$aka[$i], ";
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                                $autodata .= "<br />\n";
+                                
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_singer']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($singer); $i++)
+                                {
+                                    $temp .="$singer[$i], ";
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                                $autodata .= "<br />\n";
+                                
 
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_pubdate']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($pubdate); $i++)
-						{
-							$temp .="$pubdate[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_pubdate']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($pubdate); $i++)
+                                {
+                                    $temp .="$pubdate[$i], ";
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                                $autodata .= "<br />\n";
 
-						$autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_disc']."</font></strong>" . "".$douban->disc."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_type']."</font></strong>" . "".$douban->type."<br />\n";
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_media']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($media); $i++)
-						{
-							$temp .="$media[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_votes']."</font></strong>" . "".$raters."<br />\n";
-						
-						if($raters >9 )
-						{
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$rating."<br />\n";
-						}
-						else
-						{
-							$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$lang_details['text_no_enough_votes_yet']."<br />\n";
-						}
-						
-						
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_publisher']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($publisher); $i++)
-						{
-							$temp .="$publisher[$i], ";
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
-					
-						$autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_tag']."</font></strong>";
-						$temp = "";
-						for ($i = 0; $i < count ($tag) && $i <= 5; $i++)
-						{
-							$temp .= $tag[$i][0].'('.$tag[$i][1].'), ';
-						}
-						$autodata .= rtrim(trim($temp), ",");
-						$autodata .= "<br />\n";
+                                $autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_disc']."</font></strong>" . "".$douban->disc."<br />\n";
+                                $autodata .= "<strong><font color=\"DarkRed\">". $lang_details['text_type']."</font></strong>" . "".$douban->type."<br />\n";
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_media']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($media); $i++)
+                                {
+                                    $temp .="$media[$i], ";
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                                $autodata .= "<br />\n";
+                                
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_votes']."</font></strong>" . "".$raters."<br />\n";
+                                
+                                if($raters >9 )
+                                {
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$rating."<br />\n";
+                                }
+                                else
+                                {
+                                    $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_rating']."</font></strong>" . "".$lang_details['text_no_enough_votes_yet']."<br />\n";
+                                }
+                                
+                                
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_publisher']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($publisher); $i++)
+                                {
+                                    $temp .="$publisher[$i], ";
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                                $autodata .= "<br />\n";
+                                
+                                $autodata .= "<strong><font color=\"DarkRed\">".$lang_details['text_tag']."</font></strong>";
+                                $temp = "";
+                                for ($i = 0; $i < count ($tag) && $i <= 5; $i++)
+                                {
+                                    $temp .= $tag[$i][0].'('.$tag[$i][1].'), ';
+                                }
+                                $autodata .= rtrim(trim($temp), ",");
+                                $autodata .= "<br />\n";
 
-						$autodata .= "<br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_summary']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                                $autodata .= "<br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                                $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_summary']."</font><br />\n";
+                                $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
 
-						$autodata .= $summary."<br />\n";
+                                $autodata .= $summary."<br />\n";
 
-						$autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
-						$autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_track']."</font><br />\n";
-						$autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
+                                $autodata .= "<br /><br />\n\n<strong><font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font><br />\n";
+                                $autodata .= "<font color=\"darkred\" size=\"3\">".$lang_details['text_track']."</font><br />\n";
+                                $autodata .= "<font color=\"navy\">------------------------------------------------------------------------------------------------------------------------------------</font></strong><br />\n";
 
-						for ($i = 1; $i <= count ($track); $i++)
-						{
-							$autodata .= "<font color=\"DarkRed\">$i.</font> " . $track[$i] . "<br />\n";
-						}
+                                for ($i = 1; $i <= count ($track); $i++)
+                                {
+                                    $autodata .= "<font color=\"DarkRed\">$i.</font> " . $track[$i] . "<br />\n";
+                                }
 
-						$douban_cache_time = $douban->get_cache_time();
+                                $douban_cache_time = $douban->get_cache_time();
 
-						$Cache->add_whole_row();
-						print("<tr>");
-						print("<td class=\"rowhead\"><a href=\"javascript: klappe_ext('douban')\"><span class=\"nowrap\"><img class=\"minus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picdouban\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_douban'] . $lang_details['row_info'] ."</span></a><div id=\"posterdouban\">".  $smallth."</div></td>");
-						$Cache->end_whole_row();
-						$Cache->add_row();
-						$Cache->add_part();
-						print("<td class=\"rowfollow\" align=\"left\"><div id='kdouban' style=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no') ? "display: none;" : "display: block;")."\">".$autodata);
-						$Cache->end_part();
-						$Cache->add_part();
-						print($lang_details['text_information_updated_at'] . date("Y-m-d", $douban_cache_time) . $lang_details['text_might_be_outdated']."<a href=\"".htmlspecialchars("retriver.php?id=". $id ."&type=2&siteid=2")."\">".$lang_details['text_here_to_update']);
-						$Cache->end_part();
-						$Cache->end_row();
-						$Cache->add_whole_row();
-						print("</div></td></tr>");
-						$Cache->end_whole_row();
-						$Cache->cache_page();
-						echo $Cache->next_row();
-						$Cache->next_row();
-						echo $Cache->next_part();
-						if (get_user_class() >= $updateextinfo_class)
-							echo $Cache->next_part();
-						echo $Cache->next_row();
-						break;
-					}
-				
-				}
+                                $Cache->add_whole_row();
+                                print("<tr>");
+                                print("<td class=\"rowhead\"><a href=\"javascript: klappe_ext('douban')\"><span class=\"nowrap\"><img class=\"minus\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picdouban\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['text_douban'] . $lang_details['row_info'] ."</span></a><div id=\"posterdouban\">".  $smallth."</div></td>");
+                                $Cache->end_whole_row();
+                                $Cache->add_row();
+                                $Cache->add_part();
+                                print("<td class=\"rowfollow\" align=\"left\"><div id='kdouban' style=\"".(($imdb_id && $showextinfo['imdb'] == 'yes' && $CURUSER['showimdb'] != 'no') ? "display: none;" : "display: block;")."\">".$autodata);
+                                $Cache->end_part();
+                                $Cache->add_part();
+                                print($lang_details['text_information_updated_at'] . date("Y-m-d", $douban_cache_time) . $lang_details['text_might_be_outdated']."<a href=\"".htmlspecialchars("retriver.php?id=". $id ."&type=2&siteid=2")."\">".$lang_details['text_here_to_update']);
+                                $Cache->end_part();
+                                $Cache->end_row();
+                                $Cache->add_whole_row();
+                                print("</div></td></tr>");
+                                $Cache->end_whole_row();
+                                $Cache->cache_page();
+                                echo $Cache->next_row();
+                                $Cache->next_row();
+                                echo $Cache->next_part();
+                                if (get_user_class() >= $updateextinfo_class)
+                                    echo $Cache->next_part();
+                                echo $Cache->next_row();
+                                break;
+                            }
+                            
+                        }
 
-			}
-		}
-		else
-		{
+                }
+            }
+            else
+            {
 				echo $Cache->next_row();
 				$Cache->next_row();
 				echo $Cache->next_part();
@@ -753,71 +761,71 @@ else {
 					echo $Cache->next_part();
 				}
 				echo $Cache->next_row();
-		}
-	}
-	
-	
-	if ($imdb_id||$douban_id)
-	{
-		
-		$where_area = "";
-		
-		if($douban_id && $imdb_id)
-			$where_area .= "(url = " . sqlesc((int)$imdb_id). " OR douban_url = " . sqlesc($row["douban_url"]).") ";
-		else if ($douban_id && !$imdb_id)
-			$where_area .= " douban_url = " . sqlesc($row["douban_url"]) ;
-		else if (!$douban_id && $imdb_id)
-			$where_area .= " url = " . sqlesc((int)$imdb_id);
+            }
+        }
+        
+        
+        if ($imdb_id||$douban_id)
+        {
+            
+            $where_area = "";
+            
+            if($douban_id && $imdb_id)
+                $where_area .= "(url = " . sqlesc((int)$imdb_id). " OR douban_url = " . sqlesc($row["douban_url"]).") ";
+            else if ($douban_id && !$imdb_id)
+                $where_area .= " douban_url = " . sqlesc($row["douban_url"]) ;
+            else if (!$douban_id && $imdb_id)
+                $where_area .= " url = " . sqlesc((int)$imdb_id);
 			
-		if($douban_id||$imdb_id)
-			$where_area .= " AND torrents.id != ".sqlesc($id);
+            if($douban_id||$imdb_id)
+                $where_area .= " AND torrents.id != ".sqlesc($id);
 			
-		$copies_res = sql_query("SELECT torrents.id, torrents.name, torrents.sp_state, torrents.size, torrents.added, torrents.seeders, torrents.leechers, categories.id AS catid, categories.name AS catname, categories.image AS catimage, sources.name AS source_name, media.name AS medium_name, codecs.name AS codec_name, standards.name AS standard_name, processings.name AS processing_name FROM torrents LEFT JOIN categories ON torrents.category=categories.id LEFT JOIN sources ON torrents.source = sources.id LEFT JOIN media ON torrents.medium = media.id  LEFT JOIN codecs ON torrents.codec = codecs.id LEFT JOIN standards ON torrents.standard = standards.id LEFT JOIN processings ON torrents.processing = processings.id WHERE " . $where_area . " ORDER BY torrents.id DESC") or sqlerr(__FILE__, __LINE__);
+            $copies_res = sql_query("SELECT torrents.id, torrents.name, torrents.sp_state, torrents.size, torrents.added, torrents.seeders, torrents.leechers, categories.id AS catid, categories.name AS catname, categories.image AS catimage, sources.name AS source_name, media.name AS medium_name, codecs.name AS codec_name, standards.name AS standard_name, processings.name AS processing_name FROM torrents LEFT JOIN categories ON torrents.category=categories.id LEFT JOIN sources ON torrents.source = sources.id LEFT JOIN media ON torrents.medium = media.id  LEFT JOIN codecs ON torrents.codec = codecs.id LEFT JOIN standards ON torrents.standard = standards.id LEFT JOIN processings ON torrents.processing = processings.id WHERE " . $where_area . " ORDER BY torrents.id DESC") or sqlerr(__FILE__, __LINE__);
 
-		$copies_count = mysql_num_rows($copies_res);
-		if($copies_count > 0)
-		{
-			$s = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n";
-			$s.="<tr><td class=\"colhead\" style=\"padding: 0px; text-align:center;\">".$lang_details['col_type']."</td><td class=\"colhead\" align=\"left\">".$lang_details['col_name']."</td><td class=\"colhead\" align=\"center\">".$lang_details['col_quality']."</td><td class=\"colhead\" align=\"center\"><img class=\"size\" src=\"pic/trans.gif\" alt=\"size\" title=\"".$lang_details['title_size']."\" /></td><td class=\"colhead\" align=\"center\"><img class=\"time\" src=\"pic/trans.gif\" alt=\"time added\" title=\"".$lang_details['title_time_added']."\" /></td><td class=\"colhead\" align=\"center\"><img class=\"seeders\" src=\"pic/trans.gif\" alt=\"seeders\" title=\"".$lang_details['title_seeders']."\" /></td><td class=\"colhead\" align=\"center\"><img class=\"leechers\" src=\"pic/trans.gif\" alt=\"leechers\" title=\"".$lang_details['title_leechers']."\" /></td></tr>\n";
-			while ($copy_row = mysql_fetch_assoc($copies_res))
-			{
-				$dispname = htmlspecialchars(trim($copy_row["name"]));
-				$count_dispname=strlen($dispname);
-				$max_lenght_of_torrent_name="80"; // maximum lenght
-				if($count_dispname > $max_lenght_of_torrent_name)
-				{
-					$dispname=substr($dispname, 0, $max_lenght_of_torrent_name) . "..";
-				}
+            $copies_count = mysql_num_rows($copies_res);
+            if($copies_count > 0)
+            {
+                $s = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n";
+                $s.="<tr><td class=\"colhead\" style=\"padding: 0px; text-align:center;\">".$lang_details['col_type']."</td><td class=\"colhead\" align=\"left\">".$lang_details['col_name']."</td><td class=\"colhead\" align=\"center\">".$lang_details['col_quality']."</td><td class=\"colhead\" align=\"center\"><img class=\"size\" src=\"pic/trans.gif\" alt=\"size\" title=\"".$lang_details['title_size']."\" /></td><td class=\"colhead\" align=\"center\"><img class=\"time\" src=\"pic/trans.gif\" alt=\"time added\" title=\"".$lang_details['title_time_added']."\" /></td><td class=\"colhead\" align=\"center\"><img class=\"seeders\" src=\"pic/trans.gif\" alt=\"seeders\" title=\"".$lang_details['title_seeders']."\" /></td><td class=\"colhead\" align=\"center\"><img class=\"leechers\" src=\"pic/trans.gif\" alt=\"leechers\" title=\"".$lang_details['title_leechers']."\" /></td></tr>\n";
+                while ($copy_row = mysql_fetch_assoc($copies_res))
+                {
+                    $dispname = htmlspecialchars(trim($copy_row["name"]));
+                    $count_dispname=strlen($dispname);
+                    $max_lenght_of_torrent_name="80"; // maximum lenght
+                    if($count_dispname > $max_lenght_of_torrent_name)
+                    {
+                        $dispname=substr($dispname, 0, $max_lenght_of_torrent_name) . "..";
+                    }
 
-				if (isset($copy_row["source_name"]))
-					$other_source_info = $copy_row[source_name].", ";
-				if (isset($copy_row["medium_name"]))
-					$other_medium_info = $copy_row[medium_name].", ";
-				if (isset($copy_row["codec_name"]))
-					$other_codec_info = $copy_row[codec_name].", ";
-				if (isset($copy_row["standard_name"]))
-					$other_standard_info = $copy_row[standard_name].", ";
-				if (isset($copy_row["processing_name"]))
-					$other_processing_info = $copy_row[processing_name].", ";
+                    if (isset($copy_row["source_name"]))
+                        $other_source_info = $copy_row[source_name].", ";
+                    if (isset($copy_row["medium_name"]))
+                        $other_medium_info = $copy_row[medium_name].", ";
+                    if (isset($copy_row["codec_name"]))
+                        $other_codec_info = $copy_row[codec_name].", ";
+                    if (isset($copy_row["standard_name"]))
+                        $other_standard_info = $copy_row[standard_name].", ";
+                    if (isset($copy_row["processing_name"]))
+                        $other_processing_info = $copy_row[processing_name].", ";
 
-				$sphighlight = get_torrent_bg_color($copy_row['sp_state']);
-				$sp_info = get_torrent_promotion_append($copy_row['sp_state']);
+                    $sphighlight = get_torrent_bg_color($copy_row['sp_state']);
+                    $sp_info = get_torrent_promotion_append($copy_row['sp_state']);
 
-				$s .= "<tr". $sphighlight."><td class=\"rowfollow nowrap\" valign=\"middle\" style='padding: 0px'>".return_category_image($copy_row["catid"], "torrents.php?allsec=1&amp;")."</td><td class=\"rowfollow\" align=\"left\"><a href=\"" . htmlspecialchars(get_protocol_prefix() . $BASEURL . "/details.php?id=" . $copy_row["id"]. "&hit=1")."\">" . $dispname ."</a>". $sp_info."</td>" .
-				"<td class=\"rowfollow\" align=\"left\">" . rtrim(trim($other_source_info . $other_medium_info . $other_codec_info . $other_standard_info . $other_processing_info), ","). "</td>" .
-				"<td class=\"rowfollow\" align=\"center\">" . mksize($copy_row["size"]) . "</td>" .
-				"<td class=\"rowfollow nowrap\" align=\"center\">" . str_replace("&nbsp;", "<br />", gettime($copy_row["added"],false)). "</td>" .
-				"<td class=\"rowfollow\" align=\"center\">" . $copy_row["seeders"] . "</td>" .
-				"<td class=\"rowfollow\" align=\"center\">" . $copy_row["leechers"] . "</td>" .
-				"</tr>\n";
-			}
-			$s .= "</table>\n";
-			tr("<a href=\"javascript: klappe_news('othercopy')\"><span class=\"nowrap\"><img class=\"".($copies_count > 5 ? "plus" : "minus")."\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picothercopy\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['row_other_copies']."</span></a>", "<b>".$copies_count.$lang_details['text_other_copies']." </b><br /><div id='kothercopy' style=\"".($copies_count > 5 ? "display: none;" : "display: block;")."\">".$s."</div>",1);
-		}
-	}
+                    $s .= "<tr". $sphighlight."><td class=\"rowfollow nowrap\" valign=\"middle\" style='padding: 0px'>".return_category_image($copy_row["catid"], "torrents.php?allsec=1&amp;")."</td><td class=\"rowfollow\" align=\"left\"><a href=\"" . htmlspecialchars(get_protocol_prefix() . $BASEURL . "/details.php?id=" . $copy_row["id"]. "&hit=1")."\">" . $dispname ."</a>". $sp_info."</td>" .
+                    "<td class=\"rowfollow\" align=\"left\">" . rtrim(trim($other_source_info . $other_medium_info . $other_codec_info . $other_standard_info . $other_processing_info), ","). "</td>" .
+                    "<td class=\"rowfollow\" align=\"center\">" . mksize($copy_row["size"]) . "</td>" .
+                    "<td class=\"rowfollow nowrap\" align=\"center\">" . str_replace("&nbsp;", "<br />", gettime($copy_row["added"],false)). "</td>" .
+                    "<td class=\"rowfollow\" align=\"center\">" . $copy_row["seeders"] . "</td>" .
+                    "<td class=\"rowfollow\" align=\"center\">" . $copy_row["leechers"] . "</td>" .
+                    "</tr>\n";
+                }
+                $s .= "</table>\n";
+                tr("<a href=\"javascript: klappe_news('othercopy')\"><span class=\"nowrap\"><img class=\"".($copies_count > 5 ? "plus" : "minus")."\" src=\"pic/trans.gif\" alt=\"Show/Hide\" id=\"picothercopy\" title=\"".$lang_detail['title_show_or_hide']."\" /> ".$lang_details['row_other_copies']."</span></a>", "<b>".$copies_count.$lang_details['text_other_copies']." </b><br /><div id='kothercopy' style=\"".($copies_count > 5 ? "display: none;" : "display: block;")."\">".$s."</div>",1);
+            }
+        }
 
 
-	
+        
 
 		
 		if ($row["type"] == "multi")
@@ -842,50 +850,50 @@ else {
 		$leechersTmp = $row['leechers'];
 		if ($leechersTmp >= 1)	// it is possible that there's traffic while have no seeders
 		{
-			$progressPerTorrent = 0;
-			$i = 0;
-			$subres = sql_query("SELECT seeder, finishedat, downloadoffset, uploadoffset, ip, port, uploaded, downloaded, to_go, UNIX_TIMESTAMP(started) AS st, connectable, agent, peer_id, UNIX_TIMESTAMP(last_action) AS la, userid FROM peers WHERE torrent = $row[id]") or sqlerr();
+        $progressPerTorrent = 0;
+        $i = 0;
+        $subres = sql_query("SELECT seeder, finishedat, downloadoffset, uploadoffset, ip, port, uploaded, downloaded, to_go, UNIX_TIMESTAMP(started) AS st, connectable, agent, peer_id, UNIX_TIMESTAMP(last_action) AS la, userid FROM peers WHERE torrent = $row[id]") or sqlerr();
 
-			while ($subrow = mysql_fetch_array($subres)) {
-				$progressPerTorrent += sprintf("%.2f", 100 * (1 - ($subrow["to_go"] / $row["size"])));
-				$i++;
-				if ($subrow["seeder"] == "yes")
-				$seeders[] = $subrow;
-				else
-				$downloaders[] = $subrow;
-			}
-			if ($i == 0)
-				$i = 1;
-			$progressTotal = sprintf("%.2f", $progressPerTorrent / $i);
+        while ($subrow = mysql_fetch_array($subres)) {
+        $progressPerTorrent += sprintf("%.2f", 100 * (1 - ($subrow["to_go"] / $row["size"])));
+        $i++;
+        if ($subrow["seeder"] == "yes")
+        $seeders[] = $subrow;
+        else
+        $downloaders[] = $subrow;
+        }
+        if ($i == 0)
+        $i = 1;
+        $progressTotal = sprintf("%.2f", $progressPerTorrent / $i);
 
-			$totalspeed = 0;
+        $totalspeed = 0;
 
-			if($seedersTmp >=1)
-			{
-				if ($seeders) {
-					foreach($seeders as $e) {
-						$totalspeed = $totalspeed + ($e["uploaded"] - $e["uploadoffset"]) / max(1, ($e["la"] - $e["st"]));
-						$totalspeed = $totalspeed + ($e["downloaded"] - $e["downloadoffset"]) / max(1, $e["finishedat"] - $e[st]);
-					}
-				}
-			}
+        if($seedersTmp >=1)
+        {
+        if ($seeders) {
+        foreach($seeders as $e) {
+        $totalspeed = $totalspeed + ($e["uploaded"] - $e["uploadoffset"]) / max(1, ($e["la"] - $e["st"]));
+        $totalspeed = $totalspeed + ($e["downloaded"] - $e["downloadoffset"]) / max(1, $e["finishedat"] - $e[st]);
+        }
+        }
+        }
 
-			if ($downloaders) {
-				foreach($downloaders as $e) {
-					$totalspeed = $totalspeed + ($e["uploaded"] - $e["uploadoffset"]) / max(1, ($e["la"] - $e["st"]));
-					$totalspeed = $totalspeed + ($e["downloaded"] - $e["downloadoffset"]) / max(1, ($e["la"] - $e["st"]));
-				}
-			}
+        if ($downloaders) {
+        foreach($downloaders as $e) {
+        $totalspeed = $totalspeed + ($e["uploaded"] - $e["uploadoffset"]) / max(1, ($e["la"] - $e["st"]));
+        $totalspeed = $totalspeed + ($e["downloaded"] - $e["downloadoffset"]) / max(1, ($e["la"] - $e["st"]));
+        }
+        }
 
-			$avgspeed = $lang_details['text_average_speed']."<b>" . mksize($totalspeed/($seedersTmp+$leechersTmp)) . "/s</b>";
-			$totalspeed = $lang_details['text_total_speed']."<b>" . mksize($totalspeed) . "/s</b> ".$lang_details['text_health_note'];
-			$health = $lang_details['text_avprogress'] . get_percent_completed_image(floor($progressTotal))." (".round($progressTotal)."%)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$lang_details['text_traffic']."</b>" . $avgspeed ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;". $totalspeed;
+        $avgspeed = $lang_details['text_average_speed']."<b>" . mksize($totalspeed/($seedersTmp+$leechersTmp)) . "/s</b>";
+        $totalspeed = $lang_details['text_total_speed']."<b>" . mksize($totalspeed) . "/s</b> ".$lang_details['text_health_note'];
+        $health = $lang_details['text_avprogress'] . get_percent_completed_image(floor($progressTotal))." (".round($progressTotal)."%)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$lang_details['text_traffic']."</b>" . $avgspeed ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;". $totalspeed;
 		}
 		else
-			$health = "<b>".$lang_details['text_traffic']. "</b>" . $lang_details['text_no_traffic'];
+        $health = "<b>".$lang_details['text_traffic']. "</b>" . $lang_details['text_no_traffic'];
 
 		if ($row["visible"] == "no")
-			$health = "<b>".$lang_details['text_status']."</b>" . $lang_details['text_dead'] ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;". $health;
+        $health = "<b>".$lang_details['text_status']."</b>" . $lang_details['text_dead'] ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;". $health;
 
 		tr($lang_details['row_health'], $health, 1);*/
 		tr("<span id=\"seeders\"></span><span id=\"leechers\"></span>".$lang_details['row_peers']."<br /><span id=\"showpeer\"><a href=\"javascript: viewpeerlist(".$row['id'].");\" class=\"sublink\">".$lang_details['text_see_full_list']."</a></span><span id=\"hidepeer\" style=\"display: none;\"><a href=\"javascript: hidepeerlist();\" class=\"sublink\">".$lang_details['text_hide_list']."</a></span>", "<div id=\"peercount\"><b>".$row['seeders'].$lang_details['text_seeders'].add_s($row['seeders'])."</b> | <b>".$row['leechers'].$lang_details['text_leechers'].add_s($row['leechers'])."</b></div><div id=\"peerlist\"></div>" , 1);
@@ -893,9 +901,9 @@ else {
 		{
 			$scronload = "viewpeerlist(".$row['id'].")";
 
-echo "<script type=\"text/javascript\">\n";
-echo $scronload;
-echo "</script>";
+            echo "<script type=\"text/javascript\">\n";
+            echo $scronload;
+            echo "</script>";
 		}
 
 		// ------------- start thanked-by block--------------//
@@ -940,28 +948,53 @@ echo "</script>";
 	}
 
 	// -----------------COMMENT SECTION ---------------------//
-if ($CURUSER['showcomment'] != 'no'){
-	$count = get_row_count("comments","WHERE torrent=".sqlesc($id));
-	if ($count)
-	{
-		print("<br /><br />");
-		print("<h1 align=\"center\" id=\"startcomments\">" .$lang_details['h1_user_comments'] . "</h1>\n");
-		list($pagertop, $pagerbottom, $limit) = pager(10, $count, "details.php?id=$id&cmtpage=1&", array(lastpagedefault => 1), "page");
+    if ($CURUSER['showcomment'] != 'no'){
+        $count = get_row_count("comments","WHERE torrent=".sqlesc($id));
+        if ($count)
+        {
+            print("<br /><br />");
+            print("<h1 align=\"center\" id=\"startcomments\">" .$lang_details['h1_user_comments'] . "</h1>\n");
+            list($pagertop, $pagerbottom, $limit) = pager(10, $count, "details.php?id=$id&cmtpage=1&", array(lastpagedefault => 1), "page");
 
-		$subres = sql_query("SELECT id, text, user, added, editedby, editdate FROM comments WHERE torrent = $id ORDER BY id $limit") or sqlerr(__FILE__, __LINE__);
-		$allrows = array();
-		while ($subrow = mysql_fetch_array($subres)) {
-			$allrows[] = $subrow;
-		}
-		print($pagertop);
-		commenttable($allrows,"torrent",$id);
-		print($pagerbottom);
-	}
+            $subres = sql_query("SELECT id, text, user, added, editedby, editdate FROM comments WHERE torrent = $id ORDER BY id $limit") or sqlerr(__FILE__, __LINE__);
+            $allrows = array();
+            while ($subrow = mysql_fetch_array($subres)) {
+                $allrows[] = $subrow;
+            }
+            print($pagertop);
+            commenttable($allrows,"torrent",$id);
+            print($pagerbottom);
+        }
+    }
+    print("<br /><br />");
+    print ("<table style='border:1px solid #000000;'><tr><td class=\"text\" align=\"center\"><b>".$lang_details['text_quick_comment']."</b><br /><br /><form id=\"compose\" name=\"comment\" method=\"post\" action=\"".htmlspecialchars("comment.php?action=add&type=torrent")."\" onsubmit=\"return postvalid(this);\"><input type=\"hidden\" name=\"pid\" value=\"".$id."\" /><br />");
+    quickreply('comment', 'body', $lang_details['submit_add_comment']);
+    print("</form></td></tr></table>");
+    print("<p align=\"center\"><a class=\"index\" href=\"".htmlspecialchars("comment.php?action=add&pid=".$id."&type=torrent")."\">".$lang_details['text_add_a_comment']."</a></p>\n");
 }
-print("<br /><br />");
-print ("<table style='border:1px solid #000000;'><tr><td class=\"text\" align=\"center\"><b>".$lang_details['text_quick_comment']."</b><br /><br /><form id=\"compose\" name=\"comment\" method=\"post\" action=\"".htmlspecialchars("comment.php?action=add&type=torrent")."\" onsubmit=\"return postvalid(this);\"><input type=\"hidden\" name=\"pid\" value=\"".$id."\" /><br />");
-quickreply('comment', 'body', $lang_details['submit_add_comment']);
-print("</form></td></tr></table>");
-print("<p align=\"center\"><a class=\"index\" href=\"".htmlspecialchars("comment.php?action=add&pid=".$id."&type=torrent")."\">".$lang_details['text_add_a_comment']."</a></p>\n");
-}
+
+if($viewbbcode) { ?>
+
+<script type="text/javascript">
+
+	
+	$("copy-bbcode-link").onclick = function () {
+
+		var bbCode = <?= json_encode($row['descr']) ?>;
+
+		// 清除原有数据。
+		window.clipboardData.clearData();
+
+		// 设置内容
+		window.clipboardData.setData('Text', bbCode);
+
+		// 提示消息
+		alert('<?= $lang_details['msg_view_bbcode_success'] ?>');
+
+	};
+
+</script>
+
+<?php }
+
 stdfoot();

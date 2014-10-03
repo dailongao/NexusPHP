@@ -694,6 +694,9 @@ $lang_settings = array
 	'text_enter_casino_note' => "。允许用户打开赌场页面",
 	'row_casino_min_bonus' => "进入赌场最低魔力值",
 	'text_casino_min_bonus_note' => "默认'2000'。魔力值小于这个值将不能进入赌场",
+    
+  'row_view_bbcode' => "查看简介的 BBCode",
+	'text_view_bbcode' => "允许查看种子“简介”部分的原始 BBCode",
 );
 
 ?>

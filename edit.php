@@ -1,4 +1,7 @@
 <?php
+
+// 2014-09-30 (樱桃): 删除确认和同时删除种子功能
+
 require_once("include/bittorrent.php");
 dbconn();
 require_once(get_langfile_path());
@@ -46,7 +49,7 @@ else {
 	print("<form method=\"post\" id=\"compose\" name=\"edittorrent\" action=\"takeedit.php\" enctype=\"multipart/form-data\">");
 	print("<input type=\"hidden\" name=\"id\" value=\"$id\" />");
 	if (isset($_GET["returnto"]))
-	print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />");
+        print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\">\n");
 	print("<tr><td class='colhead' colspan='2' align='center'>".htmlspecialchars($row["name"])."</td></tr>");
 	tr($lang_edit['row_torrent_name']."<font color=\"red\">*</font>", "<input type=\"text\" style=\"width: 650px;\" name=\"name\" value=\"" . htmlspecialchars($row["name"]) . "\" />", 1);
@@ -69,7 +72,7 @@ else {
 	foreach ($cats as $subrow) {
 		$s .= "<option value=\"" . $subrow["id"] . "\"";
 		if ($subrow["id"] == $row["category"])
-		$s .= " selected=\"selected\"";
+            $s .= " selected=\"selected\"";
 		$s .= ">" . htmlspecialchars($subrow["name"]) . "</option>\n";
 	}
 
@@ -80,7 +83,7 @@ else {
 		foreach ($cats2 as $subrow) {
 			$s2 .= "<option value=\"" . $subrow["id"] . "\"";
 			if ($subrow["id"] == $row["category"])
-			$s2 .= " selected=\"selected\"";
+                $s2 .= " selected=\"selected\"";
 			$s2 .= ">" . htmlspecialchars($subrow["name"]) . "</option>\n";
 		}
 		$s2 .= "</select>\n";
@@ -132,7 +135,7 @@ else {
 	tr($lang_edit['row_check'], "<input type=\"checkbox\" name=\"visible\"" . ($row["visible"] == "yes" ? " checked=\"checked\"" : "" ) . " value=\"1\" /> ".$lang_edit['checkbox_visible']."&nbsp;&nbsp;&nbsp;".(get_user_class() >= $beanonymous_class || get_user_class() >= $torrentmanage_class ? "<input type=\"checkbox\" name=\"anonymous\"" . ($row["anonymous"] == "yes" ? " checked=\"checked\"" : "" ) . " value=\"1\" />".$lang_edit['checkbox_anonymous_note']."&nbsp;&nbsp;&nbsp;" : "").(get_user_class() >= $torrentmanage_class ? "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"] == "yes") ? " checked=\"checked\"" : "" ) . " value=\"yes\" /> ".$lang_edit['checkbox_banned'] : ""), 1);
 	if (get_user_class()>= $torrentsticky_class || (get_user_class() >= $torrentmanage_class && $CURUSER["picker"] == 'yes')){
 		$pickcontent = "";
-	
+        
 		if(get_user_class()>=$torrentsticky_class)
 		{
 			$pickcontent .= "<b>".$lang_edit['row_torrent_position'].":&nbsp;</b>"."<select name=\"sel_posstate\" style=\"width: 100px;\">" .
@@ -156,24 +159,109 @@ else {
 		}
 		tr($lang_edit['row_pick'], $pickcontent, 1);
 	}
+    
+?>
 
-	print("<tr><td class=\"toolbox\" colspan=\"2\" align=\"center\"><input id=\"qr\" type=\"submit\" value=\"".$lang_edit['submit_edit_it']."\" /> <input type=\"reset\" value=\"".$lang_edit['submit_revert_changes']."\" /></td></tr>\n");
-	print("</table>\n");
-	print("</form>\n");
-	print("<br /><br />");
-	print("<form method=\"post\" action=\"delete.php\">\n");
-	print("<input type=\"hidden\" name=\"id\" value=\"$id\" />\n");
-	if (isset($_GET["returnto"]))
-	print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
-	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-	print("<tr><td class=\"colhead\" align=\"left\" style='padding-bottom: 3px' colspan=\"2\">".$lang_edit['text_delete_torrent']."</td></tr>");
-	tr("<input name=\"reasontype\" type=\"radio\" value=\"1\" />&nbsp;".$lang_edit['radio_dead'], $lang_edit['text_dead_note'], 1);
-	tr("<input name=\"reasontype\" type=\"radio\" value=\"2\" />&nbsp;".$lang_edit['radio_dupe'], "<input type=\"text\" style=\"width: 200px\" name=\"reason[]\" />", 1);
-	tr("<input name=\"reasontype\" type=\"radio\" value=\"3\" />&nbsp;".$lang_edit['radio_nuked'], "<input type=\"text\" style=\"width: 200px\" name=\"reason[]\" />", 1);
-	tr("<input name=\"reasontype\" type=\"radio\" value=\"4\" />&nbsp;".$lang_edit['radio_rules'], "<input type=\"text\" style=\"width: 200px\" name=\"reason[]\" />".$lang_edit['text_req'], 1);
-	tr("<input name=\"reasontype\" type=\"radio\" value=\"5\" checked=\"checked\" />&nbsp;".$lang_edit['radio_other'], "<input type=\"text\" style=\"width: 200px\" name=\"reason[]\" />".$lang_edit['text_req'], 1);
-	print("<tr><td class=\"toolbox\" colspan=\"2\" align=\"center\"><input type=\"submit\" style='height: 25px' value=\"".$lang_edit['submit_delete_it']."\" /></td></tr>\n");
-	print("</table>");
-	print("</form>\n");
+<tr>
+	<td class="toolbox" colspan="2" align="center">
+		<input id="qr" type="submit" value="<?= $lang_edit['submit_edit_it'] ?>" />
+		<input type="reset" value="<?= $lang_edit['submit_revert_changes'] ?>" />
+	</td>
+</tr>
+</table>
+</form>
+<br />
+<br />
+
+<form method="post" action="delete.php">
+	<input type="hidden" name="id" value="<?= $id ?>" />
+	<?php if (isset($_GET["returnto"])) { ?>
+		<input type="hidden" name="returnto" value="<?= htmlspecialchars($_GET["returnto"]) ?>" />
+	<?php } ?>
+
+	<table border="1" cellspacing="0" cellpadding="5">
+
+		<tr>
+			<td class="colhead" align="left" style='padding-bottom: 3px' colspan="2">
+				<?= $lang_edit['text_delete_torrent'] ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td width="0" class="rowhead nowrap" valign="top" align="right">
+				<label>
+					<input name="reasontype" type="radio" value="1" />
+					<?= $lang_edit['radio_dead'] ?>
+				</label>
+			</td>
+			<td class="rowfollow" valign="top" align="left">
+				<?= $lang_edit['text_dead_note'] ?>
+			</td>
+		</tr>
+		<tr>
+			<td width="0" class="rowhead nowrap" valign="top" align="right">
+				<label>
+					<input name="reasontype" type="radio" value="2" />
+					<?= $lang_edit['radio_dupe'] ?>
+				</label>
+			</td>
+			<td class="rowfollow" valign="top" align="left">
+				<input type="text" style="width: 200px" name="reason[]" />
+			</td>
+		</tr>
+		<tr>
+			<td width="0" class="rowhead nowrap" valign="top" align="right">
+				<label>
+					<input name="reasontype" type="radio" value="3" />
+					<?= $lang_edit['radio_nuked'] ?>
+				</label>
+			</td>
+			<td class="rowfollow" valign="top" align="left">
+				<input type="text" style="width: 200px" name="reason[]" />
+			</td>
+		</tr>
+		<tr>
+			<td width="0" class="rowhead nowrap" valign="top" align="right">
+				<label>
+					<input name="reasontype" type="radio" value="4" />
+					<?= $lang_edit['radio_rules'] ?>
+				</label>
+			</td>
+			<td class="rowfollow" valign="top" align="left">
+				<input type="text" style="width: 200px" name="reason[]" />
+				<?= $lang_edit['text_req'] ?>
+			</td>
+		</tr>
+		<tr>
+			<td width="0" class="rowhead nowrap" valign="top" align="right">
+				<label>
+					<input name="reasontype" type="radio" value="5" checked="checked" />
+					<?= $lang_edit['radio_other'] ?>
+				</label>
+			</td>
+			<td class="rowfollow" valign="top" align="left">
+				<input type="text" style="width: 200px" name="reason[]" />
+				<?= $lang_edit['text_req'] ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="toolbox" colspan="2">
+				<label>
+					<input type="checkbox" name="deletesubs" checked="checked" value="1" />
+					<?= $lang_edit['checkbox_delete_subs'] ?>
+				</label>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="toolbox" colspan="2" align="center">
+				<input type="submit" style='height: 25px' value="<?= $lang_edit['submit_delete_it'] ?>" />
+			</td>
+		</tr>
+	</table>
+</form>
+
+<?php
 }
 stdfoot();

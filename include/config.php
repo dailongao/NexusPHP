@@ -218,6 +218,7 @@ $seebanned_class = $AUTHORITY['seebanned'];
 $againstoffer_class = $AUTHORITY['againstoffer'];
 $userbar_class = $AUTHORITY['userbar'];
 $casino_class = $AUTHORITY['enter_casino'];
+$viewbbcode_class = $AUTHORITY['view_bbcode'];
 
 $where_tweak = $TWEAK['where'];
 $iplog1 = $TWEAK['iplog1'];

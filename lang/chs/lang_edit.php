@@ -68,6 +68,8 @@ $lang_edit = array
 	'text_audio_codec' => "音频编码",
 	'row_content' => "内容",
 	'row_promotion_until' => "优惠长度（默认为72小时）",
+  'checkbox_delete_subs' => "同时删除对应的字幕",
+  'submit_delete_warning' => "你确定要执行删除操作吗？这个操作无法撤销。",
 );
 
 ?>

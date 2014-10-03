@@ -171,7 +171,7 @@ elseif ($action == 'savesettings_security') 	// save security
 elseif ($action == 'savesettings_authority') 	// save user authority
 {
 	stdhead($lang_settings['head_save_authority_settings']);
-	$validConfig = array('defaultclass','staffmem','newsmanage','newfunitem','funmanage','sbmanage','pollmanage','applylink', 'linkmanage', 'postmanage','commanage','forummanage','viewuserlist','torrentmanage','torrentsticky','torrentonpromotion','askreseed', 'viewnfo', 'torrentstructure','sendinvite','viewhistory','topten','log','confilog','userprofile', 'torrenthistory','prfmanage', 'cruprfmanage','uploadsub','delownsub','submanage','updateextinfo', 'viewanonymous','beanonymous','addoffer','offermanage', 'upload','uploadspecial','movetorrent','chrmanage','viewinvite', 'buyinvite','seebanned','againstoffer','userbar','enter_casino');
+	$validConfig = array('defaultclass','staffmem','newsmanage','newfunitem','funmanage','sbmanage','pollmanage','applylink', 'linkmanage', 'postmanage','commanage','forummanage','viewuserlist','torrentmanage','torrentsticky','torrentonpromotion','askreseed', 'viewnfo', 'torrentstructure','sendinvite','viewhistory','topten','log','confilog','userprofile', 'torrenthistory','prfmanage', 'cruprfmanage','uploadsub','delownsub','submanage','updateextinfo', 'viewanonymous','beanonymous','addoffer','offermanage', 'upload','uploadspecial','movetorrent','chrmanage','viewinvite', 'buyinvite','seebanned','againstoffer','userbar','enter_casino', 'view_bbcode');
 	GetVar($validConfig);
 	unset($AUTHORITY);
 	foreach($validConfig as $config) {
@@ -364,6 +364,7 @@ elseif ($action == 'authoritysettings')	//Authority settings
 	tr($lang_settings['row_vote_against_offers'], $lang_settings['text_minimum_class'].classlist('againstoffer',$maxclass,$AUTHORITY['againstoffer']).$lang_settings['text_default'].get_user_class_name(UC_USER,false,true,true).$lang_settings['text_vote_against_offers_note'],1);
 	tr($lang_settings['row_allow_userbar'], $lang_settings['text_minimum_class'].classlist('userbar',$maxclass,$AUTHORITY['userbar']).$lang_settings['text_default'].get_user_class_name(UC_POWER_USER,false,true,true).$lang_settings['text_allow_userbar_note'],1);
 	tr($lang_settings['row_enter_casino'], $lang_settings['text_minimum_class'].classlist('enter_casino',$maxclass,$AUTHORITY['enter_casino']).$lang_settings['text_default'].get_user_class_name(UC_POWER_USER,false,true,true).$lang_settings['text_enter_casino_note'],1);
+    tr($lang_settings['row_view_bbcode'], $lang_settings['text_minimum_class'].classlist('view_bbcode',$maxclass,$AUTHORITY['view_bbcode']).$lang_settings['text_default'].get_user_class_name(UC_POWER_USER,false,true,true).$lang_settings['text_view_bbcode'],1);
 	tr($lang_settings['row_save_settings'],"<input type='submit' name='save' value='".$lang_settings['submit_save_settings']."'>", 1);
 	print ("</form>");
 }
