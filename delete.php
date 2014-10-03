@@ -6,11 +6,11 @@ require_once(get_langfile_path("",true));
 loggedinorreturn();
 
 function bark($msg) {
-    global $lang_delete;
-    stdhead();
-    stdmsg($lang_delete['std_delete_failed'], $msg);
-    stdfoot();
-    exit;
+		global $lang_delete;
+		stdhead();
+		stdmsg($lang_delete['std_delete_failed'], $msg);
+		stdfoot();
+		exit;
 }
 
 if (!mkglobal("id"))
@@ -46,33 +46,33 @@ elseif ($rt == 4)
 {
 	if (!$reason[2])
 		bark($lang_delete['std_describe_violated_rule']);
-    $reasonstr = $SITENAME." rules broken: " . trim($reason[2]);
+		$reasonstr = $SITENAME." rules broken: " . trim($reason[2]);
 }
 else
 {
 	if (!$reason[3])
 		bark($lang_delete['std_enter_reason']);
-    $reasonstr = trim($reason[3]);
+		$reasonstr = trim($reason[3]);
 }
 
 $deletesubs = (bool)$_POST['deletesubs'];
 
 // 字幕 ID 列表。
-$subtitle_id_list = deletetorrent($id, $deletesubs);
+$subtitle_id_list = deletetorrent($id, $row['name'], $deletesubs);
 
 // 将返回的单个字幕信息组合为字符串的方法。
 $generate_subtitle_info = function($item) {
-    return MessageFormatter::formatMessage("", "{0} ({1} {2}.{3})", $item['id'], $item['lang_name'], $item['title'], $item['ext']);
+		return MessageFormatter::formatMessage("", "{0} ({1})", array($item['id'], $item['name']));
 };
 
 // 删除字幕的完整列表字符串。
-$deleted_sub_title_text = join(",", array_map($generate_subtitle_info, $subtitle_id_list));
+$deleted_sub_title_text = join(", ", array_map($generate_subtitle_info, $subtitle_id_list));
 
 // 删除者字符串。
 $deleter = $row['anonymous'] == 'yes' && $CURUSER["id"] == $row["owner"] ? "anonymous uploader" : $CURUSER[username];
 
 // 写入删除消息。
-$message_format = empty($subtitle_id_list) ? "Torrent {0} ({1}) was deleted by {2}" : "Torrent {0} ({1}) and its subtitles ({3}) was deleted by {2}";
+$message_format = empty($subtitle_id_list) ? "Torrent {0} ({1}) was deleted by {2}" : "Torrent {0} ({1}) and its subtitles {3} were deleted by {2}";
 write_log(MessageFormatter::formatMessage("", $message_format, array($id, $row['name'], $deleter, $deleted_sub_title_text)), "normal");
 
 

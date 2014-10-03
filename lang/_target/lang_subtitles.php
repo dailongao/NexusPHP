@@ -7,13 +7,14 @@ $lang_subtitles_target = array
 	'msg_deleted_your_sub' => " deleted the subtitle that you uploaded. ",
 	'msg_your_sub_deleted' => "Your subtitle was deleted",
 	'msg_reason_is' => "The reason: ",
+	'msg_delete_sub_by_torrent_format' => 'Your subtitle {0} ({1}) is deleted by the system automatically since its torrenet {2} ({3}) is deleted.'
 	),
 	'chs' => array
 	(
 	'msg_deleted_your_sub' => "删除了你上传的字幕。",
 	'msg_your_sub_deleted' => "字幕被删除",
 	'msg_reason_is' => "原因：",
-  'msg_reason_deleted_by_source' => '字幕随对应的资源被一并删除',
+  'msg_delete_sub_by_torrent_format' => '你的字幕 {0}（{1}） 因为种子 {2}（{3}） 被删除而被系统自动删除。', // {0}: 字幕编号 {1} 字幕名称 {2} 种子编号 {3} 种子名称
 	),
 	'cht' => array
 	(

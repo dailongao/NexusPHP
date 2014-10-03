@@ -134,6 +134,7 @@ else {
 				$color = "";
 				if (strpos($arr['txt'],'was uploaded by')) $color = "green";
 				if (strpos($arr['txt'],'was deleted by')) $color = "red";
+				if (strpos($arr['txt'],'were deleted by')) $color = "red";				
 				if (strpos($arr['txt'],'was added to the Request section')) $color = "purple";
 				if (strpos($arr['txt'],'was edited by')) $color = "blue";
 				if (strpos($arr['txt'],'settings updated by')) $color = "darkred";
