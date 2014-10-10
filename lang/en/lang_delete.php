@@ -11,7 +11,7 @@ $lang_delete = array
 	'head_torrent_deleted' => "Torrent deleted!",
 	'text_go_back' => "Go back to whence you came",
 	'text_back_to_index' => "Back to index",
-	'text_torrent_deleted' => "Torrent deleted!"
+	'text_torrent_deleted' => "Torrent deleted!",
 );
 
 ?>

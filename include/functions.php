@@ -2953,7 +2953,7 @@ function get_sublang_name($lang_id) {
 }
 
 
-function deletetorrent($id, $name, $deletesubs) {
+function deletetorrent($id, $name, $is_anonymous, $deletesubs) {
 	
 	// 关于字幕的消息字符串    
 	require_once($rootpath . get_langfile_path("subtitles.php", true));
@@ -3001,21 +3001,27 @@ function deletetorrent($id, $name, $deletesubs) {
 			// 扣除积分。
 			KPS("-", $uploadsubtitle_bonus, $sub_uppedby); 
 			
-			$user_lang = get_user_lang($sub_uppedby);
-			
-			// 被删除字幕者的语言资源
-			$lang_upper = $lang_subtitles_target[$user_lang];
-			
-			
-			// 插入删除字幕消息
-			$msg = MessageFormatter::formatMessage($user_lang, $lang_upper['msg_delete_sub_by_torrent_format'], array($sub_id, $sub_name, $id, $name));
-			$subject = $lang_upper['msg_your_sub_deleted'];
-			$time = (string)date("Y-m-d H:i:s");
-			
-			$sql2 = new_mysqli();
-			$q2 = $sql2->prepare("INSERT INTO `messages` (`sender`, `receiver`, `added`, `msg`, `subject`) VALUES (0, ?, ?, ?, ?)");    
-			$q2->bind_param("isss", $sub_uppedby, $time, $msg, $subject);
-			$q2->execute() or sqlerr(__FILE__, __LINE__);
+			// 如果删除者不是上传者，则发短消息
+			if ($CURUSER['id'] != $sub_uppedby)
+			{
+				$user_lang = get_user_lang($sub_uppedby);
+				
+				// 被删除字幕者的语言资源
+				$lang_upper = $lang_subtitles_target[$user_lang];
+				
+				$format = $is_anonymous ? $lang_upper['msg_delete_sub_by_torrent_format_anony'] : $lang_upper['msg_delete_sub_by_torrent_format'];
+				
+				// 插入删除字幕消息
+				$msg = MessageFormatter::formatMessage($user_lang, $format, array($sub_id, $sub_name, $id, $name, $CURUSER['username']));
+				$subject = $lang_upper['msg_your_sub_deleted'];
+				$time = (string)date("Y-m-d H:i:s");
+				
+				$sql2 = new_mysqli();
+				$q2 = $sql2->prepare("INSERT INTO `messages` (`sender`, `receiver`, `added`, `msg`, `subject`) VALUES (0, ?, ?, ?, ?)");    
+				$q2->bind_param("isss", $sub_uppedby, $time, $msg, $subject);
+				$q2->execute() or sqlerr(__FILE__, __LINE__);
+
+			}			
 		}   
 		
 		$sql->close();
