@@ -2952,8 +2952,66 @@ function get_sublang_name($lang_id) {
 	}
 }
 
+/**
+ * 生成参数操作的原因。
+ * @param string $lang 字符串语言。 
+ * @param int $rt 删除的类型。
+ * @param string $reason 删除时提供的消息文字。
+ * @return 特定语言的，描述删除类型和删除原因说明的字符串。
+ */
 
-function deletetorrent($id, $name, $is_anonymous, $deletesubs) {
+function generateDeleteReason($lang, $rt, $reason){
+	
+	// 关于字幕的消息字符串    
+	require_once($rootpath . get_langfile_path("subtitles.php", true));
+	require_once($rootpath . get_langfile_path("delete.php", true));
+	
+	if ($rt == 1)
+	{
+		$reasonstr = "Dead: 0 seeders, 0 leechers = 0 peers total)";
+		$message_reason_str = $owner_lang_target['text_reasontype_dead'];
+	}
+	elseif ($rt == 2)
+	{
+		if($reason[0]) 	{
+			$reasonstr = MessageFormatter::formatMessage("", "Dupe: {0}" , array($reason[0]));
+			$message_reason_str = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_dupe_reason'], array($reason[0]));
+		} else {
+			$reasonstr = "Dupe!";
+			$message_reason_str = $owner_lang_target['text_reasontype_dupe'];
+		}
+	}
+	elseif ($rt == 3) {
+		if ($reason[1]) {
+			$reasonstr = MessageFormatter::formatMessage("", "Nuked: {0}" , array($reason[1]));
+			$message_reason_str = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_nuked_reason'], array($reason[1]));
+		} else {
+			$reasonstr = "Nuked!";
+			$message_reason_str = $owner_lang_target['text_reasontype_nuked'];
+		}
+	}
+	elseif ($rt == 4) {
+		if ($reason[2])	{
+			$reasonstr = MessageFormatter::formatMessage("", "{0} rules broken: {1}", array($SITENAME, $reason[2]));
+			$message_reason_str =  MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_rule_broken_reason'], array($reason[2]));
+		} else {
+			bark($lang_delete['std_describe_violated_rule']);
+		}
+		
+	}
+	else
+	{
+		if ($reason[3]){
+			$reasonstr = $reason[3];
+			$message_reason_str = $reason[3];
+		} else {
+			bark($lang_delete['std_enter_reason']);
+		}
+	}
+}
+
+
+function deletetorrent($id, $name, $is_anonymous, $reason, $deletesubs) {
 	
 	// 关于字幕的消息字符串    
 	require_once($rootpath . get_langfile_path("subtitles.php", true));
@@ -3012,7 +3070,7 @@ function deletetorrent($id, $name, $is_anonymous, $deletesubs) {
 				$format = $is_anonymous ? $lang_upper['msg_delete_sub_by_torrent_format_anony'] : $lang_upper['msg_delete_sub_by_torrent_format'];
 				
 				// 插入删除字幕消息
-				$msg = MessageFormatter::formatMessage($user_lang, $format, array($sub_id, $sub_name, $id, $name, $CURUSER['username']));
+				$msg = MessageFormatter::formatMessage($user_lang, $format, array($sub_id, $sub_name, $id, $name, $reason, $CURUSER['username']));
 				$subject = $lang_upper['msg_your_sub_deleted'];
 				$time = (string)date("Y-m-d H:i:s");
 				
@@ -3867,7 +3925,7 @@ function code($ibm_437, $swedishmagic = false) {
 "&#x00b1;", "&#x2265;", "&#x2264;", "&#x2320;", "&#x2321;", "&#x00f7;",
 "&#x2248;", "&#x00b0;", "&#x2219;", "&#x00b7;", "&#x221a;", "&#x207f;",
 "&#x00b2;", "&#x25a0;", "&#x00a0;");
-	$s = htmlspecialchars($ibm_437);
+	$s = htmlspecialchars($ibm_437, ENT_COMPAT, "ISO-8859-1");
 
 
 	// 0-9, 11-12, 14-31, 127 (decimalt)
