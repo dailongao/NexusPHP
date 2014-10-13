@@ -33,14 +33,14 @@ if ($letter == "" || strpos("abcdefghijklmnopqrstuvwxyz", $letter) === false)
 
 $lang_id = $_GET['lang_id'];
 if (!is_valid_id($lang_id))
-$lang_id = '';
+	$lang_id = '';
 
 $query = "";
 if ($search != '')
 {
 	$query = "subs.title LIKE " . sqlesc("%$search%") . "";
 	if ($search)
-	$q = "search=" . rawurlencode($search);
+		$q = "search=" . rawurlencode($search);
 }
 elseif ($letter != '')
 {
@@ -85,10 +85,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["action"] == "upload" && ($in
 	/*
 	if (file_exists("$SUBSPATH/$file[name]"))
 	{
-		echo($lang_subtitles['std_file_already_exists']);
-		exit;
+	echo($lang_subtitles['std_file_already_exists']);
+	exit;
 	}
-	*/
+	 */
 	
 	//end process upload file
 
@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["action"] == "upload" && ($in
 	{
 		$title = substr($file["name"], 0, strrpos($file["name"], "."));
 		if (!$title)
-		$title = $file["name"];
+			$title = $file["name"];
 
 		$file["name"] = str_replace(" ", "_", htmlspecialchars("$file[name]"));
 	}
@@ -140,10 +140,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["action"] == "upload" && ($in
 	$r = sql_query("SELECT id FROM subs WHERE title=" . sqlesc($title)) or sqlerr(__FILE__, __LINE__);
 	if (mysql_num_rows($r) > 0)
 	{
-		echo($lang_subtitles['std_file_same_name_exists']."<font color=red><b>" . htmlspecialchars($title) . "</b></font> ");
-		exit;
+	echo($lang_subtitles['std_file_same_name_exists']."<font color=red><b>" . htmlspecialchars($title) . "</b></font> ");
+	exit;
 	}
-	*/
+	 */
 	//end process title
 
 	//start process language
@@ -218,13 +218,34 @@ if (get_user_class() >= $delownsub_class)
 						die;
 					}
 					else {
-					KPS("-",$uploadsubtitle_bonus,$a["uppedby"]); //subtitle uploader loses bonus for deleted subtitle
+						KPS("-",$uploadsubtitle_bonus,$a["uppedby"]); //subtitle uploader loses bonus for deleted subtitle
 					}
 					if ($CURUSER['id'] != $a['uppedby']){
-						$msg = $CURUSER['username'].$lang_subtitles_target[get_user_lang($a['uppedby'])]['msg_deleted_your_sub']. $a['title'].($reason != "" ? $lang_subtitles_target[get_user_lang($a['uppedby'])]['msg_reason_is'].$reason : "");
-						$subject = $lang_subtitles_target[get_user_lang($a['uppedby'])]['msg_your_sub_deleted'];
-						$time = date("Y-m-d H:i:s");
-						sql_query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES(0, $a[uppedby], '" . $time . "', " . sqlesc($msg) . ", ".sqlesc($subject).")") or sqlerr(__FILE__, __LINE__);
+						
+						$owner_res = get_user_resource($a['uppedby'])['delete_sub_target'];
+						$owner_lang = get_fix_user_lang($a['uppedby']);
+						
+						// 标题
+						$subject = $owner_res['msg_deleted_your_sub'];
+						
+						// 带有用户链接的用户信息。
+						$deleter_info = MessageFormatter::formatMessage("", "[url=userdetails.php?id={0}]{1}[/url]", array($CURUSER['id'], $CURUSER['username']));
+						
+						// 消息模板，根据是否有注释，使用不同类型。
+						$msg_format = $reason ? $owner_res['msg_delete_sub_format_reason'] : $owner_res['msg_delete_sub_format'];
+											
+						// 正文。
+						$msg = MessageFormatter::formatMessage($owner_lang, $msg_format, array($a['id'], $a['title'], $deleter_info, $reason));
+						
+						$time = (string)date("Y-m-d H:i:s");
+						
+						$sql = new_mysqli();
+						
+						$query = $sql->prepare("INSERT INTO `messages` (`sender`, `receiver`, `added`, `msg`, `subject`) VALUES (0, ?, ?, ?, ?)");
+
+						$query->bind_param("isss", $a['uppedby'], $time, $msg, $subject);
+						$query->execute() or sqlerr(__FILE__, __LINE__);
+						$sql->close();
 					}
 					$res = sql_query("SELECT lang_name from language WHERE sub_lang=1 AND id = " . sqlesc($a["lang_id"])) or sqlerr(__FILE__, __LINE__);
 					$arr = mysql_fetch_assoc($res);
@@ -248,9 +269,9 @@ if (get_user_class() >= UC_PEASANT)
 
 	begin_main_frame();
 
-	?>
-<div align=center>
-<?php
+?>
+<div align="center">
+	<?php
 	if (!$size = $Cache->get_value('subtitle_sum_size')){
 		$res = sql_query("SELECT SUM(size) AS size FROM subs");
 		$row5 = mysql_fetch_array($res);
@@ -260,7 +281,7 @@ if (get_user_class() >= UC_PEASANT)
 
 	begin_frame($lang_subtitles['text_upload_subtitles'].mksize($size)."", true,10,"100%","center");
 	?>
-	</div>
+</div>
 <?php
 
 	print("<p align=left><b><font size=5>".$lang_subtitles['text_rules']."</font></b></p>\n");
@@ -287,7 +308,7 @@ if (get_user_class() >= UC_PEASANT)
 		print("<br />(".$lang_subtitles['text_maximum_file_size'].mksize($maxsubsize_main).".)");
 	print("</td></tr>\n");
 	if($in_detail == "")
-	print("<tr><td class=rowhead>".$lang_subtitles['row_torrent_id']."<font color=red>*</font></td><td class=rowfollow align=left><input type=text name=torrent_id style=\"width:300px\"><br />".$lang_subtitles['text_torrent_id_note']."</td></tr>\n");
+		print("<tr><td class=rowhead>".$lang_subtitles['row_torrent_id']."<font color=red>*</font></td><td class=rowfollow align=left><input type=text name=torrent_id style=\"width:300px\"><br />".$lang_subtitles['text_torrent_id_note']."</td></tr>\n");
 	else
 	{
 		print("<tr><td class=rowhead>".$lang_subtitles['row_torrent_id']."<font color=red>*</font></td><td class=rowfollow align=left><input type=text name=torrent_id value=$detail_torrent_id style=\"width:300px\"><br />".$lang_subtitles['text_torrent_id_note']."</td></tr>\n");
@@ -322,75 +343,75 @@ if (get_user_class() >= UC_PEASANT)
 
 if(get_user_class() >= UC_PEASANT)
 {
-		print("<form method=get action=?>\n");
-		print("<br /><br />");
-		print("<input type=text style=\"width:200px\" name=search>\n");
+	print("<form method=get action=?>\n");
+	print("<br /><br />");
+	print("<input type=text style=\"width:200px\" name=search>\n");
 
-		$s = "<select name=\"lang_id\"><option value=\"0\">".$lang_subtitles['select_all_languages']."</option>\n";
-		$langs = langlist("sub_lang");
-		foreach ($langs as $row)
-		{
-			$s .= "<option value=\"" . $row["id"] . "\">" . htmlspecialchars($row["lang_name"]) . "</option>\n";
-		}
-		$s .= "</select>";
-		print($s);
+	$s = "<select name=\"lang_id\"><option value=\"0\">".$lang_subtitles['select_all_languages']."</option>\n";
+	$langs = langlist("sub_lang");
+	foreach ($langs as $row)
+	{
+		$s .= "<option value=\"" . $row["id"] . "\">" . htmlspecialchars($row["lang_name"]) . "</option>\n";
+	}
+	$s .= "</select>";
+	print($s);
 
-		print("<input type=submit class=btn value=\"".$lang_subtitles['submit_search']."\">\n");
-		print("</form>\n");
+	print("<input type=submit class=btn value=\"".$lang_subtitles['submit_search']."\">\n");
+	print("</form>\n");
 
-		for ($i = 97; $i < 123; ++$i)
-		{
-			$l = chr($i);
-			$L = chr($i - 32);
-			if ($l == $letter)
-				print("<b><font class=gray>$L</font></b>\n");
-			else
-				print("<a href=?letter=$l><b>$L</b></a>\n");
-		}
+	for ($i = 97; $i < 123; ++$i)
+	{
+		$l = chr($i);
+		$L = chr($i - 32);
+		if ($l == $letter)
+			print("<b><font class=gray>$L</font></b>\n");
+		else
+			print("<a href=?letter=$l><b>$L</b></a>\n");
+	}
 
-		$perpage = 30;
-		$query = ($query ? " WHERE ".$query : "");
-		$res = sql_query("SELECT COUNT(*) FROM subs $query") or sqlerr(__FILE__, __LINE__);
-		$arr = mysql_fetch_row($res);
-		$num = $arr[0];
-		if (!$num)
-		{
-			stdmsg($lang_subtitles['text_sorry'],$lang_subtitles['text_nothing_here']);
-			stdfoot();
-			die;
-		}
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $num, "subtitles.php?".$q."&");
+	$perpage = 30;
+	$query = ($query ? " WHERE ".$query : "");
+	$res = sql_query("SELECT COUNT(*) FROM subs $query") or sqlerr(__FILE__, __LINE__);
+	$arr = mysql_fetch_row($res);
+	$num = $arr[0];
+	if (!$num)
+	{
+		stdmsg($lang_subtitles['text_sorry'],$lang_subtitles['text_nothing_here']);
+		stdfoot();
+		die;
+	}
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $num, "subtitles.php?".$q."&");
 
-		print($pagertop);
+	print($pagertop);
 
-		$i = 0;
-		$res = sql_query("SELECT subs.*, language.flagpic, language.lang_name FROM subs LEFT JOIN language ON subs.lang_id=language.id $query ORDER BY id DESC $limit") or sqlerr();
+	$i = 0;
+	$res = sql_query("SELECT subs.*, language.flagpic, language.lang_name FROM subs LEFT JOIN language ON subs.lang_id=language.id $query ORDER BY id DESC $limit") or sqlerr();
 
-		print("<table width=940 border=1 cellspacing=0 cellpadding=5>\n");
-		print("<tr><td class=colhead>".$lang_subtitles['col_lang']."</td><td width=100% class=colhead align=center>".$lang_subtitles['col_title']."</td><td class=colhead align=center><img class=\"time\" src=\"pic/trans.gif\" alt=\"time\" title=\"".$lang_subtitles['title_date_added']."\" /></td>
+	print("<table width=940 border=1 cellspacing=0 cellpadding=5>\n");
+	print("<tr><td class=colhead>".$lang_subtitles['col_lang']."</td><td width=100% class=colhead align=center>".$lang_subtitles['col_title']."</td><td class=colhead align=center><img class=\"time\" src=\"pic/trans.gif\" alt=\"time\" title=\"".$lang_subtitles['title_date_added']."\" /></td>
 		<td class=colhead align=center><img class=\"size\" src=\"pic/trans.gif\" alt=\"size\" title=\"".$lang_subtitles['title_size']."\" /></td><td class=colhead align=center>".$lang_subtitles['col_hits']."</td><td class=colhead align=center>".$lang_subtitles['col_upped_by']."</td><td class=colhead align=center>".$lang_subtitles['col_report']."</td></tr>\n");
 
-		$mod = get_user_class() >= $submanage_class;
-		$pu = get_user_class() >= $delownsub_class;
+	$mod = get_user_class() >= $submanage_class;
+	$pu = get_user_class() >= $delownsub_class;
 
-		while ($arr = mysql_fetch_assoc($res))
-		{
-			// the number $start_subid is just for legacy support of prevoiusly uploaded subs, if the site is completely new, it should be 0 or just remove it
-			$lang = "<td class=rowfollow align=center valign=middle>" . "<img border=\"0\" src=\"pic/flag/". $arr["flagpic"] . "\" alt=\"" . $arr["lang_name"] . "\" title=\"" . $arr["lang_name"] . "\"/>" . "</td>\n";
-			$title = "<td class=rowfollow align=left><a href=\"" . ($arr['id'] <= $start_subid ?  "downloadsubs_legacy.php/" . $arr['filename'] : "downloadsubs.php?torrentid=" . $arr['torrent_id'] ."&subid=" .$arr['id']) . "\"<b>" . htmlspecialchars($arr["title"]) . "</b></a>" .
-			($mod || ($pu && $arr["uppedby"] == $CURUSER["id"]) ? " <font class=small><a href=?delete=$arr[id]>".$lang_subtitles['text_delete']."</a></font>" : "") ."</td>\n";
-			$addtime = gettime($arr["added"],false,false);
-			$added = "<td class=rowfollow align=center><nobr>" . $addtime . "</nobr></td>\n";
-			$size = "<td class=rowfollow align=center>" . mksize_loose($arr['size']) . "</td>\n";
-			$hits = "<td class=rowfollow align=center>" . number_format($arr['hits']) . "</td>\n";
-			$uppedby = "<td class=rowfollow align=center>" . ($arr["anonymous"] == 'yes' ? $lang_subtitles['text_anonymous'] . (get_user_class() >= $viewanonymous_class ? "<br />".get_username($arr['uppedby'],false,true,true,false,true) : "") : get_username($arr['uppedby'])) . "</td>\n";
-			$report = "<td class=rowfollow align=center><a href=\"report.php?subtitle=$arr[id]\"><img class=\"f_report\" src=\"pic/trans.gif\" alt=\"Report\" title=\"".$lang_subtitles['title_report_subtitle']."\" /></a></td>\n";
-			print("<tr>".$lang.$title.$added.$size.$hits.$uppedby.$report."</tr>\n");
-			$i++;
-		}
+	while ($arr = mysql_fetch_assoc($res))
+	{
+		// the number $start_subid is just for legacy support of prevoiusly uploaded subs, if the site is completely new, it should be 0 or just remove it
+		$lang = "<td class=rowfollow align=center valign=middle>" . "<img border=\"0\" src=\"pic/flag/". $arr["flagpic"] . "\" alt=\"" . $arr["lang_name"] . "\" title=\"" . $arr["lang_name"] . "\"/>" . "</td>\n";
+		$title = "<td class=rowfollow align=left><a href=\"" . ($arr['id'] <= $start_subid ?  "downloadsubs_legacy.php/" . $arr['filename'] : "downloadsubs.php?torrentid=" . $arr['torrent_id'] ."&subid=" .$arr['id']) . "\"<b>" . htmlspecialchars($arr["title"]) . "</b></a>" .
+		($mod || ($pu && $arr["uppedby"] == $CURUSER["id"]) ? " <font class=small><a href=?delete=$arr[id]>".$lang_subtitles['text_delete']."</a></font>" : "") ."</td>\n";
+		$addtime = gettime($arr["added"],false,false);
+		$added = "<td class=rowfollow align=center><nobr>" . $addtime . "</nobr></td>\n";
+		$size = "<td class=rowfollow align=center>" . mksize_loose($arr['size']) . "</td>\n";
+		$hits = "<td class=rowfollow align=center>" . number_format($arr['hits']) . "</td>\n";
+		$uppedby = "<td class=rowfollow align=center>" . ($arr["anonymous"] == 'yes' ? $lang_subtitles['text_anonymous'] . (get_user_class() >= $viewanonymous_class ? "<br />".get_username($arr['uppedby'],false,true,true,false,true) : "") : get_username($arr['uppedby'])) . "</td>\n";
+		$report = "<td class=rowfollow align=center><a href=\"report.php?subtitle=$arr[id]\"><img class=\"f_report\" src=\"pic/trans.gif\" alt=\"Report\" title=\"".$lang_subtitles['title_report_subtitle']."\" /></a></td>\n";
+		print("<tr>".$lang.$title.$added.$size.$hits.$uppedby.$report."</tr>\n");
+		$i++;
+	}
 
-		print("</table>\n");
-		print($pagerbottom);
+	print("</table>\n");
+	print($pagerbottom);
 }
 
 stdfoot();

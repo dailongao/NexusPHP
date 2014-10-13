@@ -1,20 +1,14 @@
 <?php
 require_once("include/bittorrent.php");
 dbconn();
-require_once(get_langfile_path());
-require_once(get_langfile_path("",true));
 loggedinorreturn();
 
-function bark($msg) {
-	global $lang_delete;
-	stdhead();
-	stdmsg($lang_delete['std_delete_failed'], $msg);
-	stdfoot();
-	exit;
-}
+// 用户资源
+$res = get_user_resource($CURUSER['id']);
+$res_delete = $res['delete'];
 
 if (!mkglobal("id"))
-	bark($lang_delete['std_missing_form_date']);
+	show_error($res_delete['delete_failed_title'], $res_delete['error_missing_form_data']);
 
 $id = 0 + $id;
 if (!$id)
@@ -26,62 +20,18 @@ if (!$row)
 	die();
 
 if ($CURUSER["id"] != $row["owner"] && get_user_class() < $torrentmanage_class)
-	bark($lang_delete['std_not_owner']);
+	show_error($res_delete['delete_failed_title'], $res_delete['error_not_owner']);
 
 $rt = 0 + $_POST["reasontype"];
 
 if (!is_int($rt) || $rt < 1 || $rt > 5)
-	bark($lang_delete['std_invalid_reason']."$rt.");
+	show_error($res_delete['delete_failed_title'],$res_delete['error_invalid_data']);
 
 $r = $_POST["r"];
 $reason = $_POST["reason"];
 
-// 作者语言
-$owner_lang = get_user_lang($row["owner"]);
-$owner_lang_target = $lang_delete_target[$owner_lang];
-
-if ($rt == 1)
-{
-	$reasonstr = "Dead: 0 seeders, 0 leechers = 0 peers total)";
-	$message_reason_str = $owner_lang_target['text_reasontype_dead'];
-}
-elseif ($rt == 2)
-{
-	if($reason[0]) 	{
-		$reasonstr = MessageFormatter::formatMessage("", "Dupe: {0}" , array($reason[0]));
-		$message_reason_str = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_dupe_reason'], array($reason[0]));
-	} else {
-		$reasonstr = "Dupe!";
-		$message_reason_str = $owner_lang_target['text_reasontype_dupe'];
-	}
-}
-elseif ($rt == 3) {
-	if ($reason[1]) {
-		$reasonstr = MessageFormatter::formatMessage("", "Nuked: {0}" , array($reason[1]));
-		$message_reason_str = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_nuked_reason'], array($reason[1]));
-	} else {
-		$reasonstr = "Nuked!";
-		$message_reason_str = $owner_lang_target['text_reasontype_nuked'];
-	}
-}
-elseif ($rt == 4) {
-	if ($reason[2])	{
-		$reasonstr = MessageFormatter::formatMessage("", "{0} rules broken: {1}", array($SITENAME, $reason[2]));
-		$message_reason_str =  MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_rule_broken_reason'], array($reason[2]));
-	} else {
-		bark($lang_delete['std_describe_violated_rule']);
-	}
-	
-}
-else
-{
-	if ($reason[3]){
-		$reasonstr = $reason[3];
-		$message_reason_str = $reason[3];
-	} else {
-		bark($lang_delete['std_enter_reason']);
-	}
-}
+// 系统日志的原因说明。
+$reason_str_log = generate_delete_reason(null, $rt, $reason);
 
 $deletesubs = (bool)$_POST['deletesubs'];
 
@@ -89,7 +39,7 @@ $deletesubs = (bool)$_POST['deletesubs'];
 $is_anonymous = $row['anonymous'] == 'yes' && $CURUSER["id"] == $row["owner"];
 
 // 字幕 ID 列表。
-$subtitle_id_list = deletetorrent($id, $row['name'], $is_anonymous, $deletesubs);
+$subtitle_id_list = deletetorrent($id, $row['name'], $is_anonymous, $rt, $reason, $deletesubs);
 
 // 将返回的单个字幕信息组合为字符串的方法。
 $generate_subtitle_info = function($item) {
@@ -103,24 +53,34 @@ $deleted_sub_title_text = join(", ", array_map($generate_subtitle_info, $subtitl
 $deleter = $is_anonymous ? "its anonymous uploader" : $CURUSER[username];
 
 // 写入删除消息。
-$message_format = empty($subtitle_id_list) ? "Torrent {0} ({1}) was deleted by {2} ({4})" : "Torrent {0} ({1}) and its subtitles {3} were deleted by {2} ({4})";
-write_log(MessageFormatter::formatMessage("", $message_format, array($id, $row['name'], $deleter, $deleted_sub_title_text, $reasonstr)), "normal");
+$message_format = empty($subtitle_id_list) ? "Torrent {0} ({1}) was deleted by {2}: {4}" : "Torrent {0} ({1}) and its subtitles {3} were deleted by {2}: {4}";
+write_log(MessageFormatter::formatMessage("", $message_format, array($id, $row['name'], $deleter, $deleted_sub_title_text, $reason_str_log)), "normal");
 
 
 //===remove karma
-KPS("-",$uploadtorrent_bonus,$row["owner"]);
+KPS("-",$uploadtorrent_bonus, $row["owner"]);
 
 //Send pm to torrent uploader
 if ($CURUSER["id"] != $row["owner"]){
 	
+	// 作者语言
+	$owner_lang = get_fix_user_lang($row["owner"]);
+	
+	// 删除种子相关的资源。
+	$owner_delete_res = get_user_resource($row["owner"])['delete_torrent_target'];
+	
+	// 返回给种子作者的原因说明
+	$reason_str = generate_delete_reason($row["owner"], $rt, $reason);
 	
 	// 带有用户链接的用户信息。
 	$deleter_info = MessageFormatter::formatMessage("", "[url=userdetails.php?id={0}]{1}[/url]", array($CURUSER['id'], $CURUSER['username']));
 	
 	// 删除消息标题。
-	$subject = $owner_lang_target['msg_torrent_deleted'];
+	$subject = $owner_delete_res['msg_torrent_deleted'];
+
 	// 删除消息正文。
-	$msg = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['msg_torrrent_deleted_format'], array($row['name'], $deleter_info, $message_reason_str)); 
+	$msg = MessageFormatter::formatMessage($owner_lang, $owner_delete_res['msg_torrent_deleted_format'], array($id, $row['name'], $deleter_info, $reason_str)); 
+	
 	
 	// 时间。
 	$dt = (string)date("Y-m-d H:i:s");
@@ -135,7 +95,8 @@ if ($CURUSER["id"] != $row["owner"]){
 	$sql->close();
 }
 
-stdhead($lang_delete['head_torrent_deleted']);
+
+stdhead($res_delete['torrent_deleted_title']);
 
 if (isset($_POST["returnto"]))
 	$ret = "<a href=\"" . htmlspecialchars($_POST["returnto"]) . "\">".$lang_delete['text_go_back']."</a>";
@@ -143,7 +104,12 @@ else
 	$ret = "<a href=\"index.php\">".$lang_delete['text_back_to_index']."</a>";
 
 ?>
-<h1><?php echo $lang_delete['text_torrent_deleted'] ?></h1>
-<p><?php echo  $ret ?></p>
-<?php
-stdfoot();
+<h1><?= $res_delete['text_torrent_deleted'] ?></h1>
+<p>
+	<?php if (isset($_POST["returnto"])) { ?>
+	<a href="<?= htmlspecialchars($_POST["returnto"]) ?>"><?= $res_delete['text_go_back'] ?></a>
+	<?php } else { ?>
+	<a href="/"><?= $res_delete['text_back_to_index'] ?></a>
+	<?php }
+		  
+		  stdfoot();

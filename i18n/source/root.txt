@@ -1,0 +1,10 @@
+﻿// ICU 格式化资源测试程序
+
+root: table {
+	test-string:string { "Hello!" }
+
+	data1:table {
+		test-2:string {"Test"}
+	}
+}
+

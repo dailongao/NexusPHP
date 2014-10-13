@@ -1,0 +1,5 @@
+﻿// ICU 格式化资源测试程序
+
+zh {
+	test-string:string { "你好！" }
+}

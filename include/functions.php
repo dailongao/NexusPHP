@@ -3,6 +3,7 @@
 /*
  * 2014-09-30 (樱桃): 同时删除字幕功能，mySQLi 连接
  * 2014-10-03 (樱桃): 特殊 IP 不屏蔽
+ * 2014-10-12 (樱桃): 本地化资源提取方法，删除字幕功能改进
  */
 
 # IMPORTANT: Do not edit below unless you know what you are doing!
@@ -17,7 +18,7 @@ require_once($rootpath . get_langfile_path("functions.php"));
 
 /**
  * 判断当前 IP 是否是特殊 IP。
- * @return 如果当前 IP 是特殊 IP 返回 true；否则返回 false。
+ * @return bool 如果当前 IP 是特殊 IP 返回 true；否则返回 false。
  */
 
 function is_special_ip(){
@@ -46,11 +47,58 @@ function get_langfolder_cookie()
 }
 
 function get_user_lang($user_id)
-{
+{	
 	$r = sql_query("SELECT site_lang_folder FROM language LEFT JOIN users ON language.id = users.lang WHERE language.site_lang=1 AND users.id= ". sqlesc($user_id) ." LIMIT 1") or sqlerr(__FILE__, __LINE__);
 	if(mysql_num_rows($r) == 0) return "en";
 	$lang = mysql_fetch_assoc($r);
 	return $lang['site_lang_folder'];
+}
+
+/**
+ * 获取修正后的语言名称。
+ * @param string $lang_name 站点内部语言名称。
+ * @return string ISO 标准语言区域名称。
+ */
+function get_fix_lang($lang_name){
+	switch($lang_name) {
+		
+		case "en":
+			return "en";
+		case "chs":
+			return "zh-Hans-CN";
+		case "cht":
+			return "zh-Hant-TW";
+		default:
+			return $lang_name;	
+	}
+}
+
+
+/**
+ * 获得给定用户的本地化区域名称。
+ * @param int $user_id 用户的 ID。如果该参数为 null，则表示系统默认区域。
+ * @return 用户对应的本地化区域名称。
+ */
+function get_fix_user_lang($user_id = null){
+	return ($user_id == null) ? "" : get_fix_lang(get_user_lang($user_id));
+}
+
+/**
+ * 获得具有指定区域的本地化资源。
+ * @param string $lang_name 语言名称。默认值为空字符串。
+ * @return ResourceBundle 对应的资源对象。
+ */
+function get_resource($lang_name = ""){
+	return ResourceBundle::create($lang_name, "./i18n");	
+}
+
+/**
+ * 获得用户对应的本地化资源。
+ * @param int $user_id 用户 ID。如果该参数为 null，表示获取默认区域。
+ * @return ResourceBundle 用户对应的资源对象。
+ */
+function get_user_resource($user_id = null){
+		return get_resource(get_fix_user_lang($user_id));
 }
 
 function get_langfile_path($script_name ="", $target = false, $lang_folder = "")
@@ -2952,6 +3000,20 @@ function get_sublang_name($lang_id) {
 	}
 }
 
+
+/**
+ * 输出标准错误信息。
+ * @param string $title 错误标题。 
+ * @param string $msg 错误内容。
+ */
+function show_error($title, $msg) {
+	stdhead();
+	stdmsg($title, $msg);
+	stdfoot();
+	exit;
+}
+
+
 /**
  * 生成参数操作的原因。
  * @param string $lang 字符串语言。 
@@ -2960,58 +3022,59 @@ function get_sublang_name($lang_id) {
  * @return 特定语言的，描述删除类型和删除原因说明的字符串。
  */
 
-function generateDeleteReason($lang, $rt, $reason){
+function generate_delete_reason($user_id, $rt, $reason){
+
+	// 字符串资源。
+	$res = get_user_resource($user_id);
+	$delete_res = $res['delete'];
+	$reason_res = $res['delete_reason'];
 	
-	// 关于字幕的消息字符串    
-	require_once($rootpath . get_langfile_path("subtitles.php", true));
-	require_once($rootpath . get_langfile_path("delete.php", true));
+	$user_lang = get_fix_user_lang($user_id);
 	
 	if ($rt == 1)
 	{
-		$reasonstr = "Dead: 0 seeders, 0 leechers = 0 peers total)";
-		$message_reason_str = $owner_lang_target['text_reasontype_dead'];
+		return $reason_res['dead'];
 	}
-	elseif ($rt == 2)
-	{
+	elseif ($rt == 2) {
+		
 		if($reason[0]) 	{
-			$reasonstr = MessageFormatter::formatMessage("", "Dupe: {0}" , array($reason[0]));
-			$message_reason_str = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_dupe_reason'], array($reason[0]));
+			return MessageFormatter::formatMessage($user_lang, $reason_res['dupe_reason'], array($reason[0]));
 		} else {
-			$reasonstr = "Dupe!";
-			$message_reason_str = $owner_lang_target['text_reasontype_dupe'];
+			return $reason_res['dupe'];
 		}
 	}
 	elseif ($rt == 3) {
+		
 		if ($reason[1]) {
-			$reasonstr = MessageFormatter::formatMessage("", "Nuked: {0}" , array($reason[1]));
-			$message_reason_str = MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_nuked_reason'], array($reason[1]));
+			return MessageFormatter::formatMessage($user_lang, $reason_res['nuked_reason'], array($reason[1]));
 		} else {
-			$reasonstr = "Nuked!";
-			$message_reason_str = $owner_lang_target['text_reasontype_nuked'];
+			return $reason_res['nuked'];
 		}
 	}
 	elseif ($rt == 4) {
-		if ($reason[2])	{
-			$reasonstr = MessageFormatter::formatMessage("", "{0} rules broken: {1}", array($SITENAME, $reason[2]));
-			$message_reason_str =  MessageFormatter::formatMessage($owner_lang, $owner_lang_target['text_reasontype_rule_broken_reason'], array($reason[2]));
-		} else {
-			bark($lang_delete['std_describe_violated_rule']);
-		}
 		
+		if ($reason[2])	{
+			return $message_reason_str =  MessageFormatter::formatMessage($user_lang, $reason_res['rule_broken_reason'], array($reason[2]));
+		} else {
+			show_error($delete_res['delete_failed_title'], $delete_res['error_enter_reason']);
+			die;
+		}
 	}
 	else
 	{
 		if ($reason[3]){
-			$reasonstr = $reason[3];
-			$message_reason_str = $reason[3];
+			return $reason[3];
 		} else {
-			bark($lang_delete['std_enter_reason']);
+			show_error($delete_res['delete_failed_title'], $delete_res['error_enter_reason']);
 		}
 	}
 }
 
 
-function deletetorrent($id, $name, $is_anonymous, $reason, $deletesubs) {
+function deletetorrent($id, $name, $is_anonymous, $rt, $reason, $deletesubs) {
+	
+	// 当前用户。
+	global $CURUSER;
 	
 	// 关于字幕的消息字符串    
 	require_once($rootpath . get_langfile_path("subtitles.php", true));
@@ -3040,8 +3103,8 @@ function deletetorrent($id, $name, $is_anonymous, $reason, $deletesubs) {
 			
 			// 将字幕 ID 推送进入数组。
 			$subtitle_id_list[] = array (
-					'id' => $sub_id,
-					'name' => $sub_name,
+			        'id' => $sub_id,
+			        'name' => $sub_name,
 			);
 			
 			$sql2 = new_mysqli();
@@ -3061,17 +3124,22 @@ function deletetorrent($id, $name, $is_anonymous, $reason, $deletesubs) {
 			
 			// 如果删除者不是上传者，则发短消息
 			if ($CURUSER['id'] != $sub_uppedby)
-			{
-				$user_lang = get_user_lang($sub_uppedby);
-				
+			{	
+				$reason_str = generate_delete_reason($sub_uppedby, $rt, $reason);
+										
 				// 被删除字幕者的语言资源
-				$lang_upper = $lang_subtitles_target[$user_lang];
+				$lang_upper = get_user_resource($sub_uppedby)['delete_sub_target'];
+				
+				$user_lang = get_fix_user_lang($sub_uppedby);
 				
 				$format = $is_anonymous ? $lang_upper['msg_delete_sub_by_torrent_format_anony'] : $lang_upper['msg_delete_sub_by_torrent_format'];
 				
+				// 删除者
+				$deleter_info = MessageFormatter::formatMessage("", "[url=userdetails.php?id={0}]{1}[/url]", array($CURUSER['id'], $CURUSER['username']));
+							
 				// 插入删除字幕消息
-				$msg = MessageFormatter::formatMessage($user_lang, $format, array($sub_id, $sub_name, $id, $name, $reason, $CURUSER['username']));
-				$subject = $lang_upper['msg_your_sub_deleted'];
+				$msg = MessageFormatter::formatMessage($user_lang, $format, array($sub_id, $sub_name, $id, $name, $reason_str, $deleter_info));
+				$subject = $lang_upper['msg_deleted_your_sub'];
 				$time = (string)date("Y-m-d H:i:s");
 				
 				$sql2 = new_mysqli();
@@ -3099,9 +3167,9 @@ function deletetorrent($id, $name, $is_anonymous, $reason, $deletesubs) {
 	// 删除节点、相关文件和注释。
 	foreach(array("peers", "files", "comments") as $x) {
 		
-		$query = $sql->prepare("DELETE FROM $x WHERE torrent = ?");
-		$query->bind_param("i", $id);
-		$query->execute();
+	    $query = $sql->prepare("DELETE FROM $x WHERE torrent = ?");
+	    $query->bind_param("i", $id);
+	    $query->execute();
 	}
 	
 	// 删除文件
