@@ -1,5 +1,173 @@
-ï»¿// ICU æ ¼å¼åŒ–èµ„æºæµ‹è¯•ç¨‹åº
+// ¸ùÓïÑÔ±í
+zh : table {
 
-zh {
-	test-string:string { "ä½ å¥½ï¼" }
+	// É¾³ıÏà¹ØµÄ×ÊÔ´
+	delete : table {
+		
+		// É¾³ıÊ§°ÜÏûÏ¢µÄ±êÌâ
+		delete_failed_title : string { "É¾³ıÊ§°Ü!" }
+	
+		// Êı¾İ¿âÖĞÕÒ²»µ½Õâ¸öÖÖ×Ó		
+		error_missing_form_data : string { "¸ÃÖÖ×Ó²»´æÔÚ" }
+		
+		// ÊÓÍ¼É¾³ıËûÈËÖÖ×Ó		
+		error_not_owner : string { "ÄãÃ»ÓĞÉ¾³ı¸ÃÖÖ×ÓµÄÈ¨ÏŞ£¡" }
+		
+		// Ïò·şÎñÆ÷Ìá½»µÄÊı¾İÓĞÎÊÌâ£¬Í¨³£ÊÇ³ÌĞò´íÎóÔì³ÉµÄ		
+		error_invalid_data : string { "Êı¾İ´íÎó" }
+		
+		// Ã»ÓĞÊä³öÉ¾³ıÔ­Òò	
+		error_enter_reason : string { "ÇëÊäÈëÉ¾³ıÖÖ×ÓµÄÔ­Òò" }
+	
+		// É¾³ı³É¹¦µÄÏûÏ¢ÌáÊ¾		
+		torrent_deleted_title : string { "É¾³ı³É¹¦!" }
+			
+		// Ò³ÃæÎÄ×Ö£ºÌáÊ¾·µ»ØÉÏÒ»Ò³	
+		text_go_back : string { "·µ»ØÉÏÒ»Ò³" }
+		
+		// Ò³ÃæÎÄ×Ö£º·µ»ØÖ÷Ò³	
+		text_back_to_index : string { "·µ»ØÖ÷Ò³" }
+		
+		// Ò³ÃæÕıÎÄ£ºÉ¾³ı³É¹¦
+		text_torrent_deleted : string { "É¾³ı³É¹¦" }
+
+	}
+
+	// ÃèÊöÉ¾³ıÔ­ÒòµÄ×Ö·û´®ÁĞ±í
+	delete_reason : table {
+
+		// ¶ÏÖÖ
+		dead : string { "¶ÏÖÖ" }
+		// ÁÓÖÊ
+		nuked : string { "ÁÓÖÊ" }
+		// ÖØ¸´
+		dupe : string { "ÖØ¸´" }
+	
+		// ´øÓĞÔ­ÒòµÄÁÓÖÊ
+		// {0}: Ô­Òò
+		nuked_reason : string { "ÁÓÖÊ£¨{0}£©" }
+		
+		// ´øÓĞÔ­ÒòµÄÖØ¸´
+		// {0}: Ô­Òò
+		dupe_reason : string { "ÖØ¸´£¨{0}£©" }
+
+		// ´øÓĞÔ­ÒòµÄÎ¥¹æ
+		// {0}: Ô­Òò
+		rule_broken_reason : string { "Î¥¹æ£¨{0}£©" }
+
+	}
+
+	// ÖÖ×Ó±»É¾³ıÏà¹ØÎÄ×Ö
+	delete_torrent_target : table {
+
+		// ×ÖÄ»±»É¾³ıµÄ¶ÌÏûÏ¢±êÌâ
+		msg_torrent_deleted : string { "ÖÖ×Ó±»É¾³ı" }
+
+		// ×ÖÄ»±»É¾³ıµÄ¶ÌÏûÏ¢ÕıÎÄÄ£°å
+		// {0}: ÖÖ×Ó±àºÅ {1}: ÖÖ×Ó±êÌâ {2}: ²Ù×÷ÕßĞÅÏ¢£¨ÓÃ»§Ãû³¬Á´½Ó£© {3}: Ô­Òò×Ö·û´®£¨°üº¬ÀàĞÍºÍ¾ßÌå½âÊÍ£©	
+		msg_torrent_deleted_format : string { "ÄãÉÏ´«µÄÖÖ×Ó{0}£¨{1}£©±»{2}É¾³ı¡£Ô­Òò£º{3}" } 
+
+	}
+
+	// ×ÖÄ»±»É¾³ıÏà¹ØÎÄ×Ö
+	delete_sub_target : table {
+
+		// É¾³ı×ÖÄ»µÄÏûÏ¢±êÌâ
+		msg_deleted_your_sub : string { "×ÖÄ»±»É¾³ı" }
+
+		// É¾³ı×ÖÄ»µÄÏûÏ¢ÕıÎÄ£¨ÎŞÉ¾³ıÔ­Òò£©
+		// {0}: ×ÖÄ»±àºÅ {1}: ×ÖÄ»Ãû³Æ {2}: É¾³ıÕßÃû³Æ
+		msg_delete_sub_format : string { "ÄãÉÏ´«µÄ×ÖÄ»{0}£¨{1}£©±»{2}É¾³ı¡£" }
+
+		// É¾³ı×ÖÄ»µÄÏûÏ¢ÕıÎÄ£¨ÓĞÉ¾³ıÔ­Òò£©
+		// {0}: ×ÖÄ»±àºÅ {1}: ×ÖÄ»Ãû³Æ {2}: É¾³ıÕßÃû³Æ {3}: É¾³ıÔ­Òò
+		msg_delete_sub_format_reason : string { "ÄãÉÏ´«µÄ×ÖÄ»{0}£¨{1}£©±»{2}É¾³ı¡£Ô­Òò£º{3}" }
+
+		// ÒòÎªÖÖ×Ó±»É¾³ı¶øÉ¾³ı×ÖÄ»µÄÏûÏ¢ÕıÎÄ
+		// {0}: ×ÖÄ»±àºÅ {1}: ×ÖÄ»Ãû³Æ {2}: ÖÖ×Ó±àºÅ {3}: ÖÖ×ÓÃû³Æ {4}: Ô­Òò£¨°üº¬ÀàĞÍºÍ¾ßÌå½âÊÍ£© {5}: É¾³ıÕß
+		msg_delete_sub_by_torrent_format : string { "ÓÉÓÚÖÖ×Ó{2}£¨{3}£©±»{5}É¾³ı£¬ÄãÎª¸ÃÖÖ×ÓÉÏ´«µÄ×ÖÄ»{0}£¨{1}£©±»ÏµÍ³Í¬Ê±É¾³ı¡£¸ÃÖÖ×Ó±»É¾³ıµÄÔ­ÒòÊÇ£º{4}" }
+
+		// ÒòÎªÖÖ×Ó±»É¾³ı¶øÉ¾³ı×ÖÄ»µÄÏûÏ¢ÕıÎÄ£¨ÄäÃû°æ±¾£©
+		msg_delete_sub_by_torrent_format_anony : string { "ÓÉÓÚÖÖ×Ó{2}£¨{3}£©±»ËüµÄÄäÃûÉÏ´«ÕßÉ¾³ı£¬ÄãÎª¸ÃÖÖ×ÓÉÏ´«µÄ×ÖÄ»{0}£¨{1}£©±»ÏµÍ³Í¬Ê±É¾³ı¡£¸ÃÖÖ×Ó±»É¾³ıµÄÔ­ÒòÊÇ£º{4}" }
+	}
+
+	// CC98 ÁªºÏµÇÂ¼Ïà¹ØÎÄ×Ö
+	cc98_logon : table {
+
+		// µÇÂ¼¹ı³Ì´íÎóÏûÏ¢±êÌâ
+		msg_system_error_title : string { "ÏµÍ³´íÎó" }
+		// µÇÂ¼¹ı³Ì´íÎóÏûÏ¢ÕıÎÄ
+		msg_system_error_text : string { "ÔİÊ±ÎŞ·¨Íê³ÉÄãµÄÇëÇó£¬ÇëÉÔºóÔÙÊÔ¡£Èç¹ûÕâ¸öÎÊÌâ³ÖĞø³öÏÖ£¬ÇëÁªÏµÏµÍ³¹ÜÀíÔ±¡£" }
+
+		// Ã»ÓĞ¹ØÁªÕË»§µÄÏûÏ¢±êÌâ
+		msg_no_associated_account_title : string { "Ã»ÓĞ¹ØÁªµÄÕË»§" }
+		// Ã»ÓĞ¹ØÁªÕË»§µÄÏûÏ¢ÕıÎÄ
+		msg_no_associated_account_text : string { "Õâ¸ö CC98 ÕË»§Ã»ÓĞ¹ØÁª NexusHD ÕË»§¡£ÇëÊ×ÏÈÊ¹ÓÃÄãµÄ NexusHD ÕË»§µÇÂ¼£¬È»ºóÔÚ¿ØÖÆÃæ°åÖĞÉèÖÃ¹ØÁªµÄ CC98 ÕË»§¡£" } 
+
+		// Ã»ÓĞ¹ØÁªÕË»§µÄÏûÏ¢±êÌâ
+		msg_duplicated_association_title : string { "ÕË»§¹ØÁªÖØ¸´" }
+		// Ã»ÓĞ¹ØÁªÕË»§µÄÏûÏ¢ÕıÎÄ
+		msg_duplicated_association_text : string { "Õâ¸ö CC98 ÕË»§ÒÑ¾­¹ØÁªµ½ÁËÁíÒ»¸ö NexusHD ÕË»§¡£ÎÒÃÇÄ¿Ç°²»Ö§³ÖÍ¬Ê±¹ØÁª¶à¸öÕË»§¡£ÇëÊ¹ÓÃÁíÒ»¸ö CC98 ÕË»§µÇÂ¼ºóÔÙÊÔÒ»´Î¡£" } 
+
+		// ´´½¨ÕËºÅ¹ØÁªµÄÒ³Ãæ±êÌâ
+		msg_create_association_title : string { "´´½¨ÕËºÅ¹ØÁª" }
+
+		// ±à¼­ÕËºÅ¹ØÁªµÄÒ³Ãæ±êÌâ
+		msg_edit_association_title : string { "±à¼­ÕËºÅ¹ØÁª" }
+
+		// É¾³ıÕËºÅ¹ØÁªµÄÒ³Ãæ±êÌâ
+		msg_delete_association_title : string { "±à¼­ÕËºÅ¹ØÁª" }
+
+		// ´´½¨/±à¼­¹ØÁªµÄËµÃ÷ÎÄ×Ö
+		msg_edit_association_text : string { "ÒªÖ´ĞĞÕâ¸ö²Ù×÷£¬Äã±ØĞë·ÃÎÊ CC98 µÇÂ¼ÏµÍ³£¬²¢Ê¹ÓÃÄãµÄ CC98 ÕË»§µÇÂ¼¡£µ¥»÷ÏÂÃæµÄÁ´½Ó½«»áÀë¿ª NexusHD ²¢·ÃÎÊ CC98 µÇÂ¼ÏµÍ³¡£" }
+
+		// ´´½¨/±à¼­¹ØÁªµÄÁ´½ÓÎÄ×Ö
+		msg_edit_association_link_text : string { "·ÃÎÊ CC98 µÇÂ¼ÏµÍ³" }
+
+		// ´´½¨/±à¼­¹ØÁªµÄËµÃ÷ÎÄ×Ö
+		msg_delete_association_text : string { "ÄãÏÖÔÚ¹ØÁªµ½µÄ CC98 ÕË»§ÊÇ <strong>{0}</strong>¡£µ¥»÷ÏÂÃæµÄ°´Å¥¿ÉÒÔÈ·¶¨É¾³ı¹ØÁª¡£" }
+
+		// ´´½¨/±à¼­¹ØÁªµÄÁ´½ÓÎÄ×Ö
+		msg_delete_association_button_text : string { "É¾³ıÕË»§¹ØÁª" }
+
+
+		// ´´½¨¹ÜÀí¹ØÁª³É¹¦ÏûÏ¢±êÌâ
+		msg_create_association_success_title : string { "´´½¨¹ØÁª³É¹¦" }
+		// ´´½¨¹ÜÀí¹ØÁª³É¹¦ÏûÏ¢ÕıÎÄ
+		// {0}: CC98 ÕË»§Ãû³Æ
+		msg_create_association_success_text : string { "ÄãµÄ NexusHD ÕË»§ÒÑ¾­ºÍ CC98ÕË»§¡°{0}¡±½øĞĞÁË¹ØÁª¡£3 ÃëÖÓºó½«×Ô¶¯·µ»ØÊ×Ò³¡£" }
+
+		// ĞŞ¸Ä¹ÜÀí¹ØÁª³É¹¦ÏûÏ¢±êÌâ
+		msg_edit_association_success_title : string { "ĞŞ¸Ä¹ØÁª³É¹¦" }
+		// ĞŞ¸Ä¹ÜÀí¹ØÁª³É¹¦ÏûÏ¢ÕıÎÄ
+		// {0}: CC98 ÕË»§Ãû³Æ
+		msg_edit_association_success_text : string { "ÄãµÄ NexusHD ÕË»§ÏÖÔÚºÍ CC98ÕË»§¡°{0}¡±½øĞĞÁË¹ØÁª¡£3 ÃëÖÓºó½«×Ô¶¯·µ»ØÊ×Ò³¡£" }
+
+		// ĞŞ¸Ä¹ÜÀí¹ØÁª³É¹¦ÏûÏ¢±êÌâ
+		msg_delete_association_success_title : string { "É¾³ı¹ØÁª³É¹¦" }
+		// ĞŞ¸Ä¹ÜÀí¹ØÁª³É¹¦ÏûÏ¢ÕıÎÄ
+		// {0}: CC98 ÕË»§Ãû³Æ
+		msg_delete_association_success_text : string { "ÄãµÄ NexusHD ÕËºÅ²»ÔÙ¾ßÓĞ¹ØÁªµÄ CC98 ÕËºÅ¡£3 ÃëÖÓºó½«×Ô¶¯·µ»ØÊ×Ò³¡£" }
+
+		// Ê¹ÓÃ CC98 ÕË»§µÇÂ¼³É¹¦ÏûÏ¢±êÌâ
+		msg_logon_success_title : string { "µÇÂ¼³É¹¦" }
+		// Ê¹ÓÃ CC98 ÕË»§µÇÂ¼³É¹¦ÏûÏ¢ÕıÎÄ
+		// {0}: NexusHD ÕË»§Ãû³Æ
+		msg_logon_success_text : string { "ÄãÏÖÔÚÒÑ {0} µÄÉí·İµÇÂ¼ NexusHD¡£" }
+	}
+
+	// ÓÃ»§¿ØÖÆÃæ°åÏà¹ØÎÄ×Ö
+	user_control_panel : table {
+
+		// CC98 ÕË»§¹ØÁªÑ¡Ïî±êÌâ
+		cc98_id_association_title : string { "CC98 ÕË»§¹ØÁª" }
+
+		// Ã»ÓĞÕË»§¹ØÁªµÄÏÔÊ¾ÎÄ×Ö
+		cc98_id_text_none : string { "ÎŞ" }
+
+		// Ïà¹Ø²Ù×÷Á´½ÓÎÄ×Ö
+		cc98_id_action_create : string { "´´½¨" }
+		cc98_id_action_edit : string { "±à¼­" }
+		cc98_id_action_delete : string { "É¾³ı" }
+	}
 }

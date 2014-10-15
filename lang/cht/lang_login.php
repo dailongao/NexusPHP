@@ -31,5 +31,7 @@ $lang_login = array
 	'submit_clear' => "清空",
 	'text_select_lang' => "Select Site Language: ",
 	'head_login' => "登錄",
+	'button_login_cc98' => '使用 CC98 账号登录',
+
 );
 ?>

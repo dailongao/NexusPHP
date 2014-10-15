@@ -113,8 +113,13 @@ if (!empty($_GET["returnto"])) {
 		</tr>
 		<tr>
 			<td class="toolbox" colspan="2" align="right">
-				<button type="submit" class="btn"><?= $lang_login['button_login']?></button>
-				<button type="reset" class="btn"><?= $lang_login['button_reset']?></button></td>
+				<button type="submit" class="btn" align="right"><?= $lang_login['button_login']?></button>
+				<button type="reset" class="btn" align="right"><?= $lang_login['button_reset']?></button></td>
+		</tr>
+		<tr>
+			<td class="toolbox" colspan="2">
+				<a href="cc98logon.php"><?= $lang_login['button_login_cc98'] ?></a>
+			</td>
 		</tr>
 	</table>
 	<?php
@@ -149,7 +154,7 @@ if ($showhelpbox_main != 'no'){?>
 							<button type='reset' class='btn'><?= $lang_login['submit_clear'] ?></button>
 							<input type='hidden' name='sent' value='yes'><input type='hidden' name='type' value='helpbox' />
 							<div id="sbword" style="display: none"><?= $lang_login['sumbit_shout'] ?></div>
-						<?php print(smile_row("shbox","shbox_text")); ?>
+						<?= smile_row("shbox","shbox_text") ?>
 					</td>
 				</tr>
 			</table>

@@ -1,12 +1,15 @@
 <?php
 require "include/bittorrent.php";
 dbconn();
+
 require_once(get_langfile_path());
+
 loggedinorreturn();
 parked();
 
-if (get_user_class() < UC_SYSOP)
-permissiondenied();
+if (get_user_class() < UC_SYSOP) {
+	permissiondenied();
+}
 
 //read all configuration files
 require('config/allconfig.php');
@@ -25,7 +28,7 @@ function yesorno($title, $name, $value, $note="")
 }
 
 $action = isset($_POST['action']) ? $_POST['action'] : 'showmenu';
-$allowed_actions = array('basicsettings','mainsettings','smtpsettings','securitysettings','authoritysettings','tweaksettings', 'botsettings','codesettings','bonussettings','accountsettings','torrentsettings', 'attachmentsettings', 'advertisementsettings', 'savesettings_basic', 'savesettings_main','savesettings_smtp','savesettings_security','savesettings_authority','savesettings_tweak','savesettings_bot','savesettings_code','savesettings_bonus', 'savesettings_account','savesettings_torrent', 'savesettings_attachment', 'savesettings_advertisement', 'showmenu');
+$allowed_actions = array('basicsettings','mainsettings','smtpsettings','securitysettings','authoritysettings','tweaksettings', 'botsettings','codesettings','bonussettings','accountsettings','torrentsettings', 'attachmentsettings', 'advertisementsettings', 'savesettings_basic', 'savesettings_main','savesettings_smtp','savesettings_security','savesettings_authority','savesettings_tweak','savesettings_bot','savesettings_code','savesettings_bonus', 'savesettings_account','savesettings_torrent', 'savesettings_attachment', 'savesettings_advertisement', 'federationsettings', 'savesettings_federation', 'showmenu');
 if (!in_array($action, $allowed_actions))
 $action = 'showmenu';
 $notice = "<h1 align=\"center\"><a class=\"faqlink\" href=\"settings.php\">".$lang_settings['text_website_settings']."</a></h1><table cellspacing=\"0\" cellpadding=\"10\" width=\"940\"><tr><td colspan=\"2\" style='padding: 10px; background: black' align=\"center\">
@@ -157,7 +160,7 @@ elseif ($action == 'savesettings_smtp') 	// save smtp
 elseif ($action == 'savesettings_security') 	// save security
 {
 	stdhead($lang_settings['head_save_security_settings']);
-	$validConfig = array('securelogin', 'securetracker', 'https_announce_url','iv','maxip','maxloginattempts','changeemail','cheaterdet','nodetect', 'ignoreipchecklist');
+	$validConfig = array('securelogin', 'securetracker', 'https_announce_url','iv','maxip','maxloginattempts','changeemail','cheaterdet','nodetect', 'ignoreipchecklist', 'dataprotectkey');
 	GetVar($validConfig);
 	unset($SECURITY);
 	foreach($validConfig as $config) {
@@ -226,6 +229,20 @@ elseif ($action == 'savesettings_advertisement')	// save advertisement
 	WriteConfig('ADVERTISEMENT', $ADVERTISEMENT);
 	$actiontime = date("F j, Y, g:i a");
 	write_log("Tracker ADVERTISEMENT settings updated by $CURUSER[username]. $actiontime",'mod');
+	go_back();
+}
+elseif ($action == "savesettings_federation") {
+	stdhead($lang_settings['head_save_federation_settings']);
+	$validConfig = array('cc98clientid', 'cc98clientsecret', 'cc98redirecturi');
+	GetVar($validConfig);
+	unset($FEDERATION);
+	foreach($validConfig as $config) {
+		$FEDERATION[$config] = $$config;
+	}
+
+	WriteConfig('FEDERATION', $FEDERATION);
+	$actiontime = date("F j, Y, g:i a");
+	write_log("Tracker FEDERATION settings updated by $CURUSER[username]. $actiontime",'mod');
 	go_back();
 }
 elseif ($action == 'tweaksettings')		// tweak settings
@@ -308,6 +325,7 @@ elseif ($action == 'securitysettings')	//security settings
 	tr($lang_settings['row_max_ips'],"<input type='text' style=\"width: 300px\" name=maxip value='" . ($SECURITY["maxip"] ? $SECURITY["maxip"] : "1")."'> ".$lang_settings['text_max_ips_note'], 1);
 	tr($lang_settings['row_max_login_attemps'],"<input type='text' style=\"width: 300px\" name=maxloginattempts value='" . ($SECURITY["maxloginattempts"] ? $SECURITY["maxloginattempts"] : "7")."'> ".$lang_settings['text_max_login_attemps_note'], 1);
 	tr($lang_settings['row_ignore_ip_check_list'],"<input type='text' style=\"width: 300px\" name=ignoreipchecklist value='" .  $SECURITY["ignoreipchecklist"] . "'> ".$lang_settings['text_ignore_ip_check_list'], 1);
+	tr($lang_settings['row_data_protect_key'],"<input type='text' style=\"width: 300px\" name=dataprotectkey value='" .  $SECURITY["dataprotectkey"] . "'> ".$lang_settings['text_data_protect_key'], 1);
 
 	tr($lang_settings['row_save_settings'],"<input type='submit' name='save' value='".$lang_settings['submit_save_settings']."'>", 1);
 	print ("</form>");
@@ -628,6 +646,19 @@ elseif ($action == 'mainsettings')	// main settings
 	tr($lang_settings['row_save_settings'],"<input type='submit' name='save' value='".$lang_settings['submit_save_settings']."'>", 1);
 	print ("</form>");
 }
+elseif ($action == 'federationsettings')	// federation settings
+{
+	stdhead($lang_settings['head_federation_settings']);
+	print ($notice);
+	print ("<form method='post' action='".$_SERVER["SCRIPT_NAME"]."'><input type='hidden' name='action' value='savesettings_federation'>");
+
+	tr($lang_settings['row_cc98_client_id'],"<input type='text' name=cc98clientid style=\"width: 300px\" value=\"$FEDERATION[cc98clientid]\"> ".$lang_settings['text_cc98_client_id'], 1);
+	tr($lang_settings['row_cc98_client_secret'],"<input type='text' name=cc98clientsecret style=\"width: 300px\" value=\"$FEDERATION[cc98clientsecret]\"> ".$lang_settings['text_cc98_client_secret'], 1);
+	tr($lang_settings['row_cc98_redirect_uri'],"<input type='text' name=cc98redirecturi style=\"width: 300px\" value=\"$FEDERATION[cc98redirecturi]\"> ".$lang_settings['text_cc98_redirect_uri'], 1);	
+	
+	tr($lang_settings['row_save_settings'],"<input type='submit' name='save' value='".$lang_settings['submit_save_settings']."'>", 1);
+	print ("</form>");
+}
 elseif ($action == 'showmenu')	// settings main page
 {
 	stdhead($lang_settings['head_website_settings']);
@@ -644,6 +675,7 @@ elseif ($action == 'showmenu')	// settings main page
 	tr($lang_settings['row_attachment_settings'], "<form method='post' action='".$_SERVER["SCRIPT_NAME"]."'><input type='hidden' name='action' value='attachmentsettings'><input type='submit' value=\"".$lang_settings['submit_attachment_settings']."\"> ".$lang_settings['text_attachment_settings_note']."</form>", 1);
 	tr($lang_settings['row_advertisement_settings'], "<form method='post' action='".$_SERVER["SCRIPT_NAME"]."'><input type='hidden' name='action' value='advertisementsettings'><input type='submit' value=\"".$lang_settings['submit_advertisement_settings']."\"> ".$lang_settings['text_advertisement_settings_note']."</form>", 1);
 	tr($lang_settings['row_code_settings'], "<form method='post' action='".$_SERVER["SCRIPT_NAME"]."'><input type='hidden' name='action' value='codesettings'><input type='submit' value=\"".$lang_settings['submit_code_settings']."\"> ".$lang_settings['text_code_settings_note']."</form>", 1);
+	tr($lang_settings['row_federation_settings'], "<form method='post' action='".$_SERVER["SCRIPT_NAME"]."'><input type='hidden' name='action' value='federationsettings'><input type='submit' value=\"".$lang_settings['submit_federation_settings']."\"> ".$lang_settings['text_federation_settings']."</form>", 1);
 }
 print("</table>");
 stdfoot();

@@ -1,10 +1,193 @@
-﻿// ICU 格式化资源测试程序
+﻿// 根语言表
+root : table {
 
-root: table {
-	test-string:string { "Hello!" }
+	// 删除相关的资源
+	delete : table {
+		
+		// 删除失败消息的标题
+		delete_failed_title : string { "Delete failed!" }
 
-	data1:table {
-		test-2:string {"Test"}
+	
+		
+		// 数据库中找不到这个种子
+		
+		error_missing_form_data : string { "missing form data" }
+
+		
+		// 视图删除他人种子
+		
+		error_not_owner : string { "You're not the owner! How did that happen?" }
+
+		
+		// 向服务器提交的数据有问题，通常是程序错误造成的
+		
+		error_invalid_data : string { "Invlid reason data" }
+		
+
+		// 没有输出删除原因
+		
+		error_enter_reason : string { "Please enter the reason for deleting this torrent" }
+
+	
+		
+		// 删除成功的消息提示
+		
+		torrent_deleted_title : string { "Torrent deleted!" }
+	
+		
+		
+		// 页面文字：提示返回上一页
+		
+		text_go_back : string { "Go back to whence you came" }
+	
+		
+		// 页面文字：返回主页
+		
+		text_back_to_index : string { "Back to index" }
+
+		
+		// 页面正文：删除成功。
+		
+		text_torrent_deleted : string { "Torrent deleted!" }
+
+	}
+
+
+	// 描述删除原因的字符串列表
+	delete_reason : table {
+
+		// 断种
+		dead : string { "Dead (0 seeders, 0 leechers = 0 peers total)" }
+		// 劣质
+		nuked : string { "Nuked!" }
+		// 重复
+		dupe : string { "Dupe!" }
+	
+		// 带有原因的劣质
+		// {0}: 原因
+		nuked_reason : string { "Nuked ({0})" }
+		
+		// 带有原因的重复
+		// {0}: 原因
+		dupe_reason : string { "Dupe ({0})" }
+
+		// 带有原因的违规
+		// {0}: 原因
+		rule_broken_reason : string { "NexusHD rules broken ({0})" }
+
+	}
+
+	// 种子被删除相关文字
+	delete_torrent_target : table {
+
+		// 字幕被删除的短消息标题
+		msg_torrent_deleted : string { "Your torrent was deleted" }
+
+		// 字幕被删除的短消息正文模板
+		// {0}: 种子编号 {1}: 种子标题 {2}: 操作者信息（用户名超链接） {3}: 原因字符串（包含类型和具体解释）	
+		msg_torrent_deleted_format : string { "Your torrent {0} ({1}) is deleted by {2}. The reason is: {3}" } 
+
+	}
+
+	// 字幕被删除相关文字
+	delete_sub_target : table {
+
+		// 删除字幕的消息标题
+		msg_deleted_your_sub : string { "Your subtitle was deleted" }
+
+		// 删除字幕的消息正文（无删除原因）
+		// {0}: 字幕编号 {1}: 字幕名称 {2}: 删除者名称
+		msg_delete_sub_format : string { "Your subtitle {0} ({1}) is deleted by {2}" }
+
+		// 删除字幕的消息正文（有删除原因）
+		// {0}: 字幕编号 {1}: 字幕名称 {2}: 删除者名称 {3}: 删除原因
+		msg_delete_sub_format_reason : string { "Your subtitle {0} ({1}) is deleted by {2}. The reason is: {3}" }
+
+		// 因为种子被删除而删除字幕的消息正文
+		// {0}: 字幕编号 {1}: 字幕名称 {2}: 种子编号 {3}: 种子名称 {4}: 原因（包含类型和具体解释） {5}: 删除者
+		msg_delete_sub_by_torrent_format : string { "Your subtitle {0} ({1}) is deleted by system, since its torrent {2} ({3}) is deleted by {5}. The reason for deleting this torrent is: {4}" }
+
+		// 因为种子被删除而删除字幕的消息正文（匿名版本）
+		msg_delete_sub_by_torrent_format_anony : string { "Your subtitle {0} ({1}) is deleted by system, since its torrent {2} ({3}) is deleted by its anonymous uploader. The reason for deleting this torrent is: {4}" }
+	}
+
+	// CC98 联合登录相关文字
+	cc98_logon : table {
+
+		// 登录过程错误消息标题
+		msg_system_error_title : string { "System error" }
+		// 登录过程错误消息正文
+		msg_system_error_text : string { "Cannot successfully take operations at this time, please try it again later. If the problem occurs frequently, please contact system adminsitrators." }
+
+		// 没有关联账户的消息标题
+		msg_no_associated_account_title : string { "No associated account" }
+		// 没有关联账户的消息正文
+		msg_no_associated_account_text : string { "This CC98 account does not associated with an valid NexusHD account. Please log on using your NexusHD account, and then set its CC98 account assocation in your control panel." } 
+
+		// 没有关联账户的消息标题
+		msg_duplicated_association_title : string { "Duplicated associated account" }
+		// 没有关联账户的消息正文
+		msg_duplicated_association_text : string { "This CC98 account has already associated with another NexusHD account. Currently we do not support duplicated associations. Please log on with a different CC98 account and try again." } 
+
+		// 创建账号关联的页面标题
+		msg_create_association_title : string { "Create Account Association" }
+
+		// 编辑账号关联的页面标题
+		msg_edit_association_title : string { "Edit Account Association" }
+
+		// 删除账号关联的页面标题
+		msg_delete_association_title : string { "Delete Account Association" }
+
+		// 创建/编辑关联的说明文字
+		msg_edit_association_text : string { "To perform this action, you must visit the CC98 login system and log on using your CC98 account. Click the link above will leave NexusHD and go to CC98 login website." }
+
+		// 创建/编辑关联的链接文字
+		msg_edit_association_link_text : string { "Visit CC98 Login System" }
+
+		// 创建/编辑关联的说明文字
+		msg_delete_association_text : string { "Your current associated CC98 account is <strong>{0}</strong>. Click the button below to delete the association." }
+
+		// 创建/编辑关联的链接文字
+		msg_delete_association_button_text : string { "Delete Account Association" }
+
+
+		// 创建管理关联成功消息标题
+		msg_create_association_success_title : string { "Creating Association Succeeded" }
+		// 创建管理关联成功消息正文
+		// {0}: CC98 账户名称
+		msg_create_association_success_text : string { "Your NexusHD aacount is now associated with CC98 account \"{0}\". The browser will be redirected to the home page after 3 seconds." }
+
+		// 修改管理关联成功消息标题
+		msg_edit_association_success_title : string { "Editing Association Succeeded" }
+		// 修改管理关联成功消息正文
+		// {0}: CC98 账户名称
+		msg_edit_association_success_text : string { "Your NexusHD aacount is now associated with CC98 account \"{0}\". The browser will be redirected to the home page after 3 seconds." }
+
+		// 修改管理关联成功消息标题
+		msg_delete_association_success_title : string { "Deleting Association Succeeded" }
+		// 修改管理关联成功消息正文
+		// {0}: CC98 账户名称
+		msg_delete_association_success_text : string { "Your NexusHD account is not associated with CC98 account any more. The browser will be redirected to the home page after 3 seconds." }
+
+		// 使用 CC98 账户登录成功消息标题
+		msg_logon_success_title : string { "Logging on Succeeded" }
+		// 使用 CC98 账户登录成功消息正文
+		// {0}: NexusHD 账户名称
+		msg_logon_success_text : string { "You are now logged into NexusHD with the user name \"{0}\". " }
+	}
+
+	// 用户控制面板相关文字
+	user_control_panel : table {
+
+		// CC98 账户关联选项标题
+		cc98_id_association_title : string { "CC98 Acc. Assoc." }
+
+		// 没有账户关联的显示文字
+		cc98_id_text_none : string { "None" }
+
+		// 相关操作链接文字
+		cc98_id_action_create : string { "Create" }
+		cc98_id_action_edit : string { "Edit" }
+		cc98_id_action_delete : string { "Delete" }
 	}
 }
-

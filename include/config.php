@@ -3,7 +3,7 @@
 if(!defined('IN_TRACKER'))
 die('Hacking attempt!');
 
-$CONFIGURATIONS = array('ACCOUNT', 'ADVERTISEMENT', 'ATTACHMENT', 'AUTHORITY', 'BASIC', 'BONUS', 'CODE', 'MAIN', 'SECURITY', 'SMTP', 'TORRENT', 'TWEAK');
+$CONFIGURATIONS = array('ACCOUNT', 'ADVERTISEMENT', 'ATTACHMENT', 'AUTHORITY', 'BASIC', 'BONUS', 'CODE', 'MAIN', 'SECURITY', 'SMTP', 'TORRENT', 'TWEAK', 'FEDERATION');
 function ReadConfig ($configname = NULL) {
 	global $CONFIGURATIONS;
 	if ($configname) {
@@ -171,6 +171,7 @@ $maxloginattempts = $SECURITY['maxloginattempts'];
 $disableemailchange = $SECURITY['changeemail'];
 $cheaterdet_security = $SECURITY['cheaterdet'];
 $nodetect_security = $SECURITY['nodetect'];
+$data_protect_key = $SECURITY['dataprotectkey'];
 
 $defaultclass_class = $AUTHORITY['defaultclass'];
 $staffmem_class = $AUTHORITY['staffmem'];
@@ -393,6 +394,10 @@ $thirtypercentleechbecome_torrent = $TORRENT['thirtypercentleechbecome'];
 $normalbecome_torrent = $TORRENT['normalbecome'];
 $uploaderdouble_torrent = $TORRENT['uploaderdouble'];
 $deldeadtorrent_torrent = $TORRENT['deldeadtorrent'];
+
+$cc98_client_id = $FEDERATION['cc98clientid'];
+$cc98_client_secret = $FEDERATION['cc98clientsecret'];
+$cc98_redirect_uri = $FEDERATION['cc98redirecturi'];
 
 foreach ($CONFIGURATIONS as $CONFIGURATION) {
 	unset($GLOBALS[$CONFIGURATION]);

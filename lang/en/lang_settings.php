@@ -694,7 +694,24 @@ $lang_settings = array
 	'text_enter_casino_note' => ". Allow to open casino page ",
 	'row_casino_min_bonus' => "The minimum bonus to enter casino ",
 	'text_casino_min_bonus_note' => "Default '2000'. Users whose bonus lower than this cannot enter casino.",
+	
+	'row_ignore_ip_check_list' => "Unbannable IP address",
+	'text_ignore_ip_check_list' => "All the IP address in this list will never be banned. Using comma to seperate items.",
+	
+	'row_data_protect_key' => "Data protection key",
+	'text_data_protect_key' => "Key used in server data encryption. Changing this value may cause previous internal data be invalid.",
 
+	'head_federation_settings' => "Federation Settings",
+	'head_save_federation_settings' => "Save Federation Settings",
+	'submit_federation_settings' => "Federation Settings",
+	'row_federation_settings' => "Federation Settings",
+	'text_federation_settings' => "Change settings for cross-site federation.",
+	'row_cc98_client_id' => "CC98 Client Id",
+	'text_cc98_client_id' => "The 'client_id' value of CC98 OAuth API key.",
+	'row_cc98_client_secret' => "CC98 Client Secret",
+	'text_cc98_client_secret' => "The 'client_secret' value of CC98 OAuth API key.",
+	'row_cc98_redirect_uri' => "CC98 Redirect URI",
+	'text_cc98_redirect_uri' => "The 'redirect_uri' value of CC98 OAuth API key. If you change this value, you must ensure a proper handler file exists.",
 );
 
 ?>

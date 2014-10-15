@@ -31,6 +31,8 @@ $lang_login = array
 	'submit_clear' => "clear",
 	'text_select_lang' => "Select Site Language: ",
 	'head_login' => "Login",
+	'button_login_cc98' => 'Login with CC98 Account',
+
 );
 
 ?>

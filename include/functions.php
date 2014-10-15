@@ -4,6 +4,7 @@
  * 2014-09-30 (樱桃): 同时删除字幕功能，mySQLi 连接
  * 2014-10-03 (樱桃): 特殊 IP 不屏蔽
  * 2014-10-12 (樱桃): 本地化资源提取方法，删除字幕功能改进
+ * 2014-10-14 (樱桃): 加密/解密方法
  */
 
 # IMPORTANT: Do not edit below unless you know what you are doing!
@@ -15,6 +16,75 @@ include_once($rootpath . 'classes/class_advertisement.php');
 
 require_once($rootpath . get_langfile_path("functions.php"));
 require_once($rootpath . get_langfile_path("functions.php"));
+
+
+/**
+ * 使用服务器密钥加密数据。
+ * @param string $data 要加密的数据。
+ * @return string 加密后的字符串。 
+ */
+function protect_string($data){
+	
+	global $data_protect_key;
+	
+	$td = mcrypt_module_open(MCRYPT_DES, '', MCRYPT_MODE_ECB, '');
+	$key = str_pad($data_protect_key, mcrypt_enc_get_key_size($td));
+	
+	mcrypt_generic_init($td, $key, '');
+	
+	$result = mcrypt_generic($td, $data);
+	
+	mcrypt_generic_deinit($td);
+	mcrypt_module_close($td);
+	
+	return $result;
+}
+
+/**
+ * 使用服务器密钥解密数据。
+ * @param string $data 要解密的数据。
+ * @return string 解密后的字符串。 
+ */
+function unprotect_string($data){
+	
+	global $data_protect_key;
+	
+	
+	$td = mcrypt_module_open(MCRYPT_DES, '', MCRYPT_MODE_ECB, '');
+	$key = str_pad($data_protect_key, mcrypt_enc_get_key_size($td));
+	
+	mcrypt_generic_init($td, $key, '');
+	
+	$result = mdecrypt_generic($td, $data);
+	
+	mcrypt_generic_deinit($td);
+	mcrypt_module_close($td);
+	
+	return $result;
+}
+
+/**
+ * 将任意数据进行加密后返回可供 HTTP 传输的字符串。
+ * @param mixed $data 要加密的数据。
+ * @return string 加密后的字符串。
+ */
+function protect_data($data) {
+	$str = serialize($data);
+	$pro_str = protect_string($str);
+	return base64_encode($pro_str);
+}
+
+/**
+ * 解密被加密的数据。
+ * @param string $data 被加密后的数据字符串。
+ * @return mixin 原始数据。
+ */
+function unprotect_data($data) {
+	
+	$pro_str = base64_decode($data);
+	$str = unprotect_string($pro_str);
+	return unserialize($str);
+}
 
 /**
  * 判断当前 IP 是否是特殊 IP。
@@ -84,6 +154,15 @@ function get_fix_user_lang($user_id = null){
 }
 
 /**
+ * 获取当前用户的本地化区域名称。
+ * @return string 当前用户的语言区域。
+ */
+function get_current_user_lang() {
+	global $CURUSER;
+	return get_fix_user_lang($CURUSER['id']);
+}
+
+/**
  * 获得具有指定区域的本地化资源。
  * @param string $lang_name 语言名称。默认值为空字符串。
  * @return ResourceBundle 对应的资源对象。
@@ -98,7 +177,16 @@ function get_resource($lang_name = ""){
  * @return ResourceBundle 用户对应的资源对象。
  */
 function get_user_resource($user_id = null){
-		return get_resource(get_fix_user_lang($user_id));
+	return get_resource(get_fix_user_lang($user_id));
+}
+
+/**
+ * 获取当前用户对应的本地化资源。
+ * @return ResourceBundle 当前用户的本地化资源。
+ */
+function get_current_user_resource() {
+	global $CURUSER;
+	return get_user_resource($CURUSER['id']);
 }
 
 function get_langfile_path($script_name ="", $target = false, $lang_folder = "")
@@ -1968,7 +2056,7 @@ function dbconn($autoclean = false)
 	
 	if (!$useCronTriggerCleanUp && $autoclean) {
 		register_shutdown_function("autoclean");
-	}
+	}	
 }
 function get_user_row($id)
 {
@@ -1996,6 +2084,7 @@ function get_user_row($id)
 }
 
 function userlogin() {
+	
 	global $lang_functions;
 	global $Cache;
 	global $SITE_ONLINE, $oldip;
@@ -2032,7 +2121,7 @@ function userlogin() {
 		//if (strlen($_SESSION["s_secure_pass"]) != 32)
 		//return;
 	}
-
+	
 	$res = sql_query("SELECT * FROM users WHERE users.id = ".sqlesc($id)." AND users.enabled='yes' AND users.status = 'confirmed' LIMIT 1");
 	$row = mysql_fetch_array($res);
 	if (!$row)
@@ -2961,6 +3050,7 @@ function base64 ($string, $encode=true) {
 function loggedinorreturn($mainpage = false) {
 	global $CURUSER,$BASEURL;
 	if (!$CURUSER) {	
+			
 		// Fix the bug for cookie affect field
 		if($_SERVER['HTTP_HOST'] != $BASEURL){
 			header("Location: " . get_protocol_prefix() . $BASEURL . $_SERVER["REQUEST_URI"]);
