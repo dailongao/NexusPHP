@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$title = $SITENAME.$lang_recover['mail_title'];
 	$body = <<<EOD
 {$lang_recover['mail_one']}($email){$lang_recover['mail_two']}$ip{$lang_recover['mail_three']}
-<b><a href="javascript:void(null)" onclick="window.open('http://$BASEURL/recover.php?id={$arr["id"]}&secret=$hash')"> {$lang_recover['mail_this_link']} </a></b><br />
+<b><a href="http://$BASEURL/recover.php?id={$arr["id"]}&secret=$hash" target="_blank"> {$lang_recover['mail_this_link']} </a></b><br />
 http://$BASEURL/recover.php?id={$arr["id"]}&secret=$hash
 {$lang_recover['mail_four']}
 EOD;
