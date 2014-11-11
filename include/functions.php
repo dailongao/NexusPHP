@@ -5,6 +5,7 @@
  * 2014-10-03 (樱桃): 特殊 IP 不屏蔽
  * 2014-10-12 (樱桃): 本地化资源提取方法，删除字幕功能改进
  * 2014-10-14 (樱桃): 加密/解密方法
+ * 2014-11-11 (樱桃): Silverlight 支持
  */
 
 # IMPORTANT: Do not edit below unless you know what you are doing!
@@ -367,8 +368,9 @@ function print_attachment($dlkey, $enableimage = true, $imageresizer = true)
 
 function addTempCode($value) {
 	global $tempCode, $tempCodeCount;
+	
 	$tempCode[$tempCodeCount] = $value;
-	$return = "<tempCode_$tempCodeCount>";
+	$return = "[[tempCode_$tempCodeCount]]";
 	$tempCodeCount++;
 	return $return;
 }
@@ -468,16 +470,10 @@ function htmlObjectBase($attributes, $params, $innerHtml) {
 		$attrElement->setAttribute("value", $value);
 	}
 	
-	// 内部 HTML
-	$innerHtmlDoc = new DOMDocument("1.0", "UTF-8");
-	$innerHtmlDoc->loadHTML($innerHtml);
-		
-	// 插入片段
-	$freg = $document->createDocumentFragment();
-	$freg->appendXML($innerHtmlDoc->saveXML());
+	$innerElement = $document->createTextNode($innerHtml);
 	
 	// 插入元素
-	$objElement->appendChild($freg);
+	$objElement->appendChild($innerElement);
 	
 	// 返回内部 HTML。
 	return $document->saveHTML($objElement);
@@ -487,10 +483,10 @@ function htmlObjectBase($attributes, $params, $innerHtml) {
  * 生成供 HTML Silverlight object 对象使用的 HTML。
  * @param mixed $initParam 
  * @param mixed $params 
- * @param mixed $innerhtml 
+ * @param mixed $innerHtml 
  * @return mixed
  */
-function htmlSilverlightObject($source, $initParams, $params, $innerhtml){
+function htmlSilverlightObject($source, $initParams, $params, $innerHtml){
 	
 	//    <object width="300" height="300"
 	//    data="data:application/x-silverlight-2," 
@@ -533,7 +529,7 @@ function htmlSilverlightObject($source, $initParams, $params, $innerhtml){
 	}
 	
 	// 生成对象
-	return htmlObjectBase($new_attribute, $new_params, $innerhtml);
+	return htmlObjectBase($new_attribute, $new_params, $innerHtml);
 
 }
 
@@ -623,12 +619,12 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 			    if(preg_match('/("[^"]*"|[^\s,]*)\s*,\s*("[^"]*"|[^\s,]*)(.*)/i', $params, $param_match_result) == 0) {
 					return null;
 			    }
-								
+				
 			    // 来源
 			    $source = remove_quote($param_match_result[1]);
 			    // 初始化参数
 			    $init_params = remove_quote($param_match_result[2]);
-															
+				
 			    // 其他参数列表
 			    $opt_params_str = $param_match_result[3];
 				
@@ -641,18 +637,18 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 			    foreach($opt_params_match_result as $opt_params_match) {
 			        $opt_params[remove_quote($opt_params_match[1])] = remove_quote($opt_params_match[2]);
 			    }
-				
-			    $result = htmlSilverlightObject($source, $init_params, $opt_params, $altUbb);
+
+				$result = htmlSilverlightObject($source, $init_params, $opt_params, $altUbb);
 				return addTempCode($result);
 				
-			// 如果不允许则直接返回替换内容。
+				// 如果不允许则直接返回替换内容。
 			} else {
 			    return $altUbb;
 			}
 			
 		};
 		
-		$s = preg_replace_callback('/\[SL=(.*?)\](.*?)\[\/SL\]/i', function ($match) use($enableflash) { return silverligh_tag_replace_handler($match, true); }, $s);
+		$s = preg_replace_callback('/\[SL=(.*?)\](.*?)\[\/SL\]/i', function ($match) use($enableflash) { return silverligh_tag_replace_handler($match, $enableflash); }, $s);
 	}
 	
 	
@@ -701,21 +697,22 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 	reset($tempCode);
 	
 	// 不知道此段代码的作用，因此已经删除
-	//$j = 0;
-	//while(count($tempCode) || $j > 5) {
-	//    foreach($tempCode as $key=>$code) {
-	//        $s = str_replace("<tempCode_$key>", $code, $s, $count);
-	//        if ($count) {
-	//            unset($tempCode[$key]);
-	//            $i = $i+$count;
-	//        }
-	//    }
-	//    $j++;
-	//}
+	$j = 0;
 	
-	foreach($tempCode as $key=>$code) {
-		$s = str_replace("<tempCode_$key>", $code, $s, $count);
+	while(count($tempCode) && $j < 5) {
+	    foreach($tempCode as $key => $code) {
+	        $s = str_replace("[[tempCode_$key]]", $code, $s, $count);
+	        if ($count) {
+	            unset($tempCode[$key]);
+	            $i = $i+$count;
+	        }
+	    }
+	    $j++;
 	}
+	
+	//foreach($tempCode as $key=>$code) {
+	//    $s = str_replace("<tempCode_$key>", $code, $s, $count);
+	//}
 	
 	return $s;
 }
@@ -1168,16 +1165,16 @@ function textbbcode($form,$text,$content="",$hastitle=false, $col_num = 130)
 	function winop()
 	{
 		windop = window.open("moresmilies.php?form=<?= $form?>&text=<?= $text?>","mywin","height=500,width=500,resizable=no,scrollbars=yes");
-		}
+	}
 
-		function simpletag(thetag)
-		{
-			var tagOpen = eval(thetag + "_open");
-			if (tagOpen == 0) {
-				if(doInsert("[" + thetag + "]", "[/" + thetag + "]", true))
-				{
-					eval(thetag + "_open = 1");
-					eval("document.<?= $form?>." + thetag + ".value += '*'");
+	function simpletag(thetag)
+	{
+		var tagOpen = eval(thetag + "_open");
+		if (tagOpen == 0) {
+			if(doInsert("[" + thetag + "]", "[/" + thetag + "]", true))
+			{
+				eval(thetag + "_open = 1");
+				eval("document.<?= $form?>." + thetag + ".value += '*'");
 					pushstack(bbtags, thetag);
 					cstat();
 				}
@@ -1195,13 +1192,13 @@ function textbbcode($form,$text,$content="",$hastitle=false, $col_num = 130)
 					doInsert("[/" + tagRemove + "]", "", false)
 					if ((tagRemove != 'COLOR') ){
 						eval("document.<?= $form?>." + tagRemove + ".value = '" + tagRemove.toUpperCase() + "'");
-					eval(tagRemove + "_open = 0");
+						eval(tagRemove + "_open = 0");
+					}
 				}
+				cstat();
 			}
-			cstat();
 		}
-	}
-	//]]>
+		//]]>
 </script>
 <table width="100%" cellspacing="0" cellpadding="5" border="0">
 	<tr>

@@ -751,16 +751,16 @@ if ($action == "viewtopic")
 		print("<td class=\"toolbox\" align=\"right\">");
 
 		if ($maypost){
-			//print("<a id=\"sendbonus\" href=\"".htmlspecialchars("javascript: sendbonus(".$postid.");")."\">送米</a>");
-			print("<div style=\"display:inline-block;vertical-align:top;margin-top:2px;\">");
-			print("<select name=\"bonus\">");
-			print("<option value=500>500</option>");
-			print("<option value=1000 selected=\"selected\">1000</option>");
-			print("<option value=2000 >2000</option>");
-			print("</select>");
-			print("<button id=\"btnbonus\" onclick=\"javascript: sendbonus(this, $posterid);\">赠送魔力值</button>");
-			print("</div>");
-			print("<a href=\"".htmlspecialchars("?action=quotepost&postid=".$postid)."\"><img class=\"f_quote\" src=\"pic/trans.gif\" alt=\"Quote\" title=\"".$lang_forums['title_reply_with_quote']."\" /></a>");
+		    //print("<a id=\"sendbonus\" href=\"".htmlspecialchars("javascript: sendbonus(".$postid.");")."\">送米</a>");
+			//print("<div style=\"display:inline-block;vertical-align:top;margin-top:2px;\">");
+			//print("<select name=\"bonus\">");
+			//print("<option value=500>500</option>");
+			//print("<option value=1000 selected=\"selected\">1000</option>");
+			//print("<option value=2000 >2000</option>");
+			//print("</select>");
+			//print("<button id=\"btnbonus\" onclick=\"javascript: sendbonus(this, $posterid);\">赠送魔力值</button>");
+			//print("</div>");
+		    print("<a href=\"".htmlspecialchars("?action=quotepost&postid=".$postid)."\"><img class=\"f_quote\" src=\"pic/trans.gif\" alt=\"Quote\" title=\"".$lang_forums['title_reply_with_quote']."\" /></a>");
 		}
 
 		if (get_user_class() >= $postmanage_class || $is_forummod)
