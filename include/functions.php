@@ -437,6 +437,106 @@ function formatBox($title, $content){
 	return addTempCode("<div class=\"spoiler\"><div class=\"spoiler_head\" onclick=\"return toggleSpoiler(this);\">$title</div><div class=\"spoiler_body\" style=\"display: none;\">$content</div></div>");
 }
 
+
+/**
+ * 在 PHP 文档中插入 HTML Object 对象的核心方法。
+ * @param Array $attributes object 对象的属性列表。
+ * @param Array $params object 对象的 params 列表
+ * @param string $innerHtml object 对象的替代 HTML。
+ * @return string HTML 字符串。
+ */
+function htmlObjectBase($attributes, $params, $innerHtml) {
+	
+	$document = new DOMDocument("1.0", "UTF-8");
+	
+	// 创建 object 元素
+	$objElement = $document->createElement("object", null);
+	$document->appendChild($objElement);
+	
+	// 元素属性
+	foreach($attributes as $name => $value) {
+		$objElement->setAttribute($name, $value);
+	}
+	
+	// 内部内容
+	foreach($params as $name => $value) {
+		
+		$attrElement = $document->createElement("param", null);
+		$objElement->appendChild($attrElement);
+		
+		$attrElement->setAttribute("name", $name);
+		$attrElement->setAttribute("value", $value);
+	}
+	
+	// 内部 HTML
+	$innerHtmlDoc = new DOMDocument("1.0", "UTF-8");
+	$innerHtmlDoc->loadHTML($innerHtml);
+		
+	// 插入片段
+	$freg = $document->createDocumentFragment();
+	$freg->appendXML($innerHtmlDoc->saveXML());
+	
+	// 插入元素
+	$objElement->appendChild($freg);
+	
+	// 返回内部 HTML。
+	return $document->saveHTML($objElement);
+}
+
+/**
+ * 生成供 HTML Silverlight object 对象使用的 HTML。
+ * @param mixed $initParam 
+ * @param mixed $params 
+ * @param mixed $innerhtml 
+ * @return mixed
+ */
+function htmlSilverlightObject($source, $initParams, $params, $innerhtml){
+	
+	//    <object width="300" height="300"
+	//    data="data:application/x-silverlight-2," 
+	//    type="application/x-silverlight-2" >
+	//    <param name="source" value="SilverlightApplication1.xap"/>
+	//</object>
+
+	
+	// 实际的 HTML 属性。
+	$new_attribute = [
+		"data" => "data:application/x-silverlight-2,", // 注意逗号
+		"type" => "application/x-silverlight-2",
+	];
+	
+	// 高度和宽度特别处理
+	if($params['width']) {
+		$new_attribute['width'] = $params['width'];
+		unset($params['width']);
+	}
+	
+	if($params['height']) {
+		$new_attribute['height'] = $params['height'];
+		unset($params['height']);
+	}
+	
+	// 必须参数
+	$new_params = [
+		"source" => $source,
+		"initParams" => $initParams,
+	];
+
+	// 允许参数。
+	$validParams = ["autoUpgrade", "background", "enableautozoom", "enableCacheVisualization", "enableGPUAcceleration", "enableNavigation", "enableRedrawRegions", "maxframerate", "minRuntimeVersion", "splashscreensource", "width", "height", "windowless"];
+	
+	// 复制所有合法属性。
+	foreach($validParams as $paramName) {
+		if($params[$paramName]) {
+			$new_params[$paramName] = $params[$paramName];
+		}
+	}
+	
+	// 生成对象
+	return htmlObjectBase($new_attribute, $new_params, $innerhtml);
+
+}
+
 function format_comment($text, $strip_html = true, $xssclean = false, $newtab = false, $imageresizer = true, $image_max_width = 700, $enableimage = true, $enableflash = true , $imagenum = -1, $image_max_height = 0, $adid = 0)
 {
 	global $lang_functions;
@@ -496,7 +596,66 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 			$s = preg_replace("/\[flv(\,([1-9][0-9]*)\,([1-9][0-9]*))?\]((http|ftp):\/\/[^\s'\"<>]+(\.(flv)))\[\/flv\]/i", '', $s);
 		}
 	}
-
+	
+	if (stripos($s,"[sl") !== false) { //sl is not often used. Better check if it exist before hand		
+		
+		// 移除参数的可选引号。
+		function remove_quote($str) {
+			return preg_replace('/^\"(.*)\"$/i', '$1', $str);
+		}
+		
+		
+		// 对单个 Silverlight 对象进行替换的处理函数。
+		function silverligh_tag_replace_handler($match, $enabled) {
+			
+			// 可选参数
+			$params = $match[1];
+			// 替代内容
+			$altUbb = $match[2];
+			
+			// 翻转解析，注意存在安全风险
+			$params = htmlspecialchars_decode($params);
+			
+			// 是否允许 Flash
+			if($enabled) {				
+				
+			    // 匹配参数部分，如果失败则直接返回。
+			    if(preg_match('/("[^"]*"|[^\s,]*)\s*,\s*("[^"]*"|[^\s,]*)(.*)/i', $params, $param_match_result) == 0) {
+					return null;
+			    }
+								
+			    // 来源
+			    $source = remove_quote($param_match_result[1]);
+			    // 初始化参数
+			    $init_params = remove_quote($param_match_result[2]);
+															
+			    // 其他参数列表
+			    $opt_params_str = $param_match_result[3];
+				
+			    // 执行子组匹配。
+			    preg_match_all('/\s*,\s*("[^"]*"|[^"\s=]*)\s*=\s*(.[^"]*"|[^"\s,]*)/i', $opt_params_str, $opt_params_match_result, PREG_SET_ORDER);
+				
+			    $opt_params = [];
+				
+			    // 可选参数
+			    foreach($opt_params_match_result as $opt_params_match) {
+			        $opt_params[remove_quote($opt_params_match[1])] = remove_quote($opt_params_match[2]);
+			    }
+				
+			    $result = htmlSilverlightObject($source, $init_params, $opt_params, $altUbb);
+				return addTempCode($result);
+				
+			// 如果不允许则直接返回替换内容。
+			} else {
+			    return $altUbb;
+			}
+			
+		};
+		
+		$s = preg_replace_callback('/\[SL=(.*?)\](.*?)\[\/SL\]/i', function ($match) use($enableflash) { return silverligh_tag_replace_handler($match, true); }, $s);
+	}
+	
+	
 	// [url=http://www.example.com]Text[/url]
 	/*
 	if ($adid) {
@@ -538,18 +697,26 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 	}
 	
 	$s = preg_replace("/\[em([1-9][0-9]*)\]/ie", "(\\1 < 192 ? '<img src=\"pic/smilies/\\1.gif\" alt=\"[em\\1]\" />' : '[em\\1]')", $s);
+	
 	reset($tempCode);
-	$j = 0;
-	while(count($tempCode) || $j > 5) {
-		foreach($tempCode as $key=>$code) {
-			$s = str_replace("<tempCode_$key>", $code, $s, $count);
-			if ($count) {
-				unset($tempCode[$key]);
-				$i = $i+$count;
-			}
-		}
-		$j++;
+	
+	// 不知道此段代码的作用，因此已经删除
+	//$j = 0;
+	//while(count($tempCode) || $j > 5) {
+	//    foreach($tempCode as $key=>$code) {
+	//        $s = str_replace("<tempCode_$key>", $code, $s, $count);
+	//        if ($count) {
+	//            unset($tempCode[$key]);
+	//            $i = $i+$count;
+	//        }
+	//    }
+	//    $j++;
+	//}
+	
+	foreach($tempCode as $key=>$code) {
+		$s = str_replace("<tempCode_$key>", $code, $s, $count);
 	}
+	
 	return $s;
 }
 
@@ -1001,33 +1168,33 @@ function textbbcode($form,$text,$content="",$hastitle=false, $col_num = 130)
 	function winop()
 	{
 		windop = window.open("moresmilies.php?form=<?= $form?>&text=<?= $text?>","mywin","height=500,width=500,resizable=no,scrollbars=yes");
-	}
-
-	function simpletag(thetag)
-	{
-		var tagOpen = eval(thetag + "_open");
-		if (tagOpen == 0) {
-			if(doInsert("[" + thetag + "]", "[/" + thetag + "]", true))
-			{
-				eval(thetag + "_open = 1");
-				eval("document.<?= $form?>." + thetag + ".value += '*'");
-				pushstack(bbtags, thetag);
-				cstat();
-			}
 		}
-		else {
-			lastindex = 0;
-			for (i = 0; i < bbtags.length; i++ ) {
-				if ( bbtags[i] == thetag ) {
-					lastindex = i;
+
+		function simpletag(thetag)
+		{
+			var tagOpen = eval(thetag + "_open");
+			if (tagOpen == 0) {
+				if(doInsert("[" + thetag + "]", "[/" + thetag + "]", true))
+				{
+					eval(thetag + "_open = 1");
+					eval("document.<?= $form?>." + thetag + ".value += '*'");
+					pushstack(bbtags, thetag);
+					cstat();
 				}
 			}
+			else {
+				lastindex = 0;
+				for (i = 0; i < bbtags.length; i++ ) {
+					if ( bbtags[i] == thetag ) {
+						lastindex = i;
+					}
+				}
 
-			while (bbtags[lastindex]) {
-				tagRemove = popstack(bbtags);
-				doInsert("[/" + tagRemove + "]", "", false)
-				if ((tagRemove != 'COLOR') ){
-					eval("document.<?= $form?>." + tagRemove + ".value = '" + tagRemove.toUpperCase() + "'");
+				while (bbtags[lastindex]) {
+					tagRemove = popstack(bbtags);
+					doInsert("[/" + tagRemove + "]", "", false)
+					if ((tagRemove != 'COLOR') ){
+						eval("document.<?= $form?>." + tagRemove + ".value = '" + tagRemove.toUpperCase() + "'");
 					eval(tagRemove + "_open = 0");
 				}
 			}
@@ -3050,7 +3217,7 @@ function base64 ($string, $encode=true) {
 function loggedinorreturn($mainpage = false) {
 	global $CURUSER,$BASEURL;
 	if (!$CURUSER) {	
-			
+		
 		// Fix the bug for cookie affect field
 		if($_SERVER['HTTP_HOST'] != $BASEURL){
 			header("Location: " . get_protocol_prefix() . $BASEURL . $_SERVER["REQUEST_URI"]);
@@ -3216,7 +3383,7 @@ function deletetorrent($id, $name, $is_anonymous, $rt, $reason, $deletesubs) {
 			if ($CURUSER['id'] != $sub_uppedby)
 			{	
 				$reason_str = generate_delete_reason($sub_uppedby, $rt, $reason);
-										
+				
 				// 被删除字幕者的语言资源
 				$lang_upper = get_user_resource($sub_uppedby)['delete_sub_target'];
 				
@@ -3226,7 +3393,7 @@ function deletetorrent($id, $name, $is_anonymous, $rt, $reason, $deletesubs) {
 				
 				// 删除者
 				$deleter_info = MessageFormatter::formatMessage("", "[url=userdetails.php?id={0}]{1}[/url]", array($CURUSER['id'], $CURUSER['username']));
-							
+				
 				// 插入删除字幕消息
 				$msg = MessageFormatter::formatMessage($user_lang, $format, array($sub_id, $sub_name, $id, $name, $reason_str, $deleter_info));
 				$subject = $lang_upper['msg_deleted_your_sub'];

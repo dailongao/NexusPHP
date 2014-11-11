@@ -24,7 +24,7 @@ function forum_stats ()
 	else
 		$forumusers = $lang_forums['text_no_active_users'];
 ?>
-<h2 align="left"><?php echo $lang_forums['text_stats'] ?></h2>
+<h2 align="left"><?= $lang_forums['text_stats'] ?></h2>
 <table width="100%"><tr><td class="text"><div>
 <?php
 	if (!$postcount = $Cache->get_value('total_posts_count')){
@@ -740,7 +740,7 @@ if ($action == "viewtopic")
 		
 		
 		if ($signature)
-		$body .= "<p style='vertical-align:bottom'><br />____________________<br />" . format_comment($signature,false,false,false,true,500,true,false, 1,200) . "</p>";
+		$body .= "<p style='vertical-align:bottom'><br />____________________<br />" . format_comment($signature,false,false,false,true,500,true,true, 1, 200) . "</p>";
 
 		$stats = "<br />"."&nbsp;&nbsp;".$lang_forums['text_posts']."$forumposts<br />"."&nbsp;&nbsp;".$lang_forums['text_ul']."$uploaded <br />"."&nbsp;&nbsp;".$lang_forums['text_dl']."$downloaded<br />"."&nbsp;&nbsp;".$lang_forums['text_ratio']."$ratio";
 		print("<tr><td class=\"rowfollow\" width=\"150\" valign=\"top\" align=\"left\" style='padding: 0px'>" .
@@ -1294,12 +1294,12 @@ if ($action == "viewforum")
 		print("</td>");
 ?>
 <td align="left" colspan="3">
-<span id="order" onclick="dropmenu(this);"><span style="cursor: pointer;"><b><?php echo $lang_forums['text_order']?></b></span>
+<span id="order" onclick="dropmenu(this);"><span style="cursor: pointer;"><b><?= $lang_forums['text_order']?></b></span>
 <span id="orderlist" class="dropmenu" style="display: none"><ul>
-<li><a href="?action=viewforum&amp;forumid=<?php echo $forumid.$addparam?>&amp;sort=firstpostdesc"><?php echo $lang_forums['text_topic_desc']?></a></li>
-<li><a href="?action=viewforum&amp;forumid=<?php echo $forumid.$addparam?>&amp;sort=firstpostasc"><?php echo $lang_forums['text_topic_asc']?></a></li>
-<li><a href="?action=viewforum&amp;forumid=<?php echo $forumid.$addparam?>&amp;sort=lastpostdesc"><?php echo $lang_forums['text_post_desc']?></a></li>
-<li><a href="?action=viewforum&amp;forumid=<?php echo $forumid.$addparam?>&amp;sort=lastpostasc"><?php echo $lang_forums['text_post_asc']?></a></li>
+<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=firstpostdesc"><?= $lang_forums['text_topic_desc']?></a></li>
+<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=firstpostasc"><?= $lang_forums['text_topic_asc']?></a></li>
+<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=lastpostdesc"><?= $lang_forums['text_post_desc']?></a></li>
+<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=lastpostasc"><?= $lang_forums['text_post_asc']?></a></li>
 </ul>
 </span>
 </span>
@@ -1424,19 +1424,19 @@ if ($action == "search")
 
 </style>
 <div class="search">
-	<div class="search_title"><?php echo $lang_forums['text_search_on_forum'] ?> <?php echo ($error && $keywords != "" ? "[<b><font color=striking> ".$lang_forums['text_nothing_found']."</font></b> ]" : $found)?></div>
+	<div class="search_title"><?= $lang_forums['text_search_on_forum'] ?> <?= ($error && $keywords != "" ? "[<b><font color=striking> ".$lang_forums['text_nothing_found']."</font></b> ]" : $found)?></div>
 	<div style="margin-left: 53px; margin-top: 13px;">
 		<form method="get" action="forums.php" id="search_form" style="margin: 0pt; padding: 0pt; font-family: Tahoma,Arial,Helvetica,sans-serif; font-size: 11px;">
 		<input type="hidden" name="action" value="search" />
 		<table border="0" cellpadding="0" cellspacing="0" width="512" class="search_table">
 		<tbody>
 		<tr>
-		<td style="padding-bottom: 3px; border: 0;" valign="top"><?php echo $lang_forums['text_by_keyword'] ?></td>
+		<td style="padding-bottom: 3px; border: 0;" valign="top"><?= $lang_forums['text_by_keyword'] ?></td>
 		</tr>
 		<tr>
 		<td style="padding-bottom: 3px; border: 0;" valign="top">			
-			<input name="keywords" type="text" value="<?php echo $keywords?>" style="width: 400px;" /></td>
-			<td style="padding-bottom: 3px; border: 0;" valign="top"><input name="image" type="image" style="vertical-align: middle; padding-bottom: 0px; margin-left: 0px;" src="<?php echo get_forum_pic_folder()?>/search_button.gif" alt="Search" /></td>
+			<input name="keywords" type="text" value="<?= $keywords?>" style="width: 400px;" /></td>
+			<td style="padding-bottom: 3px; border: 0;" valign="top"><input name="image" type="image" style="vertical-align: middle; padding-bottom: 0px; margin-left: 0px;" src="<?= get_forum_pic_folder()?>/search_button.gif" alt="Search" /></td>
 		</tr>
 		</tbody>
 		</table>
