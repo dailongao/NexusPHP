@@ -6,6 +6,7 @@
  * 2014-10-12 (樱桃): 本地化资源提取方法，删除字幕功能改进
  * 2014-10-14 (樱桃): 加密/解密方法
  * 2014-11-11 (樱桃): Silverlight 支持
+ * 2014-11-12 (樱桃): 发送短消息核心功能
  */
 
 # IMPORTANT: Do not edit below unless you know what you are doing!
@@ -169,8 +170,7 @@ function get_fix_user_lang($user_id = null){
  * @return string 当前用户的语言区域。
  */
 function get_current_user_lang() {
-	global $CURUSER;
-	return get_fix_user_lang($CURUSER['id']);
+	return get_fix_lang(get_langfolder_cookie());
 }
 
 /**
@@ -196,8 +196,7 @@ function get_user_resource($user_id = null){
  * @return ResourceBundle 当前用户的本地化资源。
  */
 function get_current_user_resource() {
-	global $CURUSER;
-	return get_user_resource($CURUSER['id']);
+	return get_resource(get_current_user_lang());
 }
 
 function get_langfile_path($script_name ="", $target = false, $lang_folder = "")
@@ -262,6 +261,32 @@ function sqlerr($file = '', $line = '')
 	"<tr><td class=\"embedded\"><font color=\"white\"><h1>SQL Error</h1>\n" .
 	"<b>" . mysql_error() . ($file != '' && $line != '' ? "<p>in $file, line $line</p>" : "") . "</b></font></td></tr></table>");
 	die;
+}
+
+/**
+ * 插入短消息的核心方法。
+ * @param int $senderId 发送者的 ID。
+ * @param int $receiverId 接收者的 ID。
+ * @param string $subject 消息标题。
+ * @param string $content 消息正文。
+ * @param string $time 消息时间。
+ */
+function send_message($senderId, $receiverId, $subject, $content, $time = null) {
+	
+	// 如果不提供日期则使用当前时间。
+	if ($time === null) {
+		$time = date("Y-m-d H:i:s");
+	}
+	
+	// 执行查询。
+	$sql = new_mysqli();;
+	$query = $sql->prepare("INSERT INTO `messages` (`sender`, `receiver`, `subject`, `msg`, `added`) VALUES(?, ?, ?, ?, ?)");
+	$query->bind_param("iisss", $senderId, $receiverId, $subject, $content, $time);
+	$query->execute();
+	
+	// 关闭
+	$sql->close();
+	
 }
 
 function format_quotes($s)
@@ -1192,13 +1217,13 @@ function textbbcode($form,$text,$content="",$hastitle=false, $col_num = 130)
 				doInsert("[/" + tagRemove + "]", "", false)
 				if ((tagRemove != 'COLOR') ){
 					eval("document.<?= $form?>." + tagRemove + ".value = '" + tagRemove.toUpperCase() + "'");
-						eval(tagRemove + "_open = 0");
-					}
+					eval(tagRemove + "_open = 0");
 				}
-				cstat();
 			}
+			cstat();
 		}
-		//]]>
+	}
+	//]]>
 </script>
 <table width="100%" cellspacing="0" cellpadding="5" border="0">
 	<tr>

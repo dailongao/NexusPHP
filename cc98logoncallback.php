@@ -18,7 +18,7 @@ header("Content-Type: text/html; charset=utf-8");
 dbconn();
 
 // 资源对象。
-$res = get_user_resource()['cc98_logon'];
+$res = get_current_user_resource()['cc98_logon'];
 
 // CC98 登录 APP 的客户端 ID 和机密。
 global $cc98_client_id;
