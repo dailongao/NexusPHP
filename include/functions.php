@@ -18,6 +18,16 @@ include_once($rootpath . 'classes/class_advertisement.php');
 require_once($rootpath . get_langfile_path("functions.php"));
 require_once($rootpath . get_langfile_path("functions.php"));
 
+/**
+ * 移除字符串边上的引号。
+ * @param string $str 要处理的字符串。
+ * @return string 处理后的结果。
+ */
+function remove_quote($str) {
+	return preg_replace('/^\"(.*)\"$/i', '$1', $str);
+};
+
+
 
 /**
  * 使用服务器密钥加密数据。
@@ -595,14 +605,7 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 	
 	if (stripos($s,"[sl") !== false) { //sl is not often used. Better check if it exist before hand		
 		
-		// 移除参数的可选引号。
-		function remove_quote($str) {
-			return preg_replace('/^\"(.*)\"$/i', '$1', $str);
-		}
-		
-		
-		// 对单个 Silverlight 对象进行替换的处理函数。
-		function silverligh_tag_replace_handler($match, $enabled) {
+		$s = preg_replace_callback('/\[SL=(.*?)\](.*?)\[\/SL\]/i', function ($match) use($enableflash) {
 			
 			// 可选参数
 			$params = $match[1];
@@ -613,7 +616,7 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 			$params = htmlspecialchars_decode($params);
 			
 			// 是否允许 Flash
-			if($enabled) {				
+			if($enableflash) {				
 				
 			    // 匹配参数部分，如果失败则直接返回。
 			    if(preg_match('/("[^"]*"|[^\s,]*)\s*,\s*("[^"]*"|[^\s,]*)(.*)/i', $params, $param_match_result) == 0) {
@@ -645,10 +648,7 @@ function format_comment($text, $strip_html = true, $xssclean = false, $newtab = 
 			} else {
 			    return $altUbb;
 			}
-			
-		};
-		
-		$s = preg_replace_callback('/\[SL=(.*?)\](.*?)\[\/SL\]/i', function ($match) use($enableflash) { return silverligh_tag_replace_handler($match, $enableflash); }, $s);
+		}, $s);
 	}
 	
 	
@@ -1175,23 +1175,23 @@ function textbbcode($form,$text,$content="",$hastitle=false, $col_num = 130)
 			{
 				eval(thetag + "_open = 1");
 				eval("document.<?= $form?>." + thetag + ".value += '*'");
-					pushstack(bbtags, thetag);
-					cstat();
+				pushstack(bbtags, thetag);
+				cstat();
+			}
+		}
+		else {
+			lastindex = 0;
+			for (i = 0; i < bbtags.length; i++ ) {
+				if ( bbtags[i] == thetag ) {
+					lastindex = i;
 				}
 			}
-			else {
-				lastindex = 0;
-				for (i = 0; i < bbtags.length; i++ ) {
-					if ( bbtags[i] == thetag ) {
-						lastindex = i;
-					}
-				}
 
-				while (bbtags[lastindex]) {
-					tagRemove = popstack(bbtags);
-					doInsert("[/" + tagRemove + "]", "", false)
-					if ((tagRemove != 'COLOR') ){
-						eval("document.<?= $form?>." + tagRemove + ".value = '" + tagRemove.toUpperCase() + "'");
+			while (bbtags[lastindex]) {
+				tagRemove = popstack(bbtags);
+				doInsert("[/" + tagRemove + "]", "", false)
+				if ((tagRemove != 'COLOR') ){
+					eval("document.<?= $form?>." + tagRemove + ".value = '" + tagRemove.toUpperCase() + "'");
 						eval(tagRemove + "_open = 0");
 					}
 				}
