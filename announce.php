@@ -1,6 +1,8 @@
 <?php
+
 require_once('include/bittorrent_announce.php');
 require_once('include/benc.php');
+
 dbconn_announce();
 //1. BLOCK ACCESS WITH WEB BROWSERS AND CHEATS!
 $agent = $_SERVER["HTTP_USER_AGENT"];
@@ -30,8 +32,14 @@ if (!$port || $port > 0xffff)
 	err("invalid port");
 if (!ip2long($ip)) //Disable compact announce with IPv6
 	$compact = 0;
-if ($ip == "10.15.173.174")		// forbid downloading via rvpn
-	err("downloading via rvpn is forbidden");
+
+// Forbid Ip List
+foreach ($track_forbid_ip_list as $ip_range) {
+	if (ip_is_in_subnet_str($ip, $ip_range)) {
+			err("Your IP address is forbidden to access the tracker.");
+	}
+}
+	
 	
 // check port and connectable
 if (portblacklisted($port))

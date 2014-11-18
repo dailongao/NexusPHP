@@ -160,7 +160,7 @@ elseif ($action == 'savesettings_smtp') 	// save smtp
 elseif ($action == 'savesettings_security') 	// save security
 {
 	stdhead($lang_settings['head_save_security_settings']);
-	$validConfig = array('securelogin', 'securetracker', 'https_announce_url','iv','maxip','maxloginattempts','changeemail','cheaterdet','nodetect', 'ignoreipchecklist', 'dataprotectkey');
+	$validConfig = array('securelogin', 'securetracker', 'https_announce_url','iv','maxip','maxloginattempts','changeemail','cheaterdet','nodetect', 'ignoreipchecklist', 'trackforbidiplist', 'dataprotectkey');
 	GetVar($validConfig);
 	unset($SECURITY);
 	foreach($validConfig as $config) {
@@ -324,6 +324,7 @@ elseif ($action == 'securitysettings')	//security settings
 	tr($lang_settings['row_cheater_detection_level'],"<select name='cheaterdet'><option value=0 " . ($SECURITY["cheaterdet"] == 0 ? " selected" : "") . "> ".$lang_settings['select_none']." </option><option value=1 " . ($SECURITY["cheaterdet"] == 1 ? " selected" : "") . "> ".$lang_settings['select_conservative']." </option><option value=2 " . ($SECURITY["cheaterdet"] == 2 ? " selected" : "") . "> ".$lang_settings['select_normal']." </option><option value=3 " . ($SECURITY["cheaterdet"] == 3 ? " selected" : "") . "> ".$lang_settings['select_strict']." </option><option value=4 " . ($SECURITY["cheaterdet"] == 4 ? " selected" : "") . "> ".$lang_settings['select_paranoid']." </option></select> ".$lang_settings['text_cheater_detection_level_note']."<br />".$lang_settings['text_never_suspect'].classlist('nodetect',$AUTHORITY['staffmem'],$SECURITY['nodetect']).$lang_settings['text_or_above'].get_user_class_name(UC_UPLOADER,false,true,true).".", 1);
 	tr($lang_settings['row_max_ips'],"<input type='text' style=\"width: 300px\" name=maxip value='" . ($SECURITY["maxip"] ? $SECURITY["maxip"] : "1")."'> ".$lang_settings['text_max_ips_note'], 1);
 	tr($lang_settings['row_max_login_attemps'],"<input type='text' style=\"width: 300px\" name=maxloginattempts value='" . ($SECURITY["maxloginattempts"] ? $SECURITY["maxloginattempts"] : "7")."'> ".$lang_settings['text_max_login_attemps_note'], 1);
+	tr($lang_settings['row_track_forbid_ip_list'],"<input type='text' style=\"width: 300px\" name=trackforbidiplist value='" .  $SECURITY["trackforbidiplist"] . "'> ".$lang_settings['text_track_forbid_ip_list'], 1);
 	tr($lang_settings['row_ignore_ip_check_list'],"<input type='text' style=\"width: 300px\" name=ignoreipchecklist value='" .  $SECURITY["ignoreipchecklist"] . "'> ".$lang_settings['text_ignore_ip_check_list'], 1);
 	tr($lang_settings['row_data_protect_key'],"<input type='text' style=\"width: 300px\" name=dataprotectkey value='" .  $SECURITY["dataprotectkey"] . "'> ".$lang_settings['text_data_protect_key'], 1);
 

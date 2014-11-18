@@ -695,8 +695,8 @@ $lang_settings = array
 	'row_casino_min_bonus' => "The minimum bonus to enter casino ",
 	'text_casino_min_bonus_note' => "Default '2000'. Users whose bonus lower than this cannot enter casino.",
 	
-	'row_ignore_ip_check_list' => "Unbannable IP address",
-	'text_ignore_ip_check_list' => "All the IP address in this list will never be banned. Using comma to seperate items.",
+	'row_ignore_ip_check_list' => "Unbannable IP Ranges",
+	'text_ignore_ip_check_list' => "All the IP ranges in this list will never be banned. Each item should be a "IP-address/prefix-length" tuple, (e.g. 10.11.0.0/16). Using comma to seperate items.",
 	
 	'row_data_protect_key' => "Data protection key",
 	'text_data_protect_key' => "Key used in server data encryption. Changing this value may cause previous internal data be invalid.",
@@ -712,6 +712,9 @@ $lang_settings = array
 	'text_cc98_client_secret' => "The 'client_secret' value of CC98 OAuth API key.",
 	'row_cc98_redirect_uri' => "CC98 Redirect URI",
 	'text_cc98_redirect_uri' => "The 'redirect_uri' value of CC98 OAuth API key. If you change this value, you must ensure a proper handler file exists.",
+	
+	'row_track_forbid_ip_list' => "Forbidden Track IP List",
+	'text_track_forbid_ip_list' => "All the IP ranges in this list are forbidden to access the tracker. Each item should be a "IP-address/prefix-length" tuple, (e.g. 10.11.0.0/16). Using comma to seperate items.",
 );
 
 ?>

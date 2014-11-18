@@ -28,8 +28,6 @@ function remove_quote($str) {
 	return preg_replace('/^\"(.*)\"$/i', '$1', $str);
 };
 
-
-
 /**
  * 使用服务器密钥加密数据。
  * @param string $data 要加密的数据。
@@ -108,7 +106,14 @@ function is_special_ip(){
 	global $ignoreipchecklist;
 	
 	$ip = getip();
-	return in_array($ip, $ignoreipchecklist);
+	
+	foreach ($ignoreipchecklist as $ip_range) {
+		if (ip_is_in_subnet_str($ip, $ip_range)) {
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 

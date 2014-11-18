@@ -172,6 +172,7 @@ $disableemailchange = $SECURITY['changeemail'];
 $cheaterdet_security = $SECURITY['cheaterdet'];
 $nodetect_security = $SECURITY['nodetect'];
 $data_protect_key = $SECURITY['dataprotectkey'];
+$track_forbid_ip_list = explode(",", $SECURITY['trackforbidiplist']);
 
 $defaultclass_class = $AUTHORITY['defaultclass'];
 $staffmem_class = $AUTHORITY['staffmem'];

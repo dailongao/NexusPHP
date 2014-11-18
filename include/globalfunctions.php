@@ -17,6 +17,88 @@ function get_global_sp_state()
 	return $global_promotion_state;
 }
 
+/**
+ * 将 IPv4 地址转换为整数。
+ * @param string $ip 要转换的 IP 地址。
+ * @return integer 转换后的整数值。
+ */
+function convert_ipv4_to_integer($ip) {
+
+	// 分割 IP 为数组。
+	$ip_seg = explode(".", $ip);
+	
+	// 长度不对则直接返回。
+	if (count($ip_seg) !== 4) {
+		return null;
+	}
+	
+	// 使用位运算获得最终结果。
+	return ((int)$ip_seg[0] << 24) | ((int)$ip_seg[1] << 16) | ((int)$ip_seg[2] << 8) | (int)$ip_seg[3];
+}
+
+/**
+ * 判断 IP 地址是否位于给定的子网内。
+ * @param mixed $ip 要判断的 IP 地址。可以是整数或者字符串。
+ * @param mixed $subnet_start 目标子网的起始地址。可以是整数或者字符串。
+ * @param integer $subnet_prefex_length 目标子网的前缀长度。
+ * @return boolean 如果 IP 地址位于子网内，返回 true；否则返回 false。
+ */
+function ip_is_in_subnet($ip, $subnet_start, $subnet_perfex_length) {
+
+	// 如果有必要，将 IP 字符串转换为整数的函数。
+	function check_ip_str($value) {
+			
+		// 整数时后不需要任何处理
+		if (is_int($value)) {
+			return $value;
+		// 字符串时进行转换
+		} elseif (is_string($value)) {
+			return convert_ipv4_to_integer($value);
+		// 其他类型将引发异常
+		} else {
+			throw new InvalidArgumentException('Type of the argument should be either int or string.');
+		}
+	};
+	
+	// 转换参数。
+	$real_ip = check_ip_str($ip);
+	$real_subnet_start = check_ip_str($subnet_start);
+	
+	if ($subnet_perfex_length < 0 || $subnet_perfex_length > 32) {
+		throw new OutOfRangeException('Subnet prefex length must between 0 and 32.');
+	}
+
+	// 掩码值，应该是一个 32 位整数，其中前面给定位数为 1，后面为 0
+	$mask = ~((1 << (32 - $subnet_perfex_length)) - 1);
+		
+	// 子网起始地址有效性检测。如果子网起始地址在掩码后包含非零位则表示无效。
+	if (($real_subnet_start & ~$mask) !== 0) {
+		throw new InvalidArgumentException('Subnet start address and mask is not valid.');
+	}
+	
+	// 有效性判断：两个网址在掩码作用后相同。
+	return ($real_subnet_start & $mask) === ($real_ip & $mask);
+}
+
+
+/**
+ * 判断 IP 地址是否位于给定的子网内。
+ * @param string $ip 要判断的 IP 地址字符串。
+ * @param string $subnet_string 目标子网，使用“起始地址/前缀长度”表示法的字符串。
+ * @return boolean 如果 IP 地址位于子网内，返回 true；否则返回 false。
+ */
+function ip_is_in_subnet_str($ip, $subnet_string) {
+	
+	$sub_arr = explode("/", $subnet_string);
+	
+	if (count($sub_arr) !== 2) {
+		throw new InvalidArgumentException('The format of parameter $subnet_string is invalid.');
+	}
+	
+	return ip_is_in_subnet($ip, $sub_arr[0], (int)$sub_arr[1]);
+}
+
+
 // IP Validation
 function validip($ip)
 {

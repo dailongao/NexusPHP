@@ -699,7 +699,7 @@ $lang_settings = array
 	'text_view_bbcode' => "允许查看种子“简介”部分的原始 BBCode",
 	
 	'row_ignore_ip_check_list' => "不屏蔽 IP 地址",
-	'text_ignore_ip_check_list' => "在列表中输入 IP 地址，以逗号分开。这个列表中的 IP 地址不会被屏蔽。",
+	'text_ignore_ip_check_list' => "在列表中输入 IP 地址，以逗号分开，每个项目使用“IP 地址/前缀长度”的格式表示一个 IP 范围（如：10.11.0.0/16）。这个列表中的 IP 地址不会被屏蔽。",
 	
 	'row_data_protect_key' => "数据加密密钥",
 	'text_data_protect_key' => "用于执行服务器数据加密的密钥字符串。改变这个值会导致之前系统内部加密的数据失效。",
@@ -716,6 +716,9 @@ $lang_settings = array
 	'text_cc98_client_secret' => "CC98 OAuth API Key 的 'client_secret' 参数值。",
 	'row_cc98_redirect_uri' => "CC98 Redirect URI",
 	'text_cc98_redirect_uri' => "CC98 OAuth API Key 的 'redirect_uri' 参数值。如果你修改这个参数，你必须确保给定的地址是有效的处理程序文件。",
+	
+	'row_track_forbid_ip_list' => "Track 禁止 IP 地址",
+	'text_track_forbid_ip_list' => "在列表中输入 IP 地址，以逗号分开，每个项目使用“IP 地址/前缀长度”的格式表示一个 IP 范围（如：10.11.0.0/16）。这个列表中的 IP 将被禁止访问 Track 服务器。",
 );
 
 ?>
