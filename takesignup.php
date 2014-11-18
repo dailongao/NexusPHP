@@ -1,4 +1,8 @@
 <?php
+/*
+ * 2014-11-12 (樱桃): 短消息部分修改
+ */
+
 require_once("include/bittorrent.php");
 dbconn();
 cur_user_check ();
@@ -142,6 +146,9 @@ $wantpasshash = md5($secret . $wantpassword . $secret);
 $editsecret = ($verification == 'admin' ? '' : $secret);
 $invite_count = (int) $invite_count;
 
+// 备份
+$wantusernameraw = $wantusername;
+
 $wantusername = sqlesc($wantusername);
 $wantpasshash = sqlesc($wantpasshash);
 $secret = sqlesc($secret);
@@ -159,10 +166,16 @@ if(mysql_num_rows($res_check_user) == 1)
 
 $ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, email, country, gender, status, class, invites, ".($type == 'invite' ? "invited_by," : "")." added, last_access, lang, stylesheet".($showschool == 'yes' ? ", school" : "").", uploaded,ip) VALUES (" . $wantusername . "," . $wantpasshash . "," . $secret . "," . $editsecret . "," . $email . "," . $country . "," . $gender . ", 'pending', ".$defaultclass_class.",". $invite_count .", ".($type == 'invite' ? "'$inviter'," : "") ." '". date("Y-m-d H:i:s") ."' , " . " '". date("Y-m-d H:i:s") ."' , ".$sitelangid . ",".$defcss.($showschool == 'yes' ? ",".$school : "").",".($iniupload_main > 0 ? $iniupload_main : 0).",'".getip()."')") or sqlerr(__FILE__, __LINE__);
 $id = mysql_insert_id();
-$dt = sqlesc(date("Y-m-d H:i:s"));
-$subject = sqlesc($lang_takesignup['msg_subject'].$SITENAME."!");
-$msg = sqlesc($lang_takesignup['msg_congratulations'].htmlspecialchars($wantusername).$lang_takesignup['msg_you_are_a_member']);
-sql_query("INSERT INTO messages (sender, receiver, subject, added, msg) VALUES(0, $id, $subject, $dt, $msg)") or sqlerr(__FILE__, __LINE__);
+
+// 发送欢迎消息
+
+// 消息可选参数
+$messageParams = array($wantusernameraw, $SITENAME);
+
+$title = MessageFormatter::formatMessage(get_current_user_lang(), get_current_user_resource()['signup']['welcome_message_title'], $messageParams);
+$text = MessageFormatter::formatMessage(get_current_user_lang(), get_current_user_resource()['signup']['welcome_message_text'], $messageParams);
+
+send_message(0, $id, $title, $text);
 
 //write_log("User account $id ($wantusername) was created");
 $res = sql_query("SELECT passhash, secret, editsecret, status FROM users WHERE id = ".sqlesc($id)) or sqlerr(__FILE__, __LINE__);
