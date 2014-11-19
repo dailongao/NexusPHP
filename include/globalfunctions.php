@@ -89,6 +89,11 @@ function ip_is_in_subnet($ip, $subnet_start, $subnet_perfex_length) {
  */
 function ip_is_in_subnet_str($ip, $subnet_string) {
 	
+	// 空白忽略。
+	if (!$subnet_string || strlen(trim($subnet_string)) === 0) {
+		return false;
+	}
+	
 	$sub_arr = explode("/", $subnet_string);
 	
 	if (count($sub_arr) !== 2) {
