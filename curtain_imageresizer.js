@@ -40,8 +40,8 @@ function check_avatar(image, langfolder){
 	var displayheight = image.height;
 	var tempwidth = tempimage.width;
 	var tempheight = tempimage.height;
-	if (tempwidth > 250 || tempheight > 250 || displayheight > 250) {
-		image.src='pic/forum_pic/'+langfolder+'/avatartoobig.png';
+	if (tempwidth > 300 || tempheight > 500 || displayheight > 250) {
+		image.src = 'pic/forum_pic/' + langfolder + '/avatartoobig.png'
 	}
 }
 
