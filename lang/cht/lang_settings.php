@@ -220,6 +220,8 @@ $lang_settings = array
 	'text_bonus_formula_ten' => "。預設為'100'",
 	'text_bonus_formula_eleven' => "<b>L</b>為參數。<b>L</b> = ",
 	'text_bonus_formula_twelve' => "。預設為'300'",
+	'text_bonus_formula_13' => "<b>C</b>為參數。<b>C</b> = ",
+	'text_bonus_formula_14' => "。預設為'0'",
 	'text_misc_ways_get_bonus' => "其他抓取方式",
 	'row_uploading_torrent' => "發布新種子",
 	'text_user_would_get' => "用戶將獲得",

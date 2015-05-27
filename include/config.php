@@ -291,6 +291,8 @@ $maxseeding_bonus = $BONUS['maxseeding'];
 $tzero_bonus = $BONUS['tzero'];
 $nzero_bonus = $BONUS['nzero'];
 $bzero_bonus = $BONUS['bzero'];
+$czero_bonus = $BONUS['czero'];
+
 $l_bonus = $BONUS['l'];
 $uploadtorrent_bonus = $BONUS['uploadtorrent'];
 $uploadsubtitle_bonus = $BONUS['uploadsubtitle'];

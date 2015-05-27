@@ -220,6 +220,8 @@ $lang_settings = array
 	'text_bonus_formula_ten' => "。默认为'100'",
 	'text_bonus_formula_eleven' => "<b>L</b>为参数。<b>L</b> = ",
 	'text_bonus_formula_twelve' => "。默认为'300'",
+	'text_bonus_formula_13' => "<b>C</b>为参数。<b>C</b> = ",
+	'text_bonus_formula_14' => "。默认为'0'",
 	'text_misc_ways_get_bonus' => "其他获取方式",
 	'row_uploading_torrent' => "发布新种子",
 	'text_user_would_get' => "用户将获得",

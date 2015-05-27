@@ -234,7 +234,7 @@ print("<h1>".$lang_mybonus['text_get_by_seeding']."</h1>");
 print("<ul>");
 if ($perseeding_bonus > 0)
 	print("<li>".$perseeding_bonus.$lang_mybonus['text_point'].add_s($perseeding_bonus).$lang_mybonus['text_for_seeding_torrent'].$maxseeding_bonus.$lang_mybonus['text_torrent'].add_s($maxseeding_bonus).")</li>");
-print("<li>".$lang_mybonus['text_bonus_formula_one'].$tzero_bonus.$lang_mybonus['text_bonus_formula_two'].$nzero_bonus.$lang_mybonus['text_bonus_formula_three'].$bzero_bonus.$lang_mybonus['text_bonus_formula_four'].$l_bonus.$lang_mybonus['text_bonus_formula_five']."</li>");
+print("<li>".$lang_mybonus['text_bonus_formula_one'].$tzero_bonus.$lang_mybonus['text_bonus_formula_two'].$nzero_bonus.$lang_mybonus['text_bonus_formula_three'].$bzero_bonus.$lang_mybonus['text_bonus_formula_four'].$l_bonus.$lang_mybonus['text_bonus_formula_five'].$czero_bonus.$lang_mybonus['text_bonus_formula_six']."</li>");
 if ($donortimes_bonus)
 	print("<li>".$lang_mybonus['text_donors_always_get'].$donortimes_bonus.$lang_mybonus['text_times_of_bonus']."</li>");
 print("</ul>");
@@ -260,7 +260,7 @@ print("</ul>");
 		}
 		if ($count > $maxseeding_bonus)
 			$count = $maxseeding_bonus;
-		$all_bonus = $valuetwo * atan($A / $l_bonus) + ($perseeding_bonus * $count);
+		$all_bonus = $valuetwo * atan($A / $l_bonus) + $A * $czero_bonus + ($perseeding_bonus * $count);
 		$percent = $all_bonus * 100 / ($bzero_bonus + $perseeding_bonus * $maxseeding_bonus);
 	print("<div align=\"center\">".$lang_mybonus['text_you_are_currently_getting'].round($all_bonus,3).$lang_mybonus['text_point'].add_s($all_bonus).$lang_mybonus['text_per_hour']." (A = ".round($A,1).")</div><table align=\"center\" border=\"0\" width=\"400\"><tr><td class=\"loadbarbg\" style='border: none; padding: 0px;'>");
 

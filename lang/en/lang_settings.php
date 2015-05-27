@@ -220,6 +220,8 @@ $lang_settings = array
 	'text_bonus_formula_ten' => ". Default '100'",
 	'text_bonus_formula_eleven' => "<b>L</b> is a parameter. <b>L</b> = ",
 	'text_bonus_formula_twelve' => ". Default '300'",
+	'text_bonus_formula_13' => "<b>C</b> is a parameter. <b>C</b> = ",
+	'text_bonus_formula_14' => ". Default '0'",
 	'text_misc_ways_get_bonus' => "Miscellaneous ways to get bonus",
 	'row_uploading_torrent' => "Uploading torrent",
 	'text_user_would_get' => "User would get ",
