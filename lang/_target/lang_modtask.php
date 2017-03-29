@@ -51,6 +51,10 @@ $lang_modtask_target = array
 	'msg_to_new' =>" to ",
 	'msg_your_vip_status_changed' => "Your VIP status changed",
 	'msg_vip_status_changed_by' => "Your VIP status changed by ",
+	'msg_last_signin_time_change' => "Last sign-in time change",
+	'msg_your_last_signin_time_changed_from' => "Your last sign-in time has been changed from ",
+	'msg_signin_count_change' => "Sign-in count change",
+	'msg_your_signin_count_changed_from' => "Your sign-in count has been changed from",
 ),
 	'chs' => array(
 	'msg_promoted' => "提升",
@@ -101,6 +105,10 @@ $lang_modtask_target = array
 	'msg_to_new' =>"改为",
 	'msg_your_vip_status_changed' => "你的贵宾资格状态被改变",
 	'msg_vip_status_changed_by' => "你的贵宾资格状态被改变。管理员：",
+	'msg_last_signin_time_change' => "最后签到时间变化",
+	'msg_your_last_signin_time_changed_from' => "你的最后签到时间被管理员从",
+	'msg_signin_count_change' => "签到连续天数变化",
+	'msg_your_signin_count_changed_from' => "你的签到连续天数被管理员从",
 ),
 	'cht' => array(
 	'msg_promoted' => "提升",

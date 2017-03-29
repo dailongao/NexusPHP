@@ -101,6 +101,11 @@ if ($action == "edituser")
 		$ori_bonus = $_POST["ori_bonus"];
 		$invites = $_POST["invites"];
 		$added = sqlesc(date("Y-m-d H:i:s"));
+		$last_signin_time = $_POST["last_signin_time"];
+		$signin_count = $_POST["signin_count"];
+		$ori_last_signin_time = $_POST["ori_last_signin_time"];
+		$ori_signin_count = $_POST["ori_signin_count"];
+
 		if ($arr['email'] != $email){
 			$updateset[] = "email = " . sqlesc($email);
 			$modcomment = date("Y-m-d") . " - Email changed from $arr[email] to $email by $CURUSER[username].\n". $modcomment;
@@ -134,6 +139,20 @@ if ($action == "edituser")
 			$modcomment = date("Y-m-d") . " - Bonus amount changed from $arr[seedbonus] to $bonus by $CURUSER[username].\n". $modcomment;
 			$subject = sqlesc($lang_modtask_target[get_user_lang($userid)]['msg_bonus_change']);
 			$msg = sqlesc($lang_modtask_target[get_user_lang($userid)]['msg_your_bonus_changed_from'].$arr['seedbonus'].$lang_modtask_target[get_user_lang($userid)]['msg_to_new'] . $bonus .$lang_modtask_target[get_user_lang($userid)]['msg_by'].$CURUSER[username]);
+			sql_query("INSERT INTO messages (sender, receiver, subject, msg, added) VALUES(0, $userid, $subject, $msg, $added)") or sqlerr(__FILE__, __LINE__);
+		}
+		if ($ori_last_signin_time != $last_signin_time){
+			$updateset[] = "lastsignintime = " . sqlesc($last_signin_time);
+			$modcomment = date("Y-m-d") . " - Last sign-in time changed from $arr[lastsignintime] to $last_signin_time by $CURUSER[username].\n". $modcomment;
+			$subject = sqlesc($lang_modtask_target[get_user_lang($userid)]['msg_last_signin_time_change']);
+			$msg = sqlesc($lang_modtask_target[get_user_lang($userid)]['msg_your_last_signin_time_changed_from'].$arr['lastsignintime'].$lang_modtask_target[get_user_lang($userid)]['msg_to_new'] . $last_signin_time .$lang_modtask_target[get_user_lang($userid)]['msg_by'].$CURUSER[username]);
+			sql_query("INSERT INTO messages (sender, receiver, subject, msg, added) VALUES(0, $userid, $subject, $msg, $added)") or sqlerr(__FILE__, __LINE__);
+		}
+		if ($ori_signin_count != $signin_count){
+			$updateset[] = "signincount = " . sqlesc($signin_count);
+			$modcomment = date("Y-m-d") . " - Sign-in count changed from $arr[signincount] to $signin_count by $CURUSER[username].\n". $modcomment;
+			$subject = sqlesc($lang_modtask_target[get_user_lang($userid)]['msg_signin_count_change']);
+			$msg = sqlesc($lang_modtask_target[get_user_lang($userid)]['msg_your_signin_count_changed_from'].$arr['signincount'].$lang_modtask_target[get_user_lang($userid)]['msg_to_new'] . $signin_count .$lang_modtask_target[get_user_lang($userid)]['msg_by'].$CURUSER[username]);
 			sql_query("INSERT INTO messages (sender, receiver, subject, msg, added) VALUES(0, $userid, $subject, $msg, $added)") or sqlerr(__FILE__, __LINE__);
 		}
 		if ($arr['invites'] != $invites){
