@@ -186,7 +186,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["action"] == "upload" && ($in
 	$id = mysql_insert_id();
 	
 	//stderr("",make_folder($SUBSPATH."/",$torrent_id). "/" . $id . "." .$ext);
-	if (!move_uploaded_file($file["tmp_name"], make_folder($SUBSPATH."/",$torrent_id). "/" . $id . "." .$ext))
+	$extendedSubtitlePath = (int)($torrent_id / 10000)."/".$torrent_id;
+	if (!move_uploaded_file($file["tmp_name"], make_folder($SUBSPATH . "/", $extendedSubtitlePath)."/".$id.".".$ext))
 		echo($lang_subtitles['std_failed_moving_file']);
 	
 	KPS("+",$uploadsubtitle_bonus,$uppedby); //subtitle uploader gets bonus
@@ -211,7 +212,8 @@ if (get_user_class() >= $delownsub_class)
 				{	
 					$reason = $_POST["reason"];
 					sql_query("DELETE FROM subs WHERE id=$delete") or sqlerr(__FILE__, __LINE__);
-					if (!unlink("$SUBSPATH/$a[torrent_id]/$a[id].$a[ext]"))
+					$extendedDirname = (int)($a[torrent_id] / 10000);
+					if (!unlink("$SUBSPATH/$extendedDirname/$a[torrent_id]/$a[id].$a[ext]"))
 					{
 						stdmsg($lang_subtitles['std_error'], $lang_subtitles['std_this_file']."$a[filename]".$lang_subtitles['std_is_invalid']);
 						stdfoot();

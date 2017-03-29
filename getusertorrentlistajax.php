@@ -8,9 +8,16 @@ header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" );
 header("Cache-Control: no-cache, must-revalidate" ); 
 header("Pragma: no-cache" );
 header("Content-Type: text/xml; charset=utf-8");
+
+$total_size = 0;
+
+
 function maketable($res, $mode = 'seeding')
 {
 	global $lang_getusertorrentlistajax,$CURUSER,$smalldescription_main;
+	
+	global $total_size;
+	
 	switch ($mode)
 	{
 		case 'uploaded': {
@@ -89,6 +96,9 @@ function maketable($res, $mode = 'seeding')
 	($showsize ? "<td class=\"colhead\" align=\"center\"><img class=\"size\" src=\"pic/trans.gif\" alt=\"size\" title=\"".$lang_getusertorrentlistajax['title_size']."\" /></td>" : "").($showsenum ? "<td class=\"colhead\" align=\"center\"><img class=\"seeders\" src=\"pic/trans.gif\" alt=\"seeders\" title=\"".$lang_getusertorrentlistajax['title_seeders']."\" /></td>" : "").($showlenum ? "<td class=\"colhead\" align=\"center\"><img class=\"leechers\" src=\"pic/trans.gif\" alt=\"leechers\" title=\"".$lang_getusertorrentlistajax['title_leechers']."\" /></td>" : "").($showuploaded ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_uploaded']."</td>" : "") . ($showdownloaded ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_downloaded']."</td>" : "").($showratio ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_ratio']."</td>" : "").($showsetime ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_se_time']."</td>" : "").($showletime ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_le_time']."</td>" : "").($showcotime ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_time_completed']."</td>" : "").($showanonymous ? "<td class=\"colhead\" align=\"center\">".$lang_getusertorrentlistajax['col_anonymous']."</td>" : "")."</tr>\n";
 	while ($arr = mysql_fetch_assoc($res))
 	{
+		// 累加求和
+		$total_size = $total_size + $arr['size'];
+		
 		$catimage = htmlspecialchars($arr["image"]);
 		$catname = htmlspecialchars($arr["catname"]);
 
@@ -234,8 +244,10 @@ switch ($type)
 	}
 }
 
-if ($count)
-echo "<b>".$count."</b>".$lang_getusertorrentlistajax['text_record'].add_s($count)."<br />".$torrentlist;
-else
-echo $lang_getusertorrentlistajax['text_no_record'];
-?>
+if ($count) { ?>
+	<b> <?= $count ?></b> <?= $lang_getusertorrentlistajax['text_record'].add_s($count) ?>
+	<span>(<?= mksize($total_size) ?>)</span>
+	<?= $torrentlist ?>
+<? } else { ?>
+	<?= $lang_getusertorrentlistajax['text_no_record'] ?>
+<? } ?>

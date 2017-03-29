@@ -41,7 +41,7 @@ function check_avatar(image, langfolder){
 	var tempwidth = tempimage.width;
 	var tempheight = tempimage.height;
 	if (tempwidth > 300 || tempheight > 500 || displayheight > 250) {
-		image.src = 'pic/forum_pic/' + langfolder + '/avatartoobig.png'
+		image.src='pic/forum_pic/'+langfolder+'/avatartoobig.png';
 	}
 }
 

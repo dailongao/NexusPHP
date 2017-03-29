@@ -308,6 +308,9 @@ $lang_functions = array
 	'text_tag' => "标签",
 	'text_pubdate' => "首发日期",
 	'text_collapsed_text' => "隐藏内容",
+    
+    'text_sign_in' => "签到",
+    'text_signed_in' => "已签到",
 );
 
 ?>

@@ -97,7 +97,7 @@ elseif($_SERVER["REQUEST_METHOD"] == "GET" && $take_recover && isset($_GET["id"]
 {$lang_recover['mail_two_one']}{$arr["username"]}
 {$lang_recover['mail_two_two']}$newpassword
 {$lang_recover['mail_two_three']}
-<b><a href="javascript:void(null)" onclick="window.open('http://$BASEURL/login.php')">{$lang_recover['mail_here']}</a></b>
+<b><a href="http://$BASEURL/login.php" target="_blank">{$lang_recover['mail_here']}</a></b>
 {$lang_recover['mail_three_1']}
 <b><a href="http://www.google.com/support/bin/answer.py?answer=23852" target='_blank'>{$lang_confirm_resend['mail_google_answer']}</a></b>
 {$lang_recover['mail_three_2']}
@@ -122,24 +122,24 @@ else
 	}
 	$s .= "\n</select>";
 	?>
-	<form method="get" action="<?php echo $_SERVER['PHP_SELF'] ?>">
+	<form method="get" action="<?= $_SERVER['PHP_SELF'] ?>">
 	<?php
 	print("<div align=\"right\">".$lang_recover['text_select_lang']. $s . "</div>");
 	?>
 	</form>
-	<h1><?php echo $lang_recover['text_recover_user'] ?></h1>
-	<p><?php echo $lang_recover['text_use_form_below'] ?></p>
- 	<p><?php echo $lang_recover['text_reply_to_confirmation_email'] ?></p>
-  	<p><b><?php echo $lang_recover['text_note'] ?><?php echo $maxloginattempts;?></b><?php echo $lang_recover['text_ban_ip'] ?></p>
-	<p><?php echo $lang_recover['text_you_have'] ?><b><?php echo remaining ();?></b><?php echo $lang_recover['text_remaining_tries'] ?></p>
+	<h1><?= $lang_recover['text_recover_user'] ?></h1>
+	<p><?= $lang_recover['text_use_form_below'] ?></p>
+ 	<p><?= $lang_recover['text_reply_to_confirmation_email'] ?></p>
+  	<p><b><?= $lang_recover['text_note'] ?><?= $maxloginattempts;?></b><?= $lang_recover['text_ban_ip'] ?></p>
+	<p><?= $lang_recover['text_you_have'] ?><b><?= remaining ();?></b><?= $lang_recover['text_remaining_tries'] ?></p>
 	<form method="post" action="recover.php">
 	<table border="1" cellspacing="0" cellpadding="10">
-	<tr><td class="rowhead"><?php echo $lang_recover['row_registered_email'] ?></td>
+	<tr><td class="rowhead"><?= $lang_recover['row_registered_email'] ?></td>
 	<td class="rowfollow"><input type="text" style="width: 150px" name="email" /></td></tr>
 	<?php
 	show_image_code ();
 	?>
-	<tr><td class="toolbox" colspan="2" align="center"><input type="submit" value="<?php echo $lang_recover['submit_recover_it'] ?>" class="btn" /></td></tr>
+	<tr><td class="toolbox" colspan="2" align="center"><input type="submit" value="<?= $lang_recover['submit_recover_it'] ?>" class="btn" /></td></tr>
 	</table></form>
 	<?php
 	stdfoot();

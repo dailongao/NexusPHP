@@ -47,12 +47,38 @@ while ($a = mysql_fetch_assoc($res))
 	else
 		$ratio = $lang_topten['text_inf'];
 	print("<tr><td class=\"rowfollow\" align=\"center\">$num</td><td class=\"rowfollow\" align=\"left\">" . get_username($a["userid"]) .
-	"</td><td class=\"rowfollow\" align=\"right\">" . mksize($a["uploaded"]) .
+	"</td><td class=\"rowfollow\" align=\"right\">" . mksize($a["uploaded"]) . "&nbsp;<font class=\"red\">(" . mksize($a["uploaded"] - $a["act_up"]) . ")</font>" .
 	"</td><td class=\"rowfollow\" align=\"right\">" . mksize($a["upspeed"]) . "/s" .
 	"</td><td class=\"rowfollow\" align=\"right\">" . mksize($a["downloaded"]) .
 	"</td><td class=\"rowfollow\" align=\"right\">" . mksize($a["downspeed"]) . "/s" .
 	"</td><td class=\"rowfollow\" align=\"right\">" . $ratio .
 	"</td><td class=\"rowfollow\" align=\"left\">" . gettime($a["added"],true,false). "</td></tr>");
+}
+end_table();
+end_frame();
+}
+
+
+function act_table($res, $frame_caption)
+{
+	global $lang_topten;
+	global $CURUSER;
+	global $lang_topten;
+	begin_frame($frame_caption, true);
+	begin_table();
+?>
+<tr>
+<td class="colhead"><?php echo $lang_topten['col_rank'] ?></td>
+<td class="colhead" align="left"> <?php echo $lang_topten['col_user'] ?> </td>
+<td class="colhead"> 发种数 </td>
+</tr>
+<?php
+$num = 0;
+while ($a = mysql_fetch_assoc($res))
+{
+	++$num;
+	print("<tr><td class=\"rowfollow\" align=\"center\">$num</td><td class=\"rowfollow\" align=\"left\">" . get_username($a["userid"]) .
+	"</td><td class=\"rowfollow\" align=\"right\">" . $a["seeding_count"] . "</td></tr>");
 }
 end_table();
 end_frame();
@@ -481,17 +507,20 @@ $Cache->add_whole_row();
 
 if ($type == 1)
 {
-	$mainquery = "SELECT id as userid, username, added, uploaded, downloaded, uploaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(added)) AS upspeed, downloaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(added)) AS downspeed FROM users WHERE enabled = 'yes'";
+	$mainquery = "SELECT id as userid, username, added, uploaded, act_up, downloaded, uploaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(added)) AS upspeed, downloaded / (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(added)) AS downspeed FROM users WHERE enabled = 'yes'";
 
 	// temp
-	/*
+	if ($limit == 10 || $subtype == "fesseed"){
+		$r = sql_query("SELECT t.owner as userid, count(t.id) as seeding_count, u.username as username FROM torrents as t LEFT JOIN users as u ON u.id = t.owner WHERE t.added >= \"2015-12-24 20:00:00\" GROUP by t.owner ORDER BY seeding_count DESC LIMIT $limit") or sqlerr();
+		act_table($r, $lang_topten['text_top']."$limit ACT-发种数".($limit == 10 ? " <font class=\"small\"> - [<a class=\"altlink\" href=\"topten.php?type=$type&amp;lim=100&amp;subtype=fesseed\">".$lang_topten['text_one_hundred']."</a>] - [<a class=\"altlink\" href=\"topten.php?type=$type&amp;lim=250&amp;subtype=fesseed\">".$lang_topten['text_top_250']."</a>]</font>" : ""));
+	}
+
 	if ($limit == 10 || $subtype == "fesact")
 	{
 		$order = "(uploaded - act_up) DESC";
 		$r = sql_query($mainquery . " ORDER BY $order " . " LIMIT $limit") or sqlerr();
 		usershare_table($r, $lang_topten['text_top']."$limit ACT-".$lang_topten['text_uploaders'] . ($limit == 10 ? " <font class=\"small\"> - [<a class=\"altlink\" href=\"topten.php?type=$type&amp;lim=100&amp;subtype=fesact\">".$lang_topten['text_one_hundred']."</a>] - [<a class=\"altlink\" href=\"topten.php?type=$type&amp;lim=250&amp;subtype=fesact\">".$lang_topten['text_top_250']."</a>]</font>" : ""));
 	}
-	*/
 	// temp
 
 	if ($limit == 10 || $subtype == "ul")

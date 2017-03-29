@@ -721,6 +721,21 @@ $lang_settings = array
 	
 	'row_track_forbid_ip_list' => "Track 禁止 IP 地址",
 	'text_track_forbid_ip_list' => "在列表中输入 IP 地址，以逗号分开，每个项目使用“IP 地址/前缀长度”的格式表示一个 IP 范围（如：10.11.0.0/16）。这个列表中的 IP 将被禁止访问 Track 服务器。",
+    
+    'row_enable_sign_in' => "启用签到",
+    'text_enable_sign_in' => "默认 '否'。是否开启签到功能。",
+   
+    'row_sign_in_topic_id' => "签到帖子 ID",
+    'text_sign_in_topic_id' => "当用户执行签到时，签到内容将放入的帖子的编号。",
+    
+    'row_sign_in_template' => "签到内容模板",
+    'text_sign_in_template' => "生成签到内容的模板。可使用任意 UBB 代码。其中可用的占位符如下表所示：<br />{0}: 签到用户 ID。<br />{1}：签到用户名。<br />{2}：签到时间。<br />{3}：获得的魔力值奖励。<br />{4}：连续签到天数。<br />{5}：用户撰写的签到内容。",
+          
+    'row_sign_in_reward' => "签到奖励",
+    'text_sign_in_reward' => "签到奖励的魔力值。使用逗号分隔连续签到天数，使用横线表示每次随机奖励的范围。例如 '10-20,30' 表示第一天签到奖励魔力值为 10-20 内随机数，连续签到的第二天（及以后）每天奖励值为 30 魔力值。",
+    
+    'row_sign_in_bonus_record' => "签到魔力值记录",
+    'text_sign_in_bonus_record' => "默认 '否'。是否将将签到获得的魔力值计入用户的魔力值变动记录（管理员可在用户资料中查看）。修改该选项仅对之后的签到生效。"
 );
 
 ?>

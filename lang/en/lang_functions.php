@@ -308,6 +308,9 @@ $lang_functions = array
 	'text_tag' => "Tags",
 	'text_pubdate' => "Release Date",
 	'text_collapsed_text' => "collapsed text",
+    
+    'text_sign_in' => "Sign In",
+    'text_signed_in' => "Signed In",
 );
 
 ?>

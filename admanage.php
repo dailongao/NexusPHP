@@ -380,7 +380,7 @@ begin_main_frame();
 		print("<p align=\"center\">".$lang_admanage['text_no_ads_yet']."</p>");
 	else{
 		list($pagertop, $pagerbottom, $limit) = pager($perpage, $num, "?");
-		$res = sql_query("SELECT * FROM advertisements ORDER BY id DESC ".(int)$limit) or sqlerr(__FILE__, __LINE__);
+		$res = sql_query("SELECT * FROM advertisements ORDER BY id DESC ".$limit) or sqlerr(__FILE__, __LINE__);
 ?>
 <table border="1" cellspacing="0" cellpadding="5" width="940">
 <tr>

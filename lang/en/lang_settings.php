@@ -698,7 +698,7 @@ $lang_settings = array
 	'text_casino_min_bonus_note' => "Default '2000'. Users whose bonus lower than this cannot enter casino.",
 	
 	'row_ignore_ip_check_list' => "Unbannable IP Ranges",
-	'text_ignore_ip_check_list' => "All the IP ranges in this list will never be banned. Each item should be a "IP-address/prefix-length" tuple, (e.g. 10.11.0.0/16). Using comma to seperate items.",
+	'text_ignore_ip_check_list' => "All the IP ranges in this list will never be banned. Each item should be a 'IP-address/prefix-length' tuple, (e.g. 10.11.0.0/16). Using comma to seperate items.",
 	
 	'row_data_protect_key' => "Data protection key",
 	'text_data_protect_key' => "Key used in server data encryption. Changing this value may cause previous internal data be invalid.",
@@ -716,7 +716,21 @@ $lang_settings = array
 	'text_cc98_redirect_uri' => "The 'redirect_uri' value of CC98 OAuth API key. If you change this value, you must ensure a proper handler file exists.",
 	
 	'row_track_forbid_ip_list' => "Forbidden Track IP List",
-	'text_track_forbid_ip_list' => "All the IP ranges in this list are forbidden to access the tracker. Each item should be a "IP-address/prefix-length" tuple, (e.g. 10.11.0.0/16). Using comma to seperate items.",
+	'text_track_forbid_ip_list' => "All the IP ranges in this list are forbidden to access the tracker. Each item should be a 'IP-address/prefix-length' tuple, (e.g. 10.11.0.0/16). Using comma to seperate items.",
+    
+    'row_enable_sign_in' => "Enable signing in",
+    'text_enable_sign_in' => "Default 'no'. System wide signing in feature.",
+   
+    'row_sign_in_topic_id' => "Signing in topic ID",
+    'text_sign_in_topic_id' => "The ID of the topic where puts the signing content.",
+    
+    'row_sign_in_template' => "Signing in template",
+    'text_sign_in_template' => "The template of the generated content when user executes signing in. UBB code is allowed. Valid placeholders are shown as below: <br />{0}: Signing In User ID.<br />{1}: Signing In User Name.<br />{2} Signing In Time.<br />{3}：Bonus value.<br />{4}: Continuous Signing In Days.<br />{5}: User Provided Signing In Message.",        
+    'row_sign_in_reward' => "Signing in reward",
+    'text_sign_in_reward' => "The reward values for signing in. Please use comma (,) to seperate days and dash (-) to specify the range for each day. e.g. '10-20,30' means the reward for the first day is a random value between 10 and 20, and the reward for the second day (and further) in a row will be 30.",
+    
+    'row_sign_in_bonus_record' => "Signing in bonus record",
+    'text_sign_in_bonus_record' => "Default 'no'. If this option is set to 'yes', the bonus from signing in will be recorded in the user information panel (can be viewed by administrators). Changing this option has no effect on previous signed in actions."
 );
 
 ?>

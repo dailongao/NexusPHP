@@ -136,7 +136,7 @@ if(get_user_class()>=$torrentonpromotion_class)
 			$updateset[] = "promotion_time_type = 2";
 			$updateset[] = "promotion_until = '$protime'";
 		}else if($prohr == 0){
-			$updateset[] = "promotion_time_type = 1";
+			$updateset[] = "promotion_time_type = 0";
 			$updateset[] = "promotion_until = '0000-00-00 00:00:00'";
 		}
 	}

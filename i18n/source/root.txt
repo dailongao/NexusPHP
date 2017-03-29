@@ -14,7 +14,7 @@ root : table {
 		error_missing_form_data : string { "missing form data" }
 
 		
-		// 视图删除他人种子
+		// 试图删除他人种子
 		
 		error_not_owner : string { "You're not the owner! How did that happen?" }
 
@@ -190,4 +190,66 @@ root : table {
 		cc98_id_action_edit : string { "Edit" }
 		cc98_id_action_delete : string { "Delete" }
 	}
+    
+    // 签到功能相关
+    sign_in : table {
+        
+        // 网页标题
+        title : string { "Signing In" }
+        
+        // 功能未启用
+        feature_not_enabled_title : string { "Signing in is not enabled" }
+        feature_not_enabled_description : string { "You cannot sign in right now because it is not enabled by system administrators." }
+        
+        // 操作失败标题
+        error_title : string { "Signing in failed" }
+        
+        // 未提供内容
+        error_no_content : string { "You must provide the signing in message." }
+        
+        // 已经签到过
+        error_already_signed_in : string { "You have already signed in today. Please contact adminsitrators if you have any problem." }
+        
+        // 成功标题
+        success_title : string { "Signing in succedded" }
+        // 有回帖
+        success_descrption : string { "You have signed in {0} days in a row, today to got {1} bonus. Click <a class='faqlink' href='forums.php?action=viewtopic&topicid={2}&page=last#last'>here</a> to visit the signing in topic." }
+        // 无回帖
+        success_descrption_no_post : string { "You have signed in {0} days in a row, today to got {1} bonus. Click <a class='faqlink' href='/'>here</a> to return to the site home page." }
+        
+        // 说明区域标题
+        help_title : string { "Introduction for signing in feature" }
+        
+        // 说明区域文字
+        help_main_text : string { "Signing in is a feature for fun provided by NexusHD. Every user can sign in once per day, and got a little extra bonus. The bonus will increase if you signing in all the days in a row. Currently, the bonus amount for signing in is listed below:" }
+        help_day_tip : string { "The number of days to date actions as the settlement standard, i.e. any time after 00:00 will be considered as a new day regardless the signing in time on the previous day. The actual bonus amount will be generated randomly in the specified range." }
+        help_user_action_tip : string { "Please provide some content when signing in. System will generate a <q>Signing in reply</q> and attach it in <a class='faqlink' target='_blank' href='forums.php?action=viewtopic&topicid={0}&page=last#last'>this topic</a>." }
+        help_user_action_tip_no_post : string { "Please provide some content when signing in. " }
+        
+        // 魔力值范围说明
+        help_bouns_one_value : string { "{0} bonus" }
+        help_bouns_two_value : string { "{0} to {1} bonus" }
+        
+        // 每一天的魔力值说明文字
+        help_day_description : string { "<strong>On the day {0}</strong>: {1}" }
+        help_day_description_last : string { "<strong>On the day {0} and later</strong>: {1}" }
+        
+        // 我的签到标题
+        my_title : string { "My signing in" }
+        
+        // 上次签到时间
+        my_last_sign_in_time_never : string { "You have never signed in" }
+        my_last_sign_in_time : string { "Your last signing in time is <strong>{0}</strong>" }
+        
+        // 本次签到提示
+        my_sign_in_already_done : string { "You have already signed in today, please come back tomorrow~" }
+        my_sign_in_continuing : string { "You have signed in {0} days in a row, Keep up please!" }
+        my_sign_in_broken : string { "You have missed at least one day. Last time you signed in {0} days in a row." }
+        
+        // 签到输入说明提示
+        my_sign_in_action_tip : string { "You have not signed in today, you may say anything you like to others." }
+        
+        my_sign_in_action_button : string { "Sign in now" }
+
+    }
 }

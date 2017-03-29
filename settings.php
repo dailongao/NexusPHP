@@ -190,7 +190,7 @@ elseif ($action == 'savesettings_authority') 	// save user authority
 elseif ($action == 'savesettings_tweak')	// save tweak
 {
 	stdhead($lang_settings['head_save_tweak_settings']);
-	$validConfig = array('where','iplog1','bonus','datefounded', 'enablelocation', 'titlekeywords', 'metakeywords', 'metadescription', 'enablesqldebug', 'sqldebug', 'cssdate', 'enabletooltip', 'prolinkimg', 'analyticscode', 'enable_casino', 'casino_min_bonus');
+	$validConfig = array('where','iplog1','bonus','datefounded', 'enablelocation', 'titlekeywords', 'metakeywords', 'metadescription', 'enablesqldebug', 'sqldebug', 'cssdate', 'enabletooltip', 'prolinkimg', 'analyticscode', 'enable_casino', 'casino_min_bonus', 'enable_sign_in', 'sign_in_topic_id', 'sign_in_template', 'sign_in_reward', 'sign_in_bonus_record');
 	GetVar($validConfig);
 	unset($TWEAK);
 	foreach($validConfig as $config) {
@@ -255,7 +255,13 @@ elseif ($action == 'tweaksettings')		// tweak settings
 	tr($lang_settings['row_kps_enabled'],"<input type='radio' id='bonusenable' name='bonus'" . ($TWEAK["bonus"] == "enable" ? " checked='checked'" : "") . " value='enable' /> <label for='bonusenable'>".$lang_settings['text_enabled']."</label> <input type='radio' id='bonusdisablesave' name='bonus'" . ($TWEAK["bonus"] == "disablesave" ? " checked='checked'" : "") . " value='disablesave' /> <label for='bonusdisablesave'>".$lang_settings['text_disabled_but_save']."</label> <input type='radio' id='bonusdisable' name='bonus'" . ($TWEAK["bonus"] == "disable" ? " checked='checked'" : "") . " value='disable' /> <label for='bonusdisable'>".$lang_settings['text_disabled_no_save']."</label> <br />".$lang_settings['text_kps_note'], 1);
 	yesorno($lang_settings['row_casino_enabled'], 'enable_casino', $TWEAK["enable_casino"], $lang_settings['text_enable_casino_note'] );
 	tr($lang_settings['row_casino_min_bonus'],"<input type='text' style=\"width: 50px\" name='casino_min_bonus' value='".($TWEAK["casino_min_bonus"] ? $TWEAK["casino_min_bonus"] : '')."' />&nbsp;&nbsp;".$lang_settings['text_casino_min_bonus_note'], 1);
-	yesorno($lang_settings['row_enable_location'], 'enablelocation', $TWEAK["enablelocation"], $lang_settings['text_enable_location_note']);
+	yesorno($lang_settings['row_enable_sign_in'], 'enable_sign_in', $TWEAK["enable_sign_in"], $lang_settings['text_enable_sign_in']);
+    tr($lang_settings['row_sign_in_topic_id'],"<input type='number' style=\"width: 50px\" name='sign_in_topic_id' value='".($TWEAK["sign_in_topic_id"] ? $TWEAK["sign_in_topic_id"] : '')."' /> &nbsp;&nbsp;".$lang_settings['text_sign_in_topic_id'], 1);
+    tr($lang_settings['row_sign_in_template'],"<textarea rows='5' cols='100' style=\"width: 450px\" name='sign_in_template'>".($TWEAK["sign_in_template"] ? $TWEAK["sign_in_template"] : '')."</textarea> <br />".$lang_settings['text_sign_in_template'], 1);
+    tr($lang_settings['row_sign_in_reward'],"<input type='text' style=\"width: 450px\" name='sign_in_reward' value='".($TWEAK["sign_in_reward"] ? $TWEAK["sign_in_reward"] : '')."' /> <br />".$lang_settings['text_sign_in_reward'], 1);
+    yesorno($lang_settings['row_sign_in_bonus_record'], 'sign_in_bonus_record', $TWEAK["sign_in_bonus_record"], $lang_settings['text_sign_in_bonus_record']);
+
+    yesorno($lang_settings['row_enable_location'], 'enablelocation', $TWEAK["enablelocation"], $lang_settings['text_enable_location_note']);
 	yesorno($lang_settings['row_enable_tooltip'], 'enabletooltip', $TWEAK["enabletooltip"], $lang_settings['text_enable_tooltip_note']);
 	tr($lang_settings['row_title_keywords'],"<input type='text' style=\"width: 300px\" name='titlekeywords' value='".($TWEAK["titlekeywords"] ? $TWEAK["titlekeywords"] : '')."' /> <br />".$lang_settings['text_title_keywords_note'], 1);
 	tr($lang_settings['row_promotion_link_example_image'],"<input type='text' style=\"width: 300px\" name='prolinkimg' value='".($TWEAK["prolinkimg"] ? $TWEAK["prolinkimg"] : 'pic/prolink.png')."' /> <br />".$lang_settings['text_promotion_link_example_note'], 1);

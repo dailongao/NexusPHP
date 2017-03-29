@@ -15,9 +15,9 @@ $user_perday_limitation = 5;
 
 if(isset($_GET['key'])){
 	/* Check user's limitation */
-	$userid = $CURUSER['id'];
-	$nowday = date("d");
-	$sql = "SELECT * FROM easteregg WHERE userid = $userid AND day = $nowday";
+	$userid = (int)$CURUSER['id'];
+	$nowday = date("Y-m-d");
+	$sql = "SELECT * FROM easteregg WHERE userid = $userid AND eggdate = CURRENT_DATE()";
 	$res = sql_query($sql) or sqlerr(__FILE__, __LINE__);
 	if(mysql_num_rows($res) >= $user_perday_limitation){
 		stderr("对不起", "您本日领取彩蛋数量已超限");
@@ -35,7 +35,7 @@ if(isset($_GET['key'])){
 		die();
 	}
 	$bonus = rand(1, 200);
-	$sql = "UPDATE easteregg SET userid = $userid, day = $nowday, bonus = $bonus WHERE eggkey = " . sqlesc($_GET['key']);
+	$sql = "UPDATE easteregg SET userid = $userid, eggdate = CURRENT_DATE(), bonus = $bonus WHERE eggkey = " . sqlesc($_GET['key']);
 	sql_query($sql) or sqlerr(__FILE__, __LINE__);
 	$bonuscomment = date("Y-m-d") . " - " .$bonus. " Points for Easteregg.\n " .htmlspecialchars($CURUSER['bonuscomment']);
 	sql_query("UPDATE users SET seedbonus = seedbonus + $bonus, bonuscomment = ".sqlesc($bonuscomment)." WHERE id = ".sqlesc($userid)) or sqlerr(__FILE__, __LINE__);

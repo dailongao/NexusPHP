@@ -262,13 +262,13 @@ print("</ul>");
 			$count = $maxseeding_bonus;
 		$all_bonus = $valuetwo * atan($A / $l_bonus) + $A * $czero_bonus + ($perseeding_bonus * $count);
 		$percent = $all_bonus * 100 / ($bzero_bonus + $perseeding_bonus * $maxseeding_bonus);
-	print("<div align=\"center\">".$lang_mybonus['text_you_are_currently_getting'].round($all_bonus,3).$lang_mybonus['text_point'].add_s($all_bonus).$lang_mybonus['text_per_hour']." (A = ".round($A,1).")</div><table align=\"center\" border=\"0\" width=\"400\"><tr><td class=\"loadbarbg\" style='border: none; padding: 0px;'>");
+	print("<div align=\"center\">".$lang_mybonus['text_you_are_currently_getting'].round($all_bonus,3).$lang_mybonus['text_point'].add_s($all_bonus).$lang_mybonus['text_per_hour']." (A = ".round($A,1).")</div><!--<table align=\"center\" border=\"0\" width=\"400\"><tr><td class=\"loadbarbg\" style='border: none; padding: 0px;'>-->");
 
 	if ($percent <= 30) $loadpic = "loadbarred";
 	elseif ($percent <= 60) $loadpic = "loadbaryellow";
 	else $loadpic = "loadbargreen";
 	$width = $percent * 4;
-	print("<img class=\"".$loadpic."\" src=\"pic/trans.gif\" style=\"width: ".$width."px;\" alt=\"".$percent."%\" /></td></tr></table>");
+	//print("<img class=\"".$loadpic."\" src=\"pic/trans.gif\" style=\"width: ".$width."px;\" alt=\"".$percent."%\" /></td></tr></table>");
 
 print("<h1>".$lang_mybonus['text_other_things_get_bonus']."</h1>");
 print("<ul>");

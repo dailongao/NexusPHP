@@ -169,7 +169,7 @@ else {
 		}
 
 		if (get_user_class() >= $viewnfo_class && $CURUSER['shownfo'] != 'no' && $row["nfosz"] > 0){
-			if (!$torrent_nfo$nfo = $Cache->get_value('nfo_block_torrent_id_'.$id)){
+			if (!$nfo = $Cache->get_value('nfo_block_torrent_id_'.$id)){
 				$nfo = code($row["nfo"], $view == "magic");
 				$Cache->cache_value('nfo_block_torrent_id_'.$id, $nfo, 604800);
 			}
