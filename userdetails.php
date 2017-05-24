@@ -5,6 +5,11 @@ require_once(get_langfile_path());
 loggedinorreturn();
 parked();
 
+function convertDateFormat($value) {
+	$date = new DateTime($value);
+	return $date->format('Y-m-d\TH:i:s');
+}
+
 function bark($msg)
 {
 	global $lang_userdetails;
@@ -452,7 +457,7 @@ if (get_user_class() >= $prfmanage_class && $user["class"] < get_user_class())
 		tr($lang_userdetails['row_seeding_karma'], "<input type=\"text\" size=\"60\" name=\"bonus\" value=\"" .htmlspecialchars($user[seedbonus]) . "\" /><input type=\"hidden\" name=\"ori_bonus\" value=\"" .htmlspecialchars($user[seedbonus]) . "\" />", 1);
 		tr($lang_userdetails['row_invites'], "<input type=\"text\" size=\"60\" name=\"invites\" value=\"" .htmlspecialchars($user[invites]) . "\" />", 1);
 
-		tr($lang_userdetails['row_last_signin_time'], "<input type=\"datetime-local\" size=\"60\" name=\"last_signin_time\" value=\"" .htmlspecialchars($user[lastsignintime]) . "\" /><input type=\"hidden\"  name=\"ori_last_signin_time\" value=\"" .htmlspecialchars($user[lastsignintime]) . "\" />", 1);
+		tr($lang_userdetails['row_last_signin_time'], "<input type=\"datetime-local\" size=\"60\" name=\"last_signin_time\" value=\"" .htmlspecialchars(convertDateFormat($user[lastsignintime])) . "\" /><input type=\"hidden\"  name=\"ori_last_signin_time\" value=\"" .htmlspecialchars(convertDateFormat($user[lastsignintime])) . "\" />", 1);
 		tr($lang_userdetails['row_signin_count'], "<input type=\"number\" size=\"60\" name=\"signin_count\" value=\"" .htmlspecialchars($user[signincount]) . "\" /><input type=\"hidden\"  name=\"ori_signin_count\" value=\"" .htmlspecialchars($user[signincount]) . "\" />", 1);
 	}
 	tr($lang_userdetails['row_passkey'], "<input name=\"resetkey\" value=\"yes\" type=\"checkbox\" />".$lang_userdetails['checkbox_reset_passkey'], 1);
