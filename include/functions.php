@@ -19,6 +19,19 @@ include_once($rootpath . 'classes/class_advertisement.php');
 require_once($rootpath . get_langfile_path("functions.php"));
 require_once($rootpath . get_langfile_path("functions.php"));
 
+function get_date($dateTime){
+	return new DateTime($dateTime->format('Y-m-d'));
+}
+
+function get_date_diff($end, $start) {
+
+	$endDate = get_date($end);
+	$startDate = get_date($start);
+
+	$interval = $endDate->diff($startDate);
+	return $interval->days;
+}
+
 /**
  * 移除字符串边上的引号。
  * @param string $str 要处理的字符串。
@@ -2924,13 +2937,23 @@ function stdhead($title = "", $msgalert = true, $script = "", $place = "")
 						<td>
 							<table width="100%" cellspacing="0" cellpadding="0" border="0">
 								<tr>
-									<td class="bottom" align="left"><span class="medium"><?= $lang_functions['text_welcome_back'] ?>, <?= get_username($CURUSER['id'])?>  [<a href="logout.php"><?= $lang_functions['text_logout'] ?></a>]<?php if (get_user_class() >= UC_MODERATOR) { ?> [<a href="staffpanel.php"><?= $lang_functions['text_staff_panel'] ?></a>] <?php }?> <?php if (get_user_class() >= UC_SYSOP) { ?> [<a href="settings.php"><?= $lang_functions['text_site_settings'] ?></a>]<?php } ?> [<a href="torrents.php?inclbookmarked=1&amp;allsec=1"><?= $lang_functions['text_bookmarks'] ?></a>] [<a href="bitbucket-list.php?mode=1"><?= $lang_functions['text_attachments'] ?></a>] <font class='color_bonus'><?= $lang_functions['text_bonus'] ?></font><?php if ( $casino_tweak == "yes" && get_user_class() >= $casino_class ) { ?> [<a href="casino.php#tabs-2"><?= $lang_functions['text_casino'] ?></a>]<?php }?>[<a href="mybonus.php"><?= $lang_functions['text_use'] ?></a>]: <?= number_format($CURUSER['seedbonus'], 1)?> <font class='color_invite'><?= $lang_functions['text_invite'] ?></font>[<a href="invite.php?id=<?= $CURUSER['id']?>"><?= $lang_functions['text_send'] ?></a>]: <?= $CURUSER['invites']?><br />
+									<td class="bottom" align="left"><span class="medium"><?= $lang_functions['text_welcome_back'] ?>, <?= get_username($CURUSER['id'])?>  
+									[<a href="logout.php"><?= $lang_functions['text_logout'] ?></a>]<?php if (get_user_class() >= UC_MODERATOR) { ?> [<a href="staffpanel.php"><?= $lang_functions['text_staff_panel'] ?></a>] <?php }?> <?php if (get_user_class() >= UC_SYSOP) { ?> [<a href="settings.php"><?= $lang_functions['text_site_settings'] ?></a>]<?php } ?> [<a href="torrents.php?inclbookmarked=1&amp;allsec=1"><?= $lang_functions['text_bookmarks'] ?></a>] [<a href="bitbucket-list.php?mode=1"><?= $lang_functions['text_attachments'] ?></a>] <font class='color_bonus'><?= $lang_functions['text_bonus'] ?></font><?php if ( $casino_tweak == "yes" && get_user_class() >= $casino_class ) { ?> [<a href="casino.php#tabs-2"><?= $lang_functions['text_casino'] ?></a>]<?php }?>[<a href="mybonus.php"><?= $lang_functions['text_use'] ?></a>]: <?= number_format($CURUSER['seedbonus'], 1)?> <font class='color_invite'><?= $lang_functions['text_invite'] ?></font>[<a href="invite.php?id=<?= $CURUSER['id']?>"><?= $lang_functions['text_send'] ?></a>]: <?= $CURUSER['invites']?><br />
 
 										<font class="color_ratio"><?= $lang_functions['text_ratio'] ?></font><?= $ratio?>  <font class='color_uploaded'><?= $lang_functions['text_uploaded'] ?></font><?= mksize($CURUSER['uploaded'])?><font class='color_downloaded'> <?= $lang_functions['text_downloaded'] ?></font> <?= mksize($CURUSER['downloaded'])?>  <font class='color_active'><?= $lang_functions['text_active_torrents'] ?></font>
 										<img class="arrowup" alt="Torrents seeding" title="<?= $lang_functions['title_torrents_seeding'] ?>" src="pic/trans.gif" /><?= $activeseed?>
 										<img class="arrowdown" alt="Torrents leeching" title="<?= $lang_functions['title_torrents_leeching'] ?>" src="pic/trans.gif" /><?= $activeleech?>&nbsp;&nbsp;<font class='color_connectable'><?= $lang_functions['text_connectable'] ?></font><?= $connectable?> <?= maxslots();?></span></td>
 
-									<td class="bottom" align="right"><span class="medium"><?= $lang_functions['text_the_time_is_now'] ?><?= $datum[hours].":".$datum[minutes]?><br />
+									<td class="bottom" align="right"><span class="medium">
+									<?
+										if (get_date_diff(new DateTime("now"),new DateTime($CURUSER["lastsignintime"])) == 0) {
+											?> [<a href="signin.php"><?= $lang_functions['text_signed_in'] ?></a>]  <?
+										} else {
+											?> [<a href="signin.php" class="faqlink"><?= $lang_functions['text_sign_in'] ?></a>]  <?
+										}
+									 ?>
+									
+									<?= $lang_functions['text_the_time_is_now'] ?><?= $datum[hours].":".$datum[minutes]?><br />
 
 										<?php
 						  if (get_user_class() >= $staffmem_class){
