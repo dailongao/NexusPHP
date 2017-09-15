@@ -3259,6 +3259,8 @@ function loggedinorreturn($mainpage = false) {
 			$to = basename($to);
 			header("Location: " . get_protocol_prefix() . "$BASEURL/login.php?returnto=" . rawurlencode($to), true, 301);
 		}
+
+		header("Cache-Control: no-cache, must-revalidate" ); 
 		exit();
 	}
 }
