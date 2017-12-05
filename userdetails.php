@@ -286,7 +286,7 @@ tr_small($lang_userdetails['row_completed_torrents'], "<a href=\"javascript: get
 tr_small($lang_userdetails['row_incomplete_torrents'], "<a href=\"javascript: getusertorrentlistajax('".$user['id']."', 'incomplete', 'ka4'); klappe_news('a4')\"><img class=\"plus\" src=\"pic/trans.gif\" id=\"pica4\" alt=\"Show/Hide\" title=\"".$lang_userdetails['title_show_or_hide']."\" />   <u>".$lang_userdetails['text_show_or_hide']."</u></a><div id=\"ka4\" style=\"display: none;\"></div>", 1);
 }
 if ($user["info"])
-	print("<tr><td align=\"left\" colspan=\"2\" class=\"text\">" . format_comment($user["info"],false) . "</td></tr>\n");
+	print("<tr><td align=\"left\" colspan=\"2\" class=\"text\">" . format_comment(htmlspecialchars($user["info"],false)) . "</td></tr>\n");
 }
 else
 {
