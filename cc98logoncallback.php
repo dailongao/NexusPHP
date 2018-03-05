@@ -55,7 +55,7 @@ if(empty($code)) {
 $body = MessageFormatter::formatMessage('', 'client_id={0}&client_secret={1}&code={2}&grant_type=authorization_code&redirect_uri={3}', array (urlencode($cc98_client_id), urlencode($cc98_client_secret), urlencode($code), urlencode($cc98_redirect_uri)));
 
 // URL 请求对象。
-$request = curl_init('https://login.cc98.org/OAuth/Token');
+$request = curl_init('https://openid.cc98.org/connect/token');
 curl_setopt($request, CURLOPT_POST, 1);
 curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($request, CURLOPT_POSTFIELDS, $body);
@@ -70,31 +70,16 @@ curl_close($request);
 $access_token = $data['access_token'];
 $token_type = $data['token_type'];
 
-// 如果令牌获取失败，则结束进程。
-if(!$access_token) {
-	show_system_error();
-}
+$id_token = $data['id_token'];
 
-//////////// 根据访问令牌获得用户信息。
-$request = curl_init("http://api.cc98.org/Me/Basic");
+$id_token_terms = explode('.', $id_token);
+$id_token_header = base64_decode($id_token_terms[0]);
+$id_token_payload = base64_decode($id_token_terms[1]);
 
-$headers = array(
-	// Authorization 标头
-	MessageFormatter::formatMessage('', 'Authorization: {0} {1}', array($token_type, $access_token)),
-);
-
-curl_setopt($request, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
-
-// 执行并获得结果。
-$data = json_decode(curl_exec($request), true);
-
-// 关闭请求。
-curl_close($request);
-
+$id_data = json_decode($id_token_payload, true);
 
 // CC98 ID。
-$cc98_id = $data['name'];
+$cc98_id = $id_data['unique_name'];
 
 // 如果无法获得 CC98 ID，则立即结束请求。
 if(!$cc98_id) {
