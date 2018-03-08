@@ -23,7 +23,7 @@ function generate_uri($state) {
 	
 	global $cc98_client_id, $cc98_client_secret, $cc98_redirect_uri;
 	
-	return MessageFormatter::formatMessage('', 'https://login.cc98.org/OAuth/Authorize?client_id={0}&redirect_uri={1}&response_type=code&state={2}', array(urlencode($cc98_client_id), urlencode($cc98_redirect_uri), urlencode($state)));
+	return MessageFormatter::formatMessage('', 'https://openid.cc98.org/connect/authorize?client_id={0}&redirect_uri={1}&response_type=code&state={2}&scope=openid', array(urlencode($cc98_client_id), urlencode($cc98_redirect_uri), urlencode($state)));
 
 }
 
