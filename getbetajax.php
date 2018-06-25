@@ -64,12 +64,12 @@ else
 			//Different limit for different level
 			$stakelimit = 0;
 			$userclass = get_user_class();
-			if($userclass == UC_POWER_USER) $stakelimit = 5000;
-			elseif($userclass == UC_ELITE_USER) $stakelimit = 6000;
-			elseif($userclass == UC_CRAZY_USER) $stakelimit = 7000;
-			elseif($userclass == UC_INSANE_USER) $stakelimit = 8000;
-			elseif($userclass == UC_VETERAN_USER) $stakelimit = 9000;
-			elseif($userclass >= UC_EXTREME_USER) $stakelimit = 10000;
+			if($userclass == UC_POWER_USER) $stakelimit = 50000;
+			elseif($userclass == UC_ELITE_USER) $stakelimit = 60000;
+			elseif($userclass == UC_CRAZY_USER) $stakelimit = 70000;
+			elseif($userclass == UC_INSANE_USER) $stakelimit = 80000;
+			elseif($userclass == UC_VETERAN_USER) $stakelimit = 90000;
+			elseif($userclass >= UC_EXTREME_USER) $stakelimit = 100000;
 			
 			if($choice < 1 || $choice > 9 || $stake > $stakelimit || $stake < 100)
 			{
