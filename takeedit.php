@@ -73,7 +73,7 @@ if ($oldcatmode != $newcatmode && !$allowmove)
 $updateset[] = "anonymous = '" . ($_POST["anonymous"] ? "yes" : "no") . "'";
 $updateset[] = "name = " . sqlesc($name);
 $updateset[] = "descr = " . sqlesc($descr);
-$updateset[] = "url = " . sqlesc($url);
+$updateset[] = "url = '" . sqlesc($url) ."'";
 $updateset[] = "douban_url = " . sqlesc($douban_url);
 $updateset[] = "small_descr = " . sqlesc($_POST["small_descr"]);
 //$updateset[] = "ori_descr = " . sqlesc($descr);

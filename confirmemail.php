@@ -1,12 +1,10 @@
 <?php
 require_once("include/bittorrent.php");
 
-if (!preg_match(':^/(\d{1,10})/([\w]{32})/(.+)$:', $_SERVER["PATH_INFO"], $matches))
-	httperr();
 
-$id = 0 + $matches[1];
-$md5 = $matches[2];
-$email = urldecode($matches[3]);
+$id = $_GET["id"];
+$md5 = $_GET["hash"];
+$email = $_GET["mail"];
 //print($email);
 //die();
 

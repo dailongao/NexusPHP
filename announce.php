@@ -28,6 +28,20 @@ if (strlen($passkey) != 32 || $passkey == '00000000000000000000000000000000') er
 
 //4. GET IP AND CHECK PORT
 $ip = getip();	// avoid to get the spoof ip from some agent
+
+// Get the IP type
+switch(strlen(inet_pton($ip))) {
+	case 16:
+		$ip_type = "ipv6";
+	break;
+	case 4:
+		$ip_type = "ipv4";
+	break;
+	default:
+		err("You IP $ip cannot be resolved.");
+		break;
+}
+
 if (!$port || $port > 0xffff)
 	err("invalid port");
 if (!ip2long($ip)) //Disable compact announce with IPv6
@@ -109,8 +123,8 @@ if ($newnumpeers > $rsize)
 else $limit = "";
 $announce_wait = 30;
 
-$fields = "seeder, peer_id, ip, port, uploaded, downloaded, (".TIMENOW." - UNIX_TIMESTAMP(last_action)) AS announcetime, UNIX_TIMESTAMP(prev_action) AS prevts";
-$peerlistsql = "SELECT ".$fields." FROM peers WHERE torrent = ".$torrentid." AND connectable = 'yes' ".$only_leech_query.$limit;
+$fields = "seeder, peer_id, ip, ipv6, port, uploaded, downloaded, (".TIMENOW." - UNIX_TIMESTAMP(last_action)) AS announcetime, UNIX_TIMESTAMP(prev_action) AS prevts";
+$peerlistsql = "SELECT ".$fields." FROM peers WHERE torrent = ".$torrentid." AND (connectable = 'yes' OR connectable = 'unknown') ".$only_leech_query.$limit;
 $res = sql_query($peerlistsql);
 
 $real_annnounce_interval = $announce_interval;
@@ -124,37 +138,62 @@ $resp = "d" . benc_str("interval") . "i" . $real_annnounce_interval . "e" . benc
 $peer_list = "";
 unset($self);
 // bencoding the peers info get for this announce
-while ($row = mysql_fetch_assoc($res))
-{
+while ($row = mysql_fetch_assoc($res)) {
+
 	$row["peer_id"] = hash_pad($row["peer_id"]);
 
 	// $peer_id is the announcer's peer_id while $row["peer_id"] is randomly selected from the peers table
-	if ($row["peer_id"] === $peer_id)
-	{
+	if ($row["peer_id"] === $peer_id) {
 		$self = $row;
 		continue;
 	}
-if ($compact == 1){
-	$longip = ip2long($row['ip']);
-	if ($longip) //Ignore ipv6 address
-		$peer_list .= pack("Nn", sprintf("%d",$longip), $row['port']);
+
+	// IPV4
+	if ($row["ip"]) {
+		if ($compact == 1) {
+			$longip = ip2long($row['ip']);
+			if ($longip) //Ignore ipv6 address
+				$peer_list .= pack("Nn", sprintf("%d",$longip), $row['port']);
+		} elseif ($no_peer_id == 1) {
+			$peer_list .= "d" .
+			benc_str("ip") . benc_str($row["ip"]) .
+			benc_str("port") . "i" . $row["port"] . "e" .
+			"e";
+		} else {
+			$peer_list .= "d" .
+			benc_str("ip") . benc_str($row["ip"]) .
+			benc_str("peer id") . benc_str($row["peer_id"]) .
+			benc_str("port") . "i" . $row["port"] . "e" .
+			"e";
+		}
+	}
+
+	// IPV6
+	if ($compact != 1 && $row["ipv6"]) {
+
+		// Compact is not supported
+
+		if ($no_peer_id == 1) {
+			$peer_list .= "d" .
+			benc_str("ip") . benc_str($row["ipv6"]) .
+			benc_str("port") . "i" . $row["port"] . "e" .
+			"e";
+		} else {
+			$peer_list .= "d" .
+			benc_str("ip") . benc_str($row["ipv6"]) .
+			benc_str("peer id") . benc_str($row["peer_id"]) .
+			benc_str("port") . "i" . $row["port"] . "e" .
+			"e";
+		}
+	}
 }
-elseif ($no_peer_id == 1)
-	$peer_list .= "d" .
-	benc_str("ip") . benc_str($row["ip"]) .
-	benc_str("port") . "i" . $row["port"] . "e" .
-	"e";
-else
-	$peer_list .= "d" .
-	benc_str("ip") . benc_str($row["ip"]) .
-	benc_str("peer id") . benc_str($row["peer_id"]) .
-	benc_str("port") . "i" . $row["port"] . "e" .
-	"e";
+
+
+if ($compact == 1) {
+	$resp .= benc_str($peer_list);
+} else {
+	$resp .= "l".$peer_list."e";
 }
-if ($compact == 1)
-$resp .= benc_str($peer_list);
-else
-$resp .= "l".$peer_list."e";
 
 $resp .= "e";
 $selfwhere = "torrent = $torrentid AND " . hash_where("peer_id", $peer_id);
@@ -332,12 +371,24 @@ if (!isset($event))
 	$event = "";
 if (isset($self) && $event == "stopped")
 {
-	sql_query("DELETE FROM peers WHERE $selfwhere") or err("D Err");
+	switch ($ip_type) {
+		case "ipv4":
+			sql_query("UPDATE peers SET `ip` = NULL WHERE $selfwhere") or err("D Err");
+			break;
+		case "ipv6":
+			sql_query("UPDATE peers SET `ipv6` = NULL WHERE $selfwhere") or err("D Err");
+			break;
+	}
+
+	// DELETE peers is both IP are invalid
+	sql_query("DELETE FROM peers WHERE $selfwhere AND `ip` IS NULL AND `ipv6` iS NULL") or err("D Err");
 	if (mysql_affected_rows())
 	{
 		$updateset[] = ($self["seeder"] == "yes" ? "seeders = seeders - 1" : "leechers = leechers - 1");
-		sql_query("UPDATE snatched SET uploaded = uploaded + $trueupthis, downloaded = downloaded + $truedownthis, to_go = $left, $announcetime, last_action = ".$dt." WHERE torrentid = $torrentid AND userid = $userid") or err("SL Err 1");
 	}
+
+	// Update stats
+	sql_query("UPDATE snatched SET uploaded = uploaded + $trueupthis, downloaded = downloaded + $truedownthis, to_go = $left, $announcetime, last_action = ".$dt." WHERE torrentid = $torrentid AND userid = $userid") or err("SL Err 1");
 }
 elseif(isset($self))
 {
@@ -349,7 +400,17 @@ elseif(isset($self))
 		$updateset[] = "times_completed = times_completed + 1";
 	}
 
-	sql_query("UPDATE peers SET ip = ".sqlesc($ip).", port = $port, uploaded = $uploaded, downloaded = $downloaded, to_go = $left, prev_action = last_action, last_action = $dt, seeder = '$seeder', agent = ".sqlesc($agent)." $finished WHERE $selfwhere") or err("PL Err 1");
+	switch ($ip_type) {
+		case "ipv4":
+			$ip_field = "ip";
+			break;
+		case "ipv6":
+			$ip_field = "ipv6";
+			break;
+	}
+
+
+	sql_query("UPDATE peers SET $ip_field = ".sqlesc($ip).", port = $port, uploaded = $uploaded, downloaded = $downloaded, to_go = $left, prev_action = last_action, last_action = $dt, seeder = '$seeder', agent = ".sqlesc($agent)." $finished WHERE $selfwhere") or err("PL Err 1");
 
 	if (mysql_affected_rows())
 	{
@@ -360,28 +421,60 @@ elseif(isset($self))
 }
 else
 {
-	$sockres = @pfsockopen($ip, $port, $errno, $errstr, 5);
-	if (!$sockres)
-	{
-		$connectable = "no";
-	}
-	else
-	{
-		$connectable = "yes";
-		@fclose($sockres);
-	}
-	sql_query("INSERT INTO peers (torrent, userid, peer_id, ip, port, connectable, uploaded, downloaded, to_go, started, last_action, seeder, agent, downloadoffset, uploadoffset, passkey) VALUES ($torrentid, $userid, ".sqlesc($peer_id).", ".sqlesc($ip).", $port, '$connectable', $uploaded, $downloaded, $left, $dt, $dt, '$seeder', ".sqlesc($agent).", $downloaded, $uploaded, ".sqlesc($passkey).")") or err("PL Err 2");
+	if ($event == "started") {
 
-	if (mysql_affected_rows())
-	{
-		$updateset[] = ($seeder == "yes" ? "seeders = seeders + 1" : "leechers = leechers + 1");
-		
-		$check = @mysql_fetch_row(@sql_query("SELECT COUNT(*) FROM snatched WHERE torrentid = $torrentid AND userid = $userid"));
-		if (!$check['0'])
-			sql_query("INSERT INTO snatched (torrentid, userid, ip, port, uploaded, downloaded, to_go, startdat, last_action) VALUES ($torrentid, $userid, ".sqlesc($ip).", $port, $uploaded, $downloaded, $left, $dt, $dt)") or err("SL Err 4");
-		else
-			sql_query("UPDATE snatched SET to_go = $left, last_action = ".$dt ." WHERE torrentid = $torrentid AND userid = $userid") or err("SL Err 3.1");
+		$date_value = date('Hi');
+
+		if ($date_value >= "0700" && $date_value <= "2100") {
+			//err("Cannot establish new connection due to administrative reason.");
+		}
 	}
+
+	// IPV6
+	if ($ip_type == "ipv6") {
+		$connectable = "unknown";
+	} else {
+
+		$sockres = @pfsockopen($ip, $port, $errno, $errstr, 5);
+		if (!$sockres)
+		{
+			$connectable = "no";
+		}
+		else
+		{
+			$connectable = "yes";
+			@fclose($sockres);
+		}
+	}
+
+	switch ($ip_type) {
+		case "ipv4":
+			$ip_field = "ip";
+			break;
+		case "ipv6":
+			$ip_field = "ipv6";
+			break;
+	}
+
+	$ip_value =sqlesc($ip);
+
+
+	
+	sql_query("INSERT INTO peers (torrent, userid, peer_id, port, connectable, uploaded, downloaded, to_go, started, last_action, seeder, agent, downloadoffset, uploadoffset, passkey) VALUES ($torrentid, $userid, ".sqlesc($peer_id).", $port, '$connectable', $uploaded, $downloaded, $left, $dt, $dt, '$seeder', ".sqlesc($agent).", $downloaded, $uploaded, ".sqlesc($passkey).")") or err("PL Err 2");
+
+	if (mysql_affected_rows()) 	{
+		$updateset[] = ($seeder == "yes" ? "seeders = seeders + 1" : "leechers = leechers + 1");
+	}
+	
+	// Update IP
+	sql_query("UPDATE `peers` SET `$ip_field` = $ip_value WHERE $selfwhere") or err(mysql_error());
+		
+	$check = @mysql_fetch_row(@sql_query("SELECT COUNT(*) FROM snatched WHERE torrentid = $torrentid AND userid = $userid"));
+	if (!$check['0'])
+		sql_query("INSERT INTO snatched (torrentid, userid, ip, port, uploaded, downloaded, to_go, startdat, last_action) VALUES ($torrentid, $userid, ".sqlesc($ip).", $port, $uploaded, $downloaded, $left, $dt, $dt)") or err("SL Err 4");
+	else
+		sql_query("UPDATE snatched SET to_go = $left, last_action = ".$dt ." WHERE torrentid = $torrentid AND userid = $userid") or err("SL Err 3.1");
+	
 }
 
 if (count($updateset)) // Update only when there is change in peer counts

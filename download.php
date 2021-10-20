@@ -92,7 +92,40 @@ $dict = bdec_file($fn, $max_torrent_size);
 $dict['value']['announce']['value'] = $ssl_torrent . $base_announce_url . "?passkey=$CURUSER[passkey]";
 $dict['value']['announce']['string'] = strlen($dict['value']['announce']['value']).":".$dict['value']['announce']['value'];
 $dict['value']['announce']['strlen'] = strlen($dict['value']['announce']['string']);
-/*if ($announce_urls[1] != "") // add multi-tracker
+
+$index = 0;
+
+
+// Announce list
+$announce_list_wrapper = array();
+$announce_list_wrapper['type'] = "list";
+$announce_list_wrapper['value'] = array();
+
+
+// add item
+foreach ($announce_urls as $url) {
+
+	$item = array();
+	$item['type'] = 'string';
+	$item['value'] = $ssl_torrent . $url . "?passkey=$CURUSER[passkey]";
+	$item['strlen'] = strlen($item['value']);
+	$item['string'] = $item['strlen'] . ":" . $item['value'];
+		
+	$announce_list = array();
+	$announce_list['type'] = "list";
+	$announce_list['value'] = array();
+	$announce_list['value'][] = $item;
+	$announce_list['string'] = benc_list($announce_list['value']);
+
+	// Add to wrappper
+	$announce_list_wrapper['value'][] = $announce_list;
+}
+
+$announce_list_wrapper['string'] = benc_list($announce_list_wrapper['value']);
+$dict['value']['announce-list'] = $announce_list_wrapper;
+
+/*
+if ($announce_urls[1] != "") // add multi-tracker
 {
 	$dict['value']['announce-list']['type'] = "list";
 	$dict['value']['announce-list']['value'][0]['type'] = "list";
@@ -111,7 +144,8 @@ $dict['value']['announce']['strlen'] = strlen($dict['value']['announce']['string
 	$dict['value']['announce-list']['value'][1]['strlen'] = strlen($dict['value']['announce-list']['value'][0]['string']);
 	$dict['value']['announce-list']['string'] = "l".$dict['value']['announce-list']['value'][0]['string'].$dict['value']['announce-list']['value'][1]['string']."e";
 	$dict['value']['announce-list']['strlen'] = strlen($dict['value']['announce-list']['string']);
-}*/
+}
+*/
 /*
 header ("Expires: Tue, 1 Jan 1980 00:00:00 GMT");
 header ("Last-Modified: ".date("D, d M Y H:i:s"));
@@ -126,26 +160,9 @@ header ("Content-Transfer-Encoding: binary");
 
 header("Content-Type: application/x-bittorrent");
 
-if ( str_replace("Gecko", "", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT'])
-{
-	header ("Content-Disposition: attachment; filename=\"$torrentnameprefix.".$row["save_as"].".torrent\"");
-}
-else if ( str_replace("Firefox", "", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT'] )
-{
-	header ("Content-Disposition: attachment; filename=\"$torrentnameprefix.".$row["save_as"].".torrent\"");
-}
-else if ( str_replace("Opera", "", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT'] )
-{
-	header ("Content-Disposition: attachment; filename=\"$torrentnameprefix.".$row["save_as"].".torrent\"");
-}
-else if ( str_replace("IE", "", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT'] )
-{
-	header ("Content-Disposition: attachment; filename=".str_replace("+", "%20", rawurlencode("$torrentnameprefix." . $row["save_as"] .".torrent")));
-}
-else
-{
-	header ("Content-Disposition: attachment; charset=utf-8; filename=\"$torrentnameprefix.".$row["save_as"].".torrent\"");
-}
+$file_name = sprintf("%s.%s.torrent", $torrentnameprefix, $row["save_as"]);
+$safe_name = urlencode($file_name);
+header ("Content-Disposition: attachment; charset=utf-8; filename=\"$safe_name\"");
 
 //header ("Content-Disposition: attachment; filename=".$row["filename"]."");
 //ob_implicit_flush(true);

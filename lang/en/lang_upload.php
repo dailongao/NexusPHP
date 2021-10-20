@@ -30,6 +30,8 @@ $lang_upload = array
 	'checkbox_hide_uploader_note' => "Don't show my username in 'Uploaded By' field.",
 	'text_read_rules' => "I read the rules before this uploading.",
 	'submit_upload' => "Upload",
+	'preview_descr' => "Preview",
+	'edit_descr' => "Edit",
 	'text_to_browse_section' => "Upload to <b>Torrents</b> section ",
 	'text_to_special_section' => "or <b>Music</b> section ",
 	'text_type_note' => "&nbsp;&nbsp; <font class=\"small\">Choose <b>only</b> either of the two</font>",

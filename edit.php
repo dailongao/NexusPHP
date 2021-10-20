@@ -1,6 +1,6 @@
 <?php
 
-// 2014-09-30 (Ó£ÌÒ): É¾³ýÈ·ÈÏºÍÍ¬Ê±É¾³ýÖÖ×Ó¹¦ÄÜ
+// 2014-09-30 (Ó£ï¿½ï¿½): É¾ï¿½ï¿½È·ï¿½Ïºï¿½Í¬Ê±É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½
 
 require_once("include/bittorrent.php");
 dbconn();
@@ -20,13 +20,10 @@ if ($enablespecial == 'yes' && get_user_class() >= $movetorrent_class)
 else $allowmove = false;
 
 $sectionmode = $row['cat_mode'];
-if ($sectionmode == $browsecatmode)
-{
+if ($sectionmode == $browsecatmode) {
 	$othermode = $specialcatmode;
 	$movenote = $lang_edit['text_move_to_special'];
-}
-else
-{
+} else {
 	$othermode = $browsecatmode;
 	$movenote = $lang_edit['text_move_to_browse'];
 }
@@ -39,228 +36,220 @@ $showprocessing = (get_searchbox_value($sectionmode, 'showprocessing') || ($allo
 $showteam = (get_searchbox_value($sectionmode, 'showteam') || ($allowmove && get_searchbox_value($othermode, 'showteam'))); //whether show teams or not
 $showaudiocodec = (get_searchbox_value($sectionmode, 'showaudiocodec') || ($allowmove && get_searchbox_value($othermode, 'showaudiocodec'))); //whether show audio codecs or not
 
-stdhead($lang_edit['head_edit_torrent'] . "\"". $row["name"] . "\"");
+stdhead($lang_edit['head_edit_torrent'] . "\"" . $row["name"] . "\"");
 
 if (!isset($CURUSER) || ($CURUSER["id"] != $row["owner"] && get_user_class() < $torrentmanage_class)) {
-	print("<h1 align=\"center\">".$lang_edit['text_cannot_edit_torrent']."</h1>");
-	print("<p>".$lang_edit['text_cannot_edit_torrent_note']."</p>");
-}
-else {
+	print("<h1 align=\"center\">" . $lang_edit['text_cannot_edit_torrent'] . "</h1>");
+	print("<p>" . $lang_edit['text_cannot_edit_torrent_note'] . "</p>");
+} else {
 	print("<form method=\"post\" id=\"compose\" name=\"edittorrent\" action=\"takeedit.php\" enctype=\"multipart/form-data\">");
 	print("<input type=\"hidden\" name=\"id\" value=\"$id\" />");
 	if (isset($_GET["returnto"]))
-        print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />");
+		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\">\n");
-	print("<tr><td class='colhead' colspan='2' align='center'>".htmlspecialchars($row["name"])."</td></tr>");
-	tr($lang_edit['row_torrent_name']."<font color=\"red\">*</font>", "<input type=\"text\" style=\"width: 650px;\" name=\"name\" value=\"" . htmlspecialchars($row["name"]) . "\" />", 1);
+	print("<tr><td class='colhead' colspan='2' align='center'>" . htmlspecialchars($row["name"]) . "</td></tr>");
+	tr($lang_edit['row_torrent_name'] . "<font color=\"red\">*</font>", "<input type=\"text\" style=\"width: 650px;\" name=\"name\" value=\"" . htmlspecialchars($row["name"]) . "\" />", 1);
 	if ($smalldescription_main == 'yes')
 		tr($lang_edit['row_small_description'], "<input type=\"text\" style=\"width: 650px;\" name=\"small_descr\" value=\"" . htmlspecialchars($row["small_descr"]) . "\" />", 1);
 
 	get_external_tr($row["url"], "imdb");
 	get_external_tr($row["douban_url"], "douban");
 
-	if ($enablenfo_main=='yes')
-		tr($lang_edit['row_nfo_file'], "<font class=\"medium\"><input type=\"radio\" name=\"nfoaction\" value=\"keep\" checked=\"checked\" />".$lang_edit['radio_keep_current'].
-	"<input type=\"radio\" name=\"nfoaction\" value=\"remove\" />".$lang_edit['radio_remove'].
-	"<input id=\"nfoupdate\" type=\"radio\" name=\"nfoaction\" value=\"update\" />".$lang_edit['radio_update']."</font><br /><input type=\"file\" name=\"nfo\" onchange=\"document.getElementById('nfoupdate').checked=true\" />", 1);
-	print("<tr><td class=\"rowhead\">".$lang_edit['row_description']."<font color=\"red\">*</font></td><td class=\"rowfollow\">");
-	textbbcode("edittorrent","descr",($row["descr"]), false);
-	print("</td></tr>");
+	if ($enablenfo_main == 'yes')
+		tr($lang_edit['row_nfo_file'], "<font class=\"medium\"><input type=\"radio\" name=\"nfoaction\" value=\"keep\" checked=\"checked\" />" . $lang_edit['radio_keep_current'] .
+			"<input type=\"radio\" name=\"nfoaction\" value=\"remove\" />" . $lang_edit['radio_remove'] .
+			"<input id=\"nfoupdate\" type=\"radio\" name=\"nfoaction\" value=\"update\" />" . $lang_edit['radio_update'] . "</font><br /><input type=\"file\" name=\"nfo\" onchange=\"document.getElementById('nfoupdate').checked=true\" />", 1);
+	print("<tr><td class=\"rowhead\">" . $lang_edit['row_description'] . "<font color=\"red\">*</font></td><td id=\"descr-editor\" class=\"rowfollow\">");
+	textbbcode("edittorrent", "descr", ($row["descr"]), false);
+	print("</td><td id=\"descr-previewer\" class=\"rowfollow\" style=\"display:none\"></td></tr>");
 	$s = "<select name=\"type\" id=\"oricat\">";
 
 	$cats = genrelist($sectionmode);
 	foreach ($cats as $subrow) {
 		$s .= "<option value=\"" . $subrow["id"] . "\"";
 		if ($subrow["id"] == $row["category"])
-            $s .= " selected=\"selected\"";
+			$s .= " selected=\"selected\"";
 		$s .= ">" . htmlspecialchars($subrow["name"]) . "</option>\n";
 	}
 
 	$s .= "</select>\n";
-	if ($allowmove){
+	if ($allowmove) {
 		$s2 = "<select name=\"type\" id=newcat disabled>\n";
 		$cats2 = genrelist($othermode);
 		foreach ($cats2 as $subrow) {
 			$s2 .= "<option value=\"" . $subrow["id"] . "\"";
 			if ($subrow["id"] == $row["category"])
-                $s2 .= " selected=\"selected\"";
+				$s2 .= " selected=\"selected\"";
 			$s2 .= ">" . htmlspecialchars($subrow["name"]) . "</option>\n";
 		}
 		$s2 .= "</select>\n";
 		$movecheckbox = "<input type=\"checkbox\" id=movecheck name=\"movecheck\" value=\"1\" onclick=\"disableother2('oricat','newcat')\" />";
 	}
-	tr($lang_edit['row_type']."<font color=\"red\">*</font>", $s.($allowmove ? "&nbsp;&nbsp;".$movecheckbox.$movenote.$s2 : ""), 1);
-	if ($showsource || $showmedium || $showcodec || $showaudiocodec || $showstandard || $showprocessing){
-		if ($showsource){
-			$source_select = torrent_selection($lang_edit['text_source'],"source_sel","sources",$row["source"]);
-		}
-		else $source_select = "";
+	tr($lang_edit['row_type'] . "<font color=\"red\">*</font>", $s . ($allowmove ? "&nbsp;&nbsp;" . $movecheckbox . $movenote . $s2 : ""), 1);
+	if ($showsource || $showmedium || $showcodec || $showaudiocodec || $showstandard || $showprocessing) {
+		if ($showsource) {
+			$source_select = torrent_selection($lang_edit['text_source'], "source_sel", "sources", $row["source"]);
+		} else $source_select = "";
 
-		if ($showmedium){
-			$medium_select = torrent_selection($lang_edit['text_medium'],"medium_sel","media",$row["medium"]);
-		}
-		else $medium_select = "";
+		if ($showmedium) {
+			$medium_select = torrent_selection($lang_edit['text_medium'], "medium_sel", "media", $row["medium"]);
+		} else $medium_select = "";
 
-		if ($showcodec){
-			$codec_select = torrent_selection($lang_edit['text_codec'],"codec_sel","codecs",$row["codec"]);
-		}
-		else $codec_select = "";
+		if ($showcodec) {
+			$codec_select = torrent_selection($lang_edit['text_codec'], "codec_sel", "codecs", $row["codec"]);
+		} else $codec_select = "";
 
-		if ($showaudiocodec){
-			$audiocodec_select = torrent_selection($lang_edit['text_audio_codec'],"audiocodec_sel","audiocodecs",$row["audiocodec"]);
-		}
-		else $audiocodec_select = "";
+		if ($showaudiocodec) {
+			$audiocodec_select = torrent_selection($lang_edit['text_audio_codec'], "audiocodec_sel", "audiocodecs", $row["audiocodec"]);
+		} else $audiocodec_select = "";
 
-		if ($showstandard){
-			$standard_select = torrent_selection($lang_edit['text_standard'],"standard_sel","standards",$row["standard"]);
-		}
-		else $standard_select = "";
+		if ($showstandard) {
+			$standard_select = torrent_selection($lang_edit['text_standard'], "standard_sel", "standards", $row["standard"]);
+		} else $standard_select = "";
 
-		if ($showprocessing){
-			$processing_select = torrent_selection($lang_edit['text_processing'],"processing_sel","processings",$row["processing"]);
-		}
-		else $processing_select = "";
+		if ($showprocessing) {
+			$processing_select = torrent_selection($lang_edit['text_processing'], "processing_sel", "processings", $row["processing"]);
+		} else $processing_select = "";
 
-		tr($lang_edit['row_quality'], $source_select . $medium_select . $codec_select . $audiocodec_select. $standard_select . $processing_select, 1);
+		tr($lang_edit['row_quality'], $source_select . $medium_select . $codec_select . $audiocodec_select . $standard_select . $processing_select, 1);
 	}
 
-	if ($showteam){
-		if ($showteam){
-			$team_select = torrent_selection($lang_edit['text_team'],"team_sel","teams",$row["team"]);
-		}
-		else $showteam = "";
+	if ($showteam) {
+		if ($showteam) {
+			$team_select = torrent_selection($lang_edit['text_team'], "team_sel", "teams", $row["team"]);
+		} else $showteam = "";
 
-		tr($lang_edit['row_content'],$team_select,1);
+		tr($lang_edit['row_content'], $team_select, 1);
 	}
-	tr($lang_edit['row_check'], "<input type=\"checkbox\" name=\"visible\"" . ($row["visible"] == "yes" ? " checked=\"checked\"" : "" ) . " value=\"1\" /> ".$lang_edit['checkbox_visible']."&nbsp;&nbsp;&nbsp;".(get_user_class() >= $beanonymous_class || get_user_class() >= $torrentmanage_class ? "<input type=\"checkbox\" name=\"anonymous\"" . ($row["anonymous"] == "yes" ? " checked=\"checked\"" : "" ) . " value=\"1\" />".$lang_edit['checkbox_anonymous_note']."&nbsp;&nbsp;&nbsp;" : "").(get_user_class() >= $torrentmanage_class ? "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"] == "yes") ? " checked=\"checked\"" : "" ) . " value=\"yes\" /> ".$lang_edit['checkbox_banned'] : ""), 1);
-	if (get_user_class()>= $torrentsticky_class || (get_user_class() >= $torrentmanage_class && $CURUSER["picker"] == 'yes')){
+	tr($lang_edit['row_check'], "<input type=\"checkbox\" name=\"visible\"" . ($row["visible"] == "yes" ? " checked=\"checked\"" : "") . " value=\"1\" /> " . $lang_edit['checkbox_visible'] . "&nbsp;&nbsp;&nbsp;" . (get_user_class() >= $beanonymous_class || get_user_class() >= $torrentmanage_class ? "<input type=\"checkbox\" name=\"anonymous\"" . ($row["anonymous"] == "yes" ? " checked=\"checked\"" : "") . " value=\"1\" />" . $lang_edit['checkbox_anonymous_note'] . "&nbsp;&nbsp;&nbsp;" : "") . (get_user_class() >= $torrentmanage_class ? "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"] == "yes") ? " checked=\"checked\"" : "") . " value=\"yes\" /> " . $lang_edit['checkbox_banned'] : ""), 1);
+	if (get_user_class() >= $torrentsticky_class || (get_user_class() >= $torrentmanage_class && $CURUSER["picker"] == 'yes')) {
 		$pickcontent = "";
-        
-		if(get_user_class()>=$torrentsticky_class)
-		{
-			$pickcontent .= "<b>".$lang_edit['row_torrent_position'].":&nbsp;</b>"."<select name=\"sel_posstate\" style=\"width: 100px;\">" .
-			"<option" . (($row["pos_state"] == "normal") ? " selected=\"selected\"" : "" ) . " value=\"0\">".$lang_edit['select_normal']."</option>" .
-			"<option" . (($row["pos_state"] == "sticky") ? " selected=\"selected\"" : "" ) . " value=\"1\">".$lang_edit['select_sticky']."</option>" .
-			"</select>&nbsp;&nbsp;&nbsp;";
-			$pickcontent .= "<b>".$lang_edit['row_special_torrent'].":&nbsp;</b>"."<select name=\"sel_spstate\" style=\"width: 100px;\" onchange=\"javascript:updateprotime(this.value);\">" .promotion_selection($row["sp_state"], 0). "</select>&nbsp;&nbsp;&nbsp;";
-			if($row["sp_state"] == 1) $defaultprolength = 72;
+
+		if (get_user_class() >= $torrentsticky_class) {
+			$pickcontent .= "<b>" . $lang_edit['row_torrent_position'] . ":&nbsp;</b>" . "<select name=\"sel_posstate\" style=\"width: 100px;\">" .
+				"<option" . (($row["pos_state"] == "normal") ? " selected=\"selected\"" : "") . " value=\"0\">" . $lang_edit['select_normal'] . "</option>" .
+				"<option" . (($row["pos_state"] == "sticky") ? " selected=\"selected\"" : "") . " value=\"1\">" . $lang_edit['select_sticky'] . "</option>" .
+				"</select>&nbsp;&nbsp;&nbsp;";
+			$pickcontent .= "<b>" . $lang_edit['row_special_torrent'] . ":&nbsp;</b>" . "<select name=\"sel_spstate\" style=\"width: 100px;\" onchange=\"javascript:updateprotime(this.value);\">" . promotion_selection($row["sp_state"], 0) . "</select>&nbsp;&nbsp;&nbsp;";
+			if ($row["sp_state"] == 1) $defaultprolength = 72;
 			else $defaultprolength = -1;
-			$pickcontent .= "<b>".$lang_edit['row_promotion_until'].":&nbsp;</b>"."<input type=\"text\" style=\"width: 80px;\" id=\"prolength\" name=\"promotionlength\" value=\"$defaultprolength\">&nbsp;&nbsp;&nbsp;";
+			$pickcontent .= "<b>" . $lang_edit['row_promotion_until'] . ":&nbsp;</b>" . "<input type=\"text\" style=\"width: 80px;\" id=\"prolength\" name=\"promotionlength\" value=\"$defaultprolength\">&nbsp;&nbsp;&nbsp;";
 			$pickcontent .= "<input type=\"hidden\" name=\"promotion_time_type\" value=\"2\" />";
 		}
-		if(get_user_class()>=$torrentmanage_class && $CURUSER["picker"] == 'yes')
-		{
-			$pickcontent .= "<b>".$lang_edit['row_recommended_movie'].":&nbsp;</b>"."<select name=\"sel_recmovie\" style=\"width: 100px;\">" .
-			"<option" . (($row["picktype"] == "normal") ? " selected=\"selected\"" : "" ) . " value=\"0\">".$lang_edit['select_normal']."</option>" .
-			"<option" . (($row["picktype"] == "hot") ? " selected=\"selected\"" : "" ) . " value=\"1\">".$lang_edit['select_hot']."</option>" .
-			"<option" . (($row["picktype"] == "classic") ? " selected=\"selected\"" : "" ) . " value=\"2\">".$lang_edit['select_classic']."</option>" .
-			"<option" . (($row["picktype"] == "recommended") ? " selected=\"selected\"" : "" ) . " value=\"3\">".$lang_edit['select_recommended']."</option>" .
-			"</select>";
+		if (get_user_class() >= $torrentmanage_class && $CURUSER["picker"] == 'yes') {
+			$pickcontent .= "<b>" . $lang_edit['row_recommended_movie'] . ":&nbsp;</b>" . "<select name=\"sel_recmovie\" style=\"width: 100px;\">" .
+				"<option" . (($row["picktype"] == "normal") ? " selected=\"selected\"" : "") . " value=\"0\">" . $lang_edit['select_normal'] . "</option>" .
+				"<option" . (($row["picktype"] == "hot") ? " selected=\"selected\"" : "") . " value=\"1\">" . $lang_edit['select_hot'] . "</option>" .
+				"<option" . (($row["picktype"] == "classic") ? " selected=\"selected\"" : "") . " value=\"2\">" . $lang_edit['select_classic'] . "</option>" .
+				"<option" . (($row["picktype"] == "recommended") ? " selected=\"selected\"" : "") . " value=\"3\">" . $lang_edit['select_recommended'] . "</option>" .
+				"</select>";
 		}
 		tr($lang_edit['row_pick'], $pickcontent, 1);
 	}
-    
+
 ?>
 
-<tr>
-	<td class="toolbox" colspan="2" align="center">
-		<input id="qr" type="submit" value="<?= $lang_edit['submit_edit_it'] ?>" />
-		<input type="reset" value="<?= $lang_edit['submit_revert_changes'] ?>" />
-	</td>
-</tr>
-</table>
-</form>
-<br />
-<br />
-
-<form method="post" action="delete.php">
-	<input type="hidden" name="id" value="<?= $id ?>" />
-	<?php if (isset($_GET["returnto"])) { ?>
-		<input type="hidden" name="returnto" value="<?= htmlspecialchars($_GET["returnto"]) ?>" />
-	<?php } ?>
-
-	<table border="1" cellspacing="0" cellpadding="5">
-
-		<tr>
-			<td class="colhead" align="left" style='padding-bottom: 3px' colspan="2">
-				<?= $lang_edit['text_delete_torrent'] ?>
-			</td>
-		</tr>
-
-		<tr>
-			<td width="0" class="rowhead nowrap" valign="top" align="right">
-				<label>
-					<input name="reasontype" type="radio" value="1" />
-					<?= $lang_edit['radio_dead'] ?>
-				</label>
-			</td>
-			<td class="rowfollow" valign="top" align="left">
-				<?= $lang_edit['text_dead_note'] ?>
-			</td>
-		</tr>
-		<tr>
-			<td width="0" class="rowhead nowrap" valign="top" align="right">
-				<label>
-					<input name="reasontype" type="radio" value="2" />
-					<?= $lang_edit['radio_dupe'] ?>
-				</label>
-			</td>
-			<td class="rowfollow" valign="top" align="left">
-				<input type="text" style="width: 200px" name="reason[]" />
-			</td>
-		</tr>
-		<tr>
-			<td width="0" class="rowhead nowrap" valign="top" align="right">
-				<label>
-					<input name="reasontype" type="radio" value="3" />
-					<?= $lang_edit['radio_nuked'] ?>
-				</label>
-			</td>
-			<td class="rowfollow" valign="top" align="left">
-				<input type="text" style="width: 200px" name="reason[]" />
-			</td>
-		</tr>
-		<tr>
-			<td width="0" class="rowhead nowrap" valign="top" align="right">
-				<label>
-					<input name="reasontype" type="radio" value="4" />
-					<?= $lang_edit['radio_rules'] ?>
-				</label>
-			</td>
-			<td class="rowfollow" valign="top" align="left">
-				<input type="text" style="width: 200px" name="reason[]" />
-				<?= $lang_edit['text_req'] ?>
-			</td>
-		</tr>
-		<tr>
-			<td width="0" class="rowhead nowrap" valign="top" align="right">
-				<label>
-					<input name="reasontype" type="radio" value="5" checked="checked" />
-					<?= $lang_edit['radio_other'] ?>
-				</label>
-			</td>
-			<td class="rowfollow" valign="top" align="left">
-				<input type="text" style="width: 200px" name="reason[]" />
-				<?= $lang_edit['text_req'] ?>
-			</td>
-		</tr>
-
-		<tr>
-			<td class="toolbox" colspan="2">
-				<label>
-					<input type="checkbox" name="deletesubs" checked="checked" value="1" />
-					<?= $lang_edit['checkbox_delete_subs'] ?>
-				</label>
-			</td>
-		</tr>
-
-		<tr>
-			<td class="toolbox" colspan="2" align="center">
-				<input type="submit" style='height: 25px' value="<?= $lang_edit['submit_delete_it'] ?>" />
-			</td>
-		</tr>
+	<tr>
+		<td class="toolbox" colspan="2" align="center">
+			<input id="qr" type="submit" value="<?= $lang_edit['submit_edit_it'] ?>" />
+			<input type="reset" value="<?= $lang_edit['submit_revert_changes'] ?>" />
+			<input id="yl" type="button" class="btn" value="<?= $lang_edit['preview_descr'] ?>" onclick="previewDescription()" />
+			<input id="bj" type="button" class="btn" value="<?= $lang_edit['edit_descr'] ?>" onclick="editDescription()" style="display: none">
+		</td>
+	</tr>
 	</table>
-</form>
+	</form>
+	<br />
+	<br />
+
+	<form method="post" action="delete.php">
+		<input type="hidden" name="id" value="<?= $id ?>" />
+		<?php if (isset($_GET["returnto"])) { ?>
+			<input type="hidden" name="returnto" value="<?= htmlspecialchars($_GET["returnto"]) ?>" />
+		<?php } ?>
+
+		<table border="1" cellspacing="0" cellpadding="5">
+
+			<tr>
+				<td class="colhead" align="left" style='padding-bottom: 3px' colspan="2">
+					<?= $lang_edit['text_delete_torrent'] ?>
+				</td>
+			</tr>
+
+			<tr>
+				<td width="0" class="rowhead nowrap" valign="top" align="right">
+					<label>
+						<input name="reasontype" type="radio" value="1" />
+						<?= $lang_edit['radio_dead'] ?>
+					</label>
+				</td>
+				<td class="rowfollow" valign="top" align="left">
+					<?= $lang_edit['text_dead_note'] ?>
+				</td>
+			</tr>
+			<tr>
+				<td width="0" class="rowhead nowrap" valign="top" align="right">
+					<label>
+						<input name="reasontype" type="radio" value="2" />
+						<?= $lang_edit['radio_dupe'] ?>
+					</label>
+				</td>
+				<td class="rowfollow" valign="top" align="left">
+					<input type="text" style="width: 200px" name="reason[]" />
+				</td>
+			</tr>
+			<tr>
+				<td width="0" class="rowhead nowrap" valign="top" align="right">
+					<label>
+						<input name="reasontype" type="radio" value="3" />
+						<?= $lang_edit['radio_nuked'] ?>
+					</label>
+				</td>
+				<td class="rowfollow" valign="top" align="left">
+					<input type="text" style="width: 200px" name="reason[]" />
+				</td>
+			</tr>
+			<tr>
+				<td width="0" class="rowhead nowrap" valign="top" align="right">
+					<label>
+						<input name="reasontype" type="radio" value="4" />
+						<?= $lang_edit['radio_rules'] ?>
+					</label>
+				</td>
+				<td class="rowfollow" valign="top" align="left">
+					<input type="text" style="width: 200px" name="reason[]" />
+					<?= $lang_edit['text_req'] ?>
+				</td>
+			</tr>
+			<tr>
+				<td width="0" class="rowhead nowrap" valign="top" align="right">
+					<label>
+						<input name="reasontype" type="radio" value="5" checked="checked" />
+						<?= $lang_edit['radio_other'] ?>
+					</label>
+				</td>
+				<td class="rowfollow" valign="top" align="left">
+					<input type="text" style="width: 200px" name="reason[]" />
+					<?= $lang_edit['text_req'] ?>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="toolbox" colspan="2">
+					<label>
+						<input type="checkbox" name="deletesubs" checked="checked" value="1" />
+						<?= $lang_edit['checkbox_delete_subs'] ?>
+					</label>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="toolbox" colspan="2" align="center">
+					<input type="submit" style='height: 25px' value="<?= $lang_edit['submit_delete_it'] ?>" />
+				</td>
+			</tr>
+		</table>
+	</form>
 
 <?php
 }

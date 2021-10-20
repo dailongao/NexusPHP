@@ -173,16 +173,26 @@ function maketable($res, $mode = 'seeding')
 
 $id = 0+$_GET['userid'];
 $type = $_GET['type'];
-if (!in_array($type,array('uploaded','seeding','leeching','completed','incomplete')))
-die;
-if(get_user_class() < $torrenthistory_class && $id != $CURUSER["id"])
-permissiondenied();
+
+$res = sql_query("SELECT * FROM `users` WHERE `id` = $id");
+$user = mysql_fetch_assoc($res);
+mysql_free_result($res);
+
+
+if (!in_array($type, array('uploaded','seeding','leeching','completed','incomplete'))) {
+	die;
+}
+
+if ($CURUSER["id"] != $user["id"] && get_user_class() < $prfmanage_class && ($user["privacy"] == "strong" || get_user_class() < $torrenthistory_class)) {
+	die ($lang_functions['std_permission_denied']);
+}
+
 
 switch ($type)
 {
 	case 'uploaded':
 	{
-		$res = sql_query("SELECT torrents.id AS torrent, torrents.name as torrentname, small_descr, seeders, leechers, anonymous, categories.name AS catname, categories.image, category, sp_state, size, snatched.seedtime, snatched.uploaded FROM torrents LEFT JOIN snatched ON torrents.id = snatched.torrentid LEFT JOIN categories ON torrents.category = categories.id WHERE torrents.owner=$id AND snatched.userid=$id " . (($CURUSER["id"] != $id)?((get_user_class() < $viewanonymous_class) ? " AND anonymous = 'no'":""):"") ." ORDER BY torrents.added DESC") or sqlerr(__FILE__, __LINE__);
+		$res = sql_query("SELECT torrents.id AS torrent, torrents.name as torrentname, small_descr, seeders, leechers, anonymous, categories.name AS catname, categories.image, category, sp_state, size, filtered_snatched.seedtime, filtered_snatched.uploaded FROM torrents LEFT JOIN (SELECT * FROM snatched WHERE snatched.userid = $id) as filtered_snatched ON torrents.id = filtered_snatched.torrentid LEFT JOIN categories ON torrents.category = categories.id WHERE torrents.owner=$id " . (($CURUSER["id"] != $id)?((get_user_class() < $viewanonymous_class) ? " AND anonymous = 'no'":""):"") ." ORDER BY torrents.added DESC") or sqlerr(__FILE__, __LINE__);
 		$count = mysql_num_rows($res);
 		if ($count > 0)
 		{

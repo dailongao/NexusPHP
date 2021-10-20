@@ -8,42 +8,47 @@ if ($enableextforum == 'yes') //check whether internal forum is disabled
 	permissiondenied();
 // ------------- start: functions ------------------//
 //print forum stats
-function forum_stats ()
+function forum_stats()
 {
 	global $lang_forums, $Cache, $today_date;
 
-	if (!$activeforumuser_num = $Cache->get_value('active_forum_user_count')){
+	if (!$activeforumuser_num = $Cache->get_value('active_forum_user_count')) {
 		$secs = 900;
-		$dt = date("Y-m-d H:i:s",(TIMENOW - $secs));
-		$activeforumuser_num = get_row_count("users","WHERE forum_access >= ".sqlesc($dt));
+		$dt = date("Y-m-d H:i:s", (TIMENOW - $secs));
+		$activeforumuser_num = get_row_count("users", "WHERE forum_access >= " . sqlesc($dt));
 		$Cache->cache_value('active_forum_user_count', $activeforumuser_num, 300);
 	}
-	if ($activeforumuser_num){
-		$forumusers = $lang_forums['text_there'].is_or_are($activeforumuser_num)."<b>".$activeforumuser_num."</b>".$lang_forums['text_online_user'].add_s($activeforumuser_num).$lang_forums['text_in_forum_now'];
-	}
-	else
+	if ($activeforumuser_num) {
+		$forumusers = $lang_forums['text_there'] . is_or_are($activeforumuser_num) . "<b>" . $activeforumuser_num . "</b>" . $lang_forums['text_online_user'] . add_s($activeforumuser_num) . $lang_forums['text_in_forum_now'];
+	} else
 		$forumusers = $lang_forums['text_no_active_users'];
 ?>
-<h2 align="left"><?= $lang_forums['text_stats'] ?></h2>
-<table width="100%"><tr><td class="text"><div>
-<?php
-	if (!$postcount = $Cache->get_value('total_posts_count')){
-		$postcount = get_row_count("posts");
-		$Cache->cache_value('total_posts_count', $postcount, 96400);
-	}
-	if (!$topiccount = $Cache->get_value('total_topics_count')){
-		$topiccount = get_row_count("topics");
-		$Cache->cache_value('total_topics_count', $topiccount, 96500);
-	}
-	if (!$todaypostcount = $Cache->get_value('today_'.$today_date.'_posts_count')) {
-		$todaypostcount = get_row_count("posts", "WHERE added > ".sqlesc(date("Y-m-d")));
-		$Cache->cache_value('today_'.$today_date.'_posts_count', $todaypostcount, 700);
-	}
-	print($lang_forums['text_our_members_have'] ."<b>".$postcount."</b>". $lang_forums['text_posts_in_topics']."<b>".$topiccount."</b>".$lang_forums['text_in_topics']."<b><font class=\"new\">".$todaypostcount."</font></b>".$lang_forums['text_new_post'].add_s($todaypostcount).$lang_forums['text_posts_today']."<br /><br />");
-	print($forumusers);
-?>
-</div></td></tr></table>
-<?php
+	<h2 align="left"><?= $lang_forums['text_stats'] ?></h2>
+	<table width="100%">
+		<tr>
+			<td class="text">
+				<div>
+					<?php
+					if (!$postcount = $Cache->get_value('total_posts_count')) {
+						$postcount = get_row_count("posts");
+						$Cache->cache_value('total_posts_count', $postcount, 96400);
+					}
+					if (!$topiccount = $Cache->get_value('total_topics_count')) {
+						$topiccount = get_row_count("topics");
+						$Cache->cache_value('total_topics_count', $topiccount, 96500);
+					}
+					if (!$todaypostcount = $Cache->get_value('today_' . $today_date . '_posts_count')) {
+						$todaypostcount = get_row_count("posts", "WHERE added > " . sqlesc(date("Y-m-d")));
+						$Cache->cache_value('today_' . $today_date . '_posts_count', $todaypostcount, 700);
+					}
+					print($lang_forums['text_our_members_have'] . "<b>" . $postcount . "</b>" . $lang_forums['text_posts_in_topics'] . "<b>" . $topiccount . "</b>" . $lang_forums['text_in_topics'] . "<b><font class=\"new\">" . $todaypostcount . "</font></b>" . $lang_forums['text_new_post'] . add_s($todaypostcount) . $lang_forums['text_posts_today'] . "<br /><br />");
+					print($forumusers);
+					?>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<?php
 }
 
 //set all topics as read
@@ -53,75 +58,74 @@ function catch_up()
 
 	if (!$CURUSER)
 		die;
-	sql_query("DELETE FROM readposts WHERE userid=".sqlesc($CURUSER['id']));
-	$Cache->delete_value('user_'.$CURUSER['id'].'_last_read_post_list');
-	$lastpostid=get_single_value("posts","id","ORDER BY id DESC");
-	if ($lastpostid){
+	sql_query("DELETE FROM readposts WHERE userid=" . sqlesc($CURUSER['id']));
+	$Cache->delete_value('user_' . $CURUSER['id'] . '_last_read_post_list');
+	$lastpostid = get_single_value("posts", "id", "ORDER BY id DESC");
+	if ($lastpostid) {
 		$CURUSER['last_catchup'] = $lastpostid;
-		sql_query("UPDATE users SET last_catchup = ".sqlesc($lastpostid)." WHERE id=".sqlesc($CURUSER['id']));
+		sql_query("UPDATE users SET last_catchup = " . sqlesc($lastpostid) . " WHERE id=" . sqlesc($CURUSER['id']));
 	}
 }
 
 //return image
-function get_topic_image($status= "read"){
+function get_topic_image($status = "read")
+{
 	global $lang_forums;
-	switch($status){
+	switch ($status) {
 		case "read": {
-			return "<img class=\"unlocked\" src=\"pic/trans.gif\" alt=\"read\" title=\"".$lang_forums['title_read']."\" />";
-			break;
+				return "<img class=\"unlocked\" src=\"pic/trans.gif\" alt=\"read\" title=\"" . $lang_forums['title_read'] . "\" />";
+				break;
 			}
 		case "unread": {
-			return "<img class=\"unlockednew\" src=\"pic/trans.gif\" alt=\"unread\" title=\"".$lang_forums['title_unread']."\" />";
-			break;
-		}
+				return "<img class=\"unlockednew\" src=\"pic/trans.gif\" alt=\"unread\" title=\"" . $lang_forums['title_unread'] . "\" />";
+				break;
+			}
 		case "locked": {
-			return "<img class=\"locked\" src=\"pic/trans.gif\" alt=\"locked\" title=\"".$lang_forums['title_locked']."\" />";
-			break;
-		}
+				return "<img class=\"locked\" src=\"pic/trans.gif\" alt=\"locked\" title=\"" . $lang_forums['title_locked'] . "\" />";
+				break;
+			}
 		case "lockednew": {
-			return "<img class=\"lockednew\" src=\"pic/trans.gif\" alt=\"lockednew\" title=\"".$lang_forums['title_locked_new']."\" />";
-			break;
-		}
+				return "<img class=\"lockednew\" src=\"pic/trans.gif\" alt=\"lockednew\" title=\"" . $lang_forums['title_locked_new'] . "\" />";
+				break;
+			}
 	}
 }
 
-function highlight_topic($subject, $hlcolor=0)
+function highlight_topic($subject, $hlcolor = 0)
 {
-	$colorname=get_hl_color($hlcolor);
+	$colorname = get_hl_color($hlcolor);
 	if ($colorname)
-		$subject = "<b><font color=\"".$colorname."\">".$subject."</font></b>";
+		$subject = "<b><font color=\"" . $colorname . "\">" . $subject . "</font></b>";
 	return $subject;
 }
 
-function check_whether_exist($id, $place='forum'){
+function check_whether_exist($id, $place = 'forum')
+{
 	global $lang_forums;
-	int_check($id,true);
-	switch ($place){
-		case 'forum':
-		{
-			$count = get_row_count("forums","WHERE id=".sqlesc($id));
-			if (!$count)
-				stderr($lang_forums['std_error'],$lang_forums['std_no_forum_id']);
-			break;
-		}
-		case 'topic':
-		{
-			$count = get_row_count("topics","WHERE id=".sqlesc($id));
-			if (!$count)
-				stderr($lang_forums['std_error'],$lang_forums['std_bad_topic_id']);
-			$forumid = get_single_value("topics","forumid","WHERE id=".sqlesc($id));
-			check_whether_exist($forumid, 'forum');
-			break;
-		}
-		case 'post':
-		{
-			$count = get_row_count("posts","WHERE id=".sqlesc($id));
-			if (!$count)
-				stderr($lang_forums['std_error'],$lang_forums['std_no_post_id']);
-			$topicid = get_single_value("posts","topicid","WHERE id=".sqlesc($id));
-			check_whether_exist($topicid, 'topic');
-			break;
-		}
+	int_check($id, true);
+	switch ($place) {
+		case 'forum': {
+				$count = get_row_count("forums", "WHERE id=" . sqlesc($id));
+				if (!$count)
+					stderr($lang_forums['std_error'], $lang_forums['std_no_forum_id']);
+				break;
+			}
+		case 'topic': {
+				$count = get_row_count("topics", "WHERE id=" . sqlesc($id));
+				if (!$count)
+					stderr($lang_forums['std_error'], $lang_forums['std_bad_topic_id']);
+				$forumid = get_single_value("topics", "forumid", "WHERE id=" . sqlesc($id));
+				check_whether_exist($forumid, 'forum');
+				break;
+			}
+		case 'post': {
+				$count = get_row_count("posts", "WHERE id=" . sqlesc($id));
+				if (!$count)
+					stderr($lang_forums['std_error'], $lang_forums['std_no_post_id']);
+				$topicid = get_single_value("posts", "topicid", "WHERE id=" . sqlesc($id));
+				check_whether_exist($topicid, 'topic');
+				break;
+			}
 	}
 }
 
@@ -129,16 +133,16 @@ function check_whether_exist($id, $place='forum'){
 function update_topic_last_post($topicid)
 {
 	global $lang_forums;
-	$res = sql_query("SELECT id FROM posts WHERE topicid=".sqlesc($topicid)." ORDER BY id DESC LIMIT 1") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT id FROM posts WHERE topicid=" . sqlesc($topicid) . " ORDER BY id DESC LIMIT 1") or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_row($res) or die($lang_forums['std_no_post_found']);
 	$postid = $arr[0];
-	sql_query("UPDATE topics SET lastpost=".sqlesc($postid)." WHERE id=".sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
+	sql_query("UPDATE topics SET lastpost=" . sqlesc($postid) . " WHERE id=" . sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
 }
 
 function get_forum_row($forumid = 0)
 {
 	global $Cache;
-	if (!$forums = $Cache->get_value('forums_list')){
+	if (!$forums = $Cache->get_value('forums_list')) {
 		$forums = array();
 		$res2 = sql_query("SELECT * FROM forums ORDER BY forid ASC, sort ASC") or sqlerr(__FILE__, __LINE__);
 		while ($row2 = mysql_fetch_array($res2))
@@ -149,23 +153,22 @@ function get_forum_row($forumid = 0)
 		return $forums;
 	else return $forums[$forumid];
 }
-function get_last_read_post_id($topicid) {
+function get_last_read_post_id($topicid)
+{
 	global $CURUSER, $Cache;
 	static $ret;
-	if (!$ret && !$ret = $Cache->get_value('user_'.$CURUSER['id'].'_last_read_post_list')){
+	if (!$ret && !$ret = $Cache->get_value('user_' . $CURUSER['id'] . '_last_read_post_list')) {
 		$ret = array();
 		$res = sql_query("SELECT * FROM readposts WHERE userid=" . sqlesc($CURUSER['id']));
-		if (mysql_num_rows($res) != 0){
+		if (mysql_num_rows($res) != 0) {
 			while ($row = mysql_fetch_array($res))
-			$ret[$row['topicid']] = $row['lastpostread'];
-			$Cache->cache_value('user_'.$CURUSER['id'].'_last_read_post_list', $ret, 900);
-		}
-		else $Cache->cache_value('user_'.$CURUSER['id'].'_last_read_post_list', 'no record', 900);
+				$ret[$row['topicid']] = $row['lastpostread'];
+			$Cache->cache_value('user_' . $CURUSER['id'] . '_last_read_post_list', $ret, 900);
+		} else $Cache->cache_value('user_' . $CURUSER['id'] . '_last_read_post_list', 'no record', 900);
 	}
-	if ($ret != "no record" && $ret[$topicid] && $CURUSER['last_catchup'] < $ret[$topicid]){
+	if ($ret != "no record" && $ret[$topicid] && $CURUSER['last_catchup'] < $ret[$topicid]) {
 		return $ret[$topicid];
-	}
-	elseif ($CURUSER['last_catchup'])
+	} elseif ($CURUSER['last_catchup'])
 		return $CURUSER['last_catchup'];
 	else return 0;
 }
@@ -180,67 +183,62 @@ function insert_compose_frame($id, $type = 'new')
 	$subject = "";
 	$body = "";
 	print("<form id=\"compose\" method=\"post\" name=\"compose\" action=\"?action=post\">\n");
-	switch ($type){
-		case 'new':
-		{
-			$forumname = get_single_value("forums","name","WHERE id=".sqlesc($id));
-			$forummode = get_single_value("forums","casinomode","WHERE id=".sqlesc($id));
-			$forummodeclass = get_single_value("forums","casinoclass","WHERE id=".sqlesc($id));
-			$title = $lang_forums['text_new_topic_in']." <a href=\"".htmlspecialchars("?action=viewforum&forumid=".$id)."\">".htmlspecialchars($forumname)."</a> ".$lang_forums['text_forum'];
-			$hassubject = true;
-			if($forummode && (get_user_class() >= $forummodeclass || is_forum_moderator($id,'forum'))) $hasmodechoose = true;
-			break;
-		}
-		case 'reply':
-		{
-			$topicname = get_single_value("topics","subject","WHERE id=".sqlesc($id));
-			$title = $lang_forums['text_reply_to_topic']." <a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$id)."\">".htmlspecialchars($topicname)."</a> ";
-			break;
-		}
-		case 'quote':
-		{
-			$topicid=get_single_value("posts","topicid","WHERE id=".sqlesc($id));
-			$topicmode = get_single_value("topics", "casinomode", "WHERE id=".sqlesc($topicid)) == "yes";
-			$topicname = get_single_value("topics","subject","WHERE id=".sqlesc($topicid));
-			$title = $lang_forums['text_reply_to_topic']." <a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$topicid)."\">".htmlspecialchars($topicname)."</a> ";
-			$res = sql_query("SELECT posts.body, users.username FROM posts LEFT JOIN users ON posts.userid = users.id WHERE posts.id=$id") or sqlerr(__FILE__, __LINE__);
-			if (mysql_num_rows($res) != 1)
-				stderr($lang_forums['std_error'], $lang_forums['std_no_post_id']);
-			$arr = mysql_fetch_assoc($res);
-			if(!$topicmode){
-				$body = "[quote=".htmlspecialchars($arr["username"])."]".htmlspecialchars(unesc($arr["body"]))."[/quote]";
-			}else{
-				$body = "[quote=".htmlspecialchars($arr["username"])."]"."[/quote]";
-			}
-			$id = $topicid;
-			$type = 'reply';
-			break;
-		}
-		case 'edit':
-		{
-			$res = sql_query("SELECT topicid, body FROM posts WHERE id=".sqlesc($id)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
-			$row = mysql_fetch_array($res);
-			$topicid=$row['topicid'];
-			$firstpost = get_single_value("posts","MIN(id)", "WHERE topicid=".sqlesc($topicid));
-			if ($firstpost == $id){
-				$subject = get_single_value("topics","subject","WHERE id=".sqlesc($topicid));
+	switch ($type) {
+		case 'new': {
+				$forumname = get_single_value("forums", "name", "WHERE id=" . sqlesc($id));
+				$forummode = get_single_value("forums", "casinomode", "WHERE id=" . sqlesc($id));
+				$forummodeclass = get_single_value("forums", "casinoclass", "WHERE id=" . sqlesc($id));
+				$title = $lang_forums['text_new_topic_in'] . " <a href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $id) . "\">" . htmlspecialchars($forumname) . "</a> " . $lang_forums['text_forum'];
 				$hassubject = true;
-				$forumid = get_single_value("topics","forumid","WHERE id=".sqlesc($topicid));
-				$forummode = get_single_value("forums","casinomode","WHERE id=".sqlesc($forumid));
-				$forummodeclass = get_single_value("forums","casinoclass","WHERE id=".sqlesc($forumid));
-				if($forummode && (get_user_class() >= $forummodeclass || is_forum_moderator($forumid,'forum'))) $hasmodechoose = true;
+				if ($forummode && (get_user_class() >= $forummodeclass || is_forum_moderator($id, 'forum'))) $hasmodechoose = true;
+				break;
 			}
-			$body = htmlspecialchars(unesc($row["body"]));
-			$title = $lang_forums['text_edit_post'];
-			break;
-		}
-		default:
-		{
-			die;
-		}
+		case 'reply': {
+				$topicname = get_single_value("topics", "subject", "WHERE id=" . sqlesc($id));
+				$title = $lang_forums['text_reply_to_topic'] . " <a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $id) . "\">" . htmlspecialchars($topicname) . "</a> ";
+				break;
+			}
+		case 'quote': {
+				$topicid = get_single_value("posts", "topicid", "WHERE id=" . sqlesc($id));
+				$topicmode = get_single_value("topics", "casinomode", "WHERE id=" . sqlesc($topicid)) == "yes";
+				$topicname = get_single_value("topics", "subject", "WHERE id=" . sqlesc($topicid));
+				$title = $lang_forums['text_reply_to_topic'] . " <a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $topicid) . "\">" . htmlspecialchars($topicname) . "</a> ";
+				$res = sql_query("SELECT posts.body, users.username FROM posts LEFT JOIN users ON posts.userid = users.id WHERE posts.id=$id") or sqlerr(__FILE__, __LINE__);
+				if (mysql_num_rows($res) != 1)
+					stderr($lang_forums['std_error'], $lang_forums['std_no_post_id']);
+				$arr = mysql_fetch_assoc($res);
+				if (!$topicmode) {
+					$body = "[quote=" . htmlspecialchars($arr["username"]) . "]" . htmlspecialchars(unesc($arr["body"])) . "[/quote]";
+				} else {
+					$body = "[quote=" . htmlspecialchars($arr["username"]) . "]" . "[/quote]";
+				}
+				$id = $topicid;
+				$type = 'reply';
+				break;
+			}
+		case 'edit': {
+				$res = sql_query("SELECT topicid, body FROM posts WHERE id=" . sqlesc($id) . " LIMIT 1") or sqlerr(__FILE__, __LINE__);
+				$row = mysql_fetch_array($res);
+				$topicid = $row['topicid'];
+				$firstpost = get_single_value("posts", "MIN(id)", "WHERE topicid=" . sqlesc($topicid));
+				if ($firstpost == $id) {
+					$subject = get_single_value("topics", "subject", "WHERE id=" . sqlesc($topicid));
+					$hassubject = true;
+					$forumid = get_single_value("topics", "forumid", "WHERE id=" . sqlesc($topicid));
+					$forummode = get_single_value("forums", "casinomode", "WHERE id=" . sqlesc($forumid));
+					$forummodeclass = get_single_value("forums", "casinoclass", "WHERE id=" . sqlesc($forumid));
+					if ($forummode && (get_user_class() >= $forummodeclass || is_forum_moderator($forumid, 'forum'))) $hasmodechoose = true;
+				}
+				$body = htmlspecialchars(unesc($row["body"]));
+				$title = $lang_forums['text_edit_post'];
+				break;
+			}
+		default: {
+				die;
+			}
 	}
-	print("<input type=\"hidden\" name=\"id\" value=\"".$id."\" />");
-	print("<input type=\"hidden\" name=\"type\" value=\"".$type."\" />");
+	print("<input type=\"hidden\" name=\"id\" value=\"" . $id . "\" />");
+	print("<input type=\"hidden\" name=\"type\" value=\"" . $type . "\" />");
 	begin_compose($title, $type, $body, $hassubject, $subject, 100, $hasmodechoose);
 	end_compose();
 	print("</form>");
@@ -249,38 +247,36 @@ function insert_compose_frame($id, $type = 'new')
 // ------------- start: Global variables ------------------//
 $maxsubjectlength = 100;
 $postsperpage = $CURUSER["postsperpage"];
-if (!$postsperpage){
+if (!$postsperpage) {
 	if (is_numeric($forumpostsperpage))
-		$postsperpage = $forumpostsperpage;//system-wide setting
+		$postsperpage = $forumpostsperpage; //system-wide setting
 	else $postsperpage = 10;
 }
 //get topics per page
 $topicsperpage = $CURUSER["topicsperpage"];
-if (!$topicsperpage){
+if (!$topicsperpage) {
 	if (is_numeric($forumtopicsperpage_main))
-		$topicsperpage = $forumtopicsperpage_main;//system-wide setting
+		$topicsperpage = $forumtopicsperpage_main; //system-wide setting
 	else $topicsperpage = 20;
 }
-$today_date = date("Y-m-d",TIMENOW);
+$today_date = date("Y-m-d", TIMENOW);
 // ------------- end: Global variables ------------------//
 
 $action = htmlspecialchars(trim($_GET["action"]));
 
 //-------- Action: New topic
-if ($action == "newtopic")
-{
-	$forumid = 0+$_GET["forumid"];
+if ($action == "newtopic") {
+	$forumid = 0 + $_GET["forumid"];
 	check_whether_exist($forumid, 'forum');
 	stdhead($lang_forums['head_new_topic']);
 	begin_main_frame();
-	insert_compose_frame($forumid,'new');
+	insert_compose_frame($forumid, 'new');
 	end_main_frame();
 	stdfoot();
 	die;
 }
-if ($action == "quotepost")
-{
-	$postid = 0+$_GET["postid"];
+if ($action == "quotepost") {
+	$postid = 0 + $_GET["postid"];
 	check_whether_exist($postid, 'post');
 	stdhead($lang_forums['head_post_reply']);
 	begin_main_frame();
@@ -292,9 +288,8 @@ if ($action == "quotepost")
 
 //-------- Action: Reply
 
-if ($action == "reply")
-{
-	$topicid = 0+$_GET["topicid"];
+if ($action == "reply") {
+	$topicid = 0 + $_GET["topicid"];
 	check_whether_exist($topicid, 'topic');
 	stdhead($lang_forums['head_post_reply']);
 	begin_main_frame();
@@ -306,12 +301,11 @@ if ($action == "reply")
 
 //-------- Action: Edit post
 
-if ($action == "editpost")
-{
-	$postid = 0+$_GET["postid"];
+if ($action == "editpost") {
+	$postid = 0 + $_GET["postid"];
 	check_whether_exist($postid, 'post');
 
-	$res = sql_query("SELECT userid, topicid FROM posts WHERE id=".sqlesc($postid)) or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT userid, topicid FROM posts WHERE id=" . sqlesc($postid)) or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_assoc($res);
 
 	$res2 = sql_query("SELECT locked FROM topics WHERE id = " . $arr["topicid"]) or sqlerr(__FILE__, __LINE__);
@@ -331,11 +325,9 @@ if ($action == "editpost")
 }
 
 //-------- Action: Post
-if ($action == "post")
-{
-	if ($CURUSER["forumpost"] == 'no')
-	{
-		stderr($lang_forums['std_sorry'], $lang_forums['std_unauthorized_to_post'],false);
+if ($action == "post") {
+	if ($CURUSER["forumpost"] == 'no') {
+		stderr($lang_forums['std_sorry'], $lang_forums['std_unauthorized_to_post'], false);
 		die;
 	}
 	$id = $_POST["id"];
@@ -343,53 +335,49 @@ if ($action == "post")
 	$subject = $_POST["subject"];
 	$body = trim($_POST["body"]);
 	$casinomode = $_POST["casinomode"];
-	if($casinomode == "on") $casinomode = 1;
+	if ($casinomode == "on") $casinomode = 1;
 	else $casinomode = 0;
 	$hassubject = false;
-	switch ($type){
-		case 'new':
-		{
-			check_whether_exist($id, 'forum');
-			$forumid = $id;
-			$hassubject = true;
-			break;
-		}
-		case 'reply':
-		{
-			check_whether_exist($id, 'topic');
-			$topicid = $id;
-			$forumid = get_single_value("topics", "forumid", "WHERE id=".sqlesc($topicid));
-			break;
-		}
-		case 'edit':
-		{
-			check_whether_exist($id, 'post');
-			$res = sql_query("SELECT topicid FROM posts WHERE id=".sqlesc($id)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
-			$row = mysql_fetch_array($res);
-			$topicid=$row['topicid'];
-			$forumid = get_single_value("topics", "forumid", "WHERE id=".sqlesc($topicid));
-			$firstpost = get_single_value("posts","MIN(id)", "WHERE topicid=".sqlesc($topicid));
-			if ($firstpost == $id){
+	switch ($type) {
+		case 'new': {
+				check_whether_exist($id, 'forum');
+				$forumid = $id;
 				$hassubject = true;
+				break;
 			}
-			break;
-		}
-		default:
-		{
-			die;
-		}
+		case 'reply': {
+				check_whether_exist($id, 'topic');
+				$topicid = $id;
+				$forumid = get_single_value("topics", "forumid", "WHERE id=" . sqlesc($topicid));
+				break;
+			}
+		case 'edit': {
+				check_whether_exist($id, 'post');
+				$res = sql_query("SELECT topicid FROM posts WHERE id=" . sqlesc($id) . " LIMIT 1") or sqlerr(__FILE__, __LINE__);
+				$row = mysql_fetch_array($res);
+				$topicid = $row['topicid'];
+				$forumid = get_single_value("topics", "forumid", "WHERE id=" . sqlesc($topicid));
+				$firstpost = get_single_value("posts", "MIN(id)", "WHERE topicid=" . sqlesc($topicid));
+				if ($firstpost == $id) {
+					$hassubject = true;
+				}
+				break;
+			}
+		default: {
+				die;
+			}
 	}
-	
-	if($casinomode){
-		$checkforummode = get_single_value("forums", "casinomode", "WHERE id=".sqlesc($forumid));
-		if(!$checkforummode)
+
+	if ($casinomode) {
+		$checkforummode = get_single_value("forums", "casinomode", "WHERE id=" . sqlesc($forumid));
+		if (!$checkforummode)
 			die("Wrong mode Setting!");
-		$checkforumclass = get_single_value("forums", "casinoclass", "WHERE id=".sqlesc($forumid));
-		if (get_user_class() < $checkforumclass && !is_forum_moderator($forumid,'forum'))
+		$checkforumclass = get_single_value("forums", "casinoclass", "WHERE id=" . sqlesc($forumid));
+		if (get_user_class() < $checkforumclass && !is_forum_moderator($forumid, 'forum'))
 			die("Hack attempt!!!");
 	}
 
-	if ($hassubject){
+	if ($hassubject) {
 		$subject = trim($subject);
 		if (!$subject)
 			stderr($lang_forums['std_error'], $lang_forums['std_must_enter_subject']);
@@ -400,16 +388,16 @@ if ($action == "post")
 	//------ Make sure sure user has write access in forum
 	$arr = get_forum_row($forumid) or die($lang_forums['std_bad_forum_id']);
 
-	if (get_user_class() < $arr["minclasswrite"] || ($type =='new' && get_user_class() < $arr["minclasscreate"]))
+	if (get_user_class() < $arr["minclasswrite"] || ($type == 'new' && get_user_class() < $arr["minclasscreate"]))
 		permissiondenied();
 
 	if ($body == "")
 		stderr($lang_forums['std_error'], $lang_forums['std_no_body_text']);
 
-	$userid = 0+$CURUSER["id"];
+	$userid = 0 + $CURUSER["id"];
 	$date = date("Y-m-d H:i:s");
 
-	if ($type != 'new'){
+	if ($type != 'new') {
 		//---- Make sure topic is unlocked
 
 		$res = sql_query("SELECT locked FROM topics WHERE id=$topicid") or sqlerr(__FILE__, __LINE__);
@@ -418,64 +406,56 @@ if ($action == "post")
 			stderr($lang_forums['std_error'], $lang_forums['std_topic_locked']);
 	}
 
-	if ($type == 'edit')
-	{
-		if ($hassubject){
-			sql_query("UPDATE topics SET subject=".sqlesc($subject).", casinomode=".sqlesc($casinomode ? "yes" : "no")." WHERE id=".sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
-			$forum_last_replied_topic_row = $Cache->get_value('forum_'.$forumid.'_last_replied_topic_content');
+	if ($type == 'edit') {
+		if ($hassubject) {
+			sql_query("UPDATE topics SET subject=" . sqlesc($subject) . ", casinomode=" . sqlesc($casinomode ? "yes" : "no") . " WHERE id=" . sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
+			$forum_last_replied_topic_row = $Cache->get_value('forum_' . $forumid . '_last_replied_topic_content');
 			if ($forum_last_replied_topic_row && $forum_last_replied_topic_row['id'] == $topicid)
-				$Cache->delete_value('forum_'.$forumid.'_last_replied_topic_content');
+				$Cache->delete_value('forum_' . $forumid . '_last_replied_topic_content');
 		}
-		sql_query("UPDATE posts SET body=".sqlesc($body).", editdate=".sqlesc($date).", editedby=".sqlesc($CURUSER[id]) ." WHERE id=".sqlesc($id)) or sqlerr(__FILE__, __LINE__);
+		sql_query("UPDATE posts SET body=" . sqlesc($body) . ", editdate=" . sqlesc($date) . ", editedby=" . sqlesc($CURUSER[id]) . " WHERE id=" . sqlesc($id)) or sqlerr(__FILE__, __LINE__);
 		$postid = $id;
-		$Cache->delete_value('post_'.$postid.'_content');
-	}
-	else
-	{
+		$Cache->delete_value('post_' . $postid . '_content');
+	} else {
 		// Anti Flood Code
 		// To ensure that posts are not entered within 10 seconds limiting posts
 		// to a maximum of 360*6 per hour.
 		if (get_user_class() < $postmanage_class) {
-			if (strtotime($CURUSER['last_post']) > (TIMENOW - 10))
-			{
+			if (strtotime($CURUSER['last_post']) > (TIMENOW - 10)) {
 				$secs = 10 - (TIMENOW - strtotime($CURUSER['last_post']));
-				stderr($lang_forums['std_error'],$lang_forums['std_post_flooding'].$secs.$lang_forums['std_seconds_before_making'],false);
+				stderr($lang_forums['std_error'], $lang_forums['std_post_flooding'] . $secs . $lang_forums['std_seconds_before_making'], false);
 			}
 		}
-		if ($type == 'new'){ //new topic
+		if ($type == 'new') { //new topic
 			//add bonus
-			KPS("+",$starttopic_bonus,$userid);
+			KPS("+", $starttopic_bonus, $userid);
 
 			//---- Create topic
-			sql_query("INSERT INTO topics (userid, forumid, subject, casinomode) VALUES($userid, $forumid, ".sqlesc($subject).", ".sqlesc($casinomode ? "yes" : "no").")") or sqlerr(__FILE__, __LINE__);
-			$topicid = mysql_insert_id() or stderr($lang_forums['std_error'],$lang_forums['std_no_topic_id_returned']);
-			sql_query("UPDATE forums SET topiccount=topiccount+1, postcount=postcount+1 WHERE id=".sqlesc($forumid));
-		}
-		else // new post
+			sql_query("INSERT INTO topics (userid, forumid, subject, casinomode) VALUES($userid, $forumid, " . sqlesc($subject) . ", " . sqlesc($casinomode ? "yes" : "no") . ")") or sqlerr(__FILE__, __LINE__);
+			$topicid = mysql_insert_id() or stderr($lang_forums['std_error'], $lang_forums['std_no_topic_id_returned']);
+			sql_query("UPDATE forums SET topiccount=topiccount+1, postcount=postcount+1 WHERE id=" . sqlesc($forumid));
+		} else // new post
 		{
 			//add bonus
-			KPS("+",$makepost_bonus,$userid);
-			sql_query("UPDATE forums SET postcount=postcount+1 WHERE id=".sqlesc($forumid));
+			KPS("+", $makepost_bonus, $userid);
+			sql_query("UPDATE forums SET postcount=postcount+1 WHERE id=" . sqlesc($forumid));
 		}
 
-		sql_query("INSERT INTO posts (topicid, userid, added, body, ori_body) VALUES ($topicid, $userid, ".sqlesc($date).", ".sqlesc($body).", ".sqlesc($body) . ")") or sqlerr(__FILE__, __LINE__);
+		sql_query("INSERT INTO posts (topicid, userid, added, body, ori_body) VALUES ($topicid, $userid, " . sqlesc($date) . ", " . sqlesc($body) . ", " . sqlesc($body) . ")") or sqlerr(__FILE__, __LINE__);
 		$postid = mysql_insert_id() or die($lang_forums['std_post_id_not_available']);
-		$Cache->delete_value('forum_'.$forumid.'_post_'.$today_date.'_count');
-		$Cache->delete_value('today_'.$today_date.'_posts_count');
-		$Cache->delete_value('forum_'.$forumid.'_last_replied_topic_content');
-		$Cache->delete_value('topic_'.$topicid.'_post_count');
-		$Cache->delete_value('user_'.$userid.'_post_count');
+		$Cache->delete_value('forum_' . $forumid . '_post_' . $today_date . '_count');
+		$Cache->delete_value('today_' . $today_date . '_posts_count');
+		$Cache->delete_value('forum_' . $forumid . '_last_replied_topic_content');
+		$Cache->delete_value('topic_' . $topicid . '_post_count');
+		$Cache->delete_value('user_' . $userid . '_post_count');
 
-		if ($type == 'new')
-		{
+		if ($type == 'new') {
 			// update the first post of topic
-			sql_query("UPDATE topics SET firstpost=$postid, lastpost=$postid WHERE id=".sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
+			sql_query("UPDATE topics SET firstpost=$postid, lastpost=$postid WHERE id=" . sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
+		} else {
+			sql_query("UPDATE topics SET lastpost=$postid WHERE id=" . sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
 		}
-		else
-		{
-			sql_query("UPDATE topics SET lastpost=$postid WHERE id=".sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
-		}
-		sql_query("UPDATE users SET last_post=".sqlesc($date)." WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
+		sql_query("UPDATE users SET last_post=" . sqlesc($date) . " WHERE id=" . sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
 	}
 
 	//------ All done, redirect user to the post
@@ -483,45 +463,41 @@ if ($action == "post")
 	$headerstr = "Location: " . get_protocol_prefix() . "$BASEURL/forums.php?action=viewtopic&topicid=$topicid";
 
 	if ($type == 'edit')
-		header($headerstr."&page=p".$postid."#pid".$postid);
+		header($headerstr . "&page=p" . $postid . "#pid" . $postid);
 	else
-		header($headerstr."&page=last#pid$postid");
+		header($headerstr . "&page=last#pid$postid");
 	die;
 }
 
 //-------- Action: View topic
 
-if ($action == "viewtopic")
-{
+if ($action == "viewtopic") {
 	$highlight = htmlspecialchars(trim($_GET["highlight"]));
 
-	$topicid = 0+$_GET["topicid"];
-	int_check($topicid,true);
+	$topicid = 0 + $_GET["topicid"];
+	int_check($topicid, true);
 	$page = $_GET["page"];
-	$authorid = 0+$_GET["authorid"];
-	if ($authorid)
-	{
-		$where = "WHERE topicid=".sqlesc($topicid)." AND userid=".sqlesc($authorid);
-		$addparam = "action=viewtopic&topicid=".$topicid."&authorid=".$authorid;
-	}
-	else
-	{
-		$where = "WHERE topicid=".sqlesc($topicid);
-		$addparam = "action=viewtopic&topicid=".$topicid;
+	$authorid = 0 + $_GET["authorid"];
+	if ($authorid) {
+		$where = "WHERE topicid=" . sqlesc($topicid) . " AND userid=" . sqlesc($authorid);
+		$addparam = "action=viewtopic&topicid=" . $topicid . "&authorid=" . $authorid;
+	} else {
+		$where = "WHERE topicid=" . sqlesc($topicid);
+		$addparam = "action=viewtopic&topicid=" . $topicid;
 	}
 	$userid = $CURUSER["id"];
 
 	//------ Get topic info
 
-	$res = sql_query("SELECT * FROM topics WHERE id=".sqlesc($topicid)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT * FROM topics WHERE id=" . sqlesc($topicid) . " LIMIT 1") or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_assoc($res) or stderr($lang_forums['std_forum_error'], $lang_forums['std_topic_not_found']);
 
 	$forumid = $arr['forumid'];
 	$locked = $arr['locked'] == "yes";
 	$orgsubject = $arr['subject'];
 	$subject = htmlspecialchars($arr['subject']);
-	if ($highlight){
-		$subject = highlight($highlight,$orgsubject);
+	if ($highlight) {
+		$subject = highlight($highlight, $orgsubject);
 	}
 	$sticky = $arr['sticky'] == "yes";
 	$hlcolor = $arr['hlcolor'];
@@ -532,7 +508,7 @@ if ($action == "viewtopic")
 	$row = get_forum_row($forumid);
 	//------ Get forum name, moderators
 	$forumname = $row['name'];
-	$is_forummod = is_forum_moderator($forumid,'forum');
+	$is_forummod = is_forum_moderator($forumid, 'forum');
 
 	if (get_user_class() < $row["minclassread"])
 		stderr($lang_forums['std_error'], $lang_forums['std_unpermitted_viewing_topic']);
@@ -544,9 +520,9 @@ if ($action == "viewtopic")
 	sql_query("UPDATE topics SET views = views + 1 WHERE id=$topicid") or sqlerr(__FILE__, __LINE__);
 
 	//------ Get post count
-	$postcount = get_row_count("posts",$where);
+	$postcount = get_row_count("posts", $where);
 	if (!$authorid)
-		$Cache->cache_value('topic_'.$topicid.'_post_count', $postcount, 3600);
+		$Cache->cache_value('topic_' . $topicid . '_post_count', $postcount, 3600);
 
 	//------ Make page menu
 
@@ -556,34 +532,29 @@ if ($action == "viewtopic")
 
 	$pages = ceil($postcount / $perpage);
 
-	if ($page[0] == "p")
-	{
+	if ($page[0] == "p") {
 		$findpost = substr($page, 1);
 		$res = sql_query("SELECT id FROM posts $where ORDER BY added") or sqlerr(__FILE__, __LINE__);
 		$i = 0;
-		while ($arr = mysql_fetch_row($res))
-		{
+		while ($arr = mysql_fetch_row($res)) {
 			if ($arr[0] == $findpost)
-			break;
+				break;
 			++$i;
 		}
 		$page = floor($i / $perpage);
 	}
-	if ($page === "last"){
-	$page = $pages-1;
-	}
-	elseif(isset($page))
-	{
-		if($page < 0){
-		$page = 0;
-		}
-		elseif ($page > $pages - 1){
+	if ($page === "last") {
 		$page = $pages - 1;
+	} elseif (isset($page)) {
+		if ($page < 0) {
+			$page = 0;
+		} elseif ($page > $pages - 1) {
+			$page = $pages - 1;
 		}
-	}
-	else {if ($CURUSER["clicktopic"] == "firstpage")
-		$page = 0;
-		else $page = $pages-1;
+	} else {
+		if ($CURUSER["clicktopic"] == "firstpage")
+			$page = 0;
+		else $page = $pages - 1;
 	}
 
 	$offset = $page * $perpage;
@@ -592,43 +563,42 @@ if ($action == "viewtopic")
 	$dotend = $pages - $dotspace;
 	$curdotend = $page - $dotspace;
 	$curdotstart = $page + $dotspace;
-	for ($i = 0; $i < $pages; ++$i)
-	{
+	for ($i = 0; $i < $pages; ++$i) {
 		if (($i >= $dotspace && $i <= $curdotend) || ($i >= $curdotstart && $i < $dotend)) {
-				if (!$dotted)
+			if (!$dotted)
 				$pagerarr[] = "...";
-				$dotted = 1;
-				continue;
+			$dotted = 1;
+			continue;
 		}
 		$dotted = 0;
 		if ($i != $page)
-		$pagerarr[] .= "<a href=\"".htmlspecialchars("?".$addparam."&page=".$i)."\"><b>".($i+1)."</b></a>\n";
+			$pagerarr[] .= "<a href=\"" . htmlspecialchars("?" . $addparam . "&page=" . $i) . "\"><b>" . ($i + 1) . "</b></a>\n";
 		else
-		$pagerarr[] .= "<font class=\"gray\"><b>".($i+1)."</b></font>\n";
+			$pagerarr[] .= "<font class=\"gray\"><b>" . ($i + 1) . "</b></font>\n";
 	}
 	if ($page == 0)
-	$pager = "<font class=\"gray\"><b>&lt;&lt;".$lang_forums['text_prev']."</b></font>";
+		$pager = "<font class=\"gray\"><b>&lt;&lt;" . $lang_forums['text_prev'] . "</b></font>";
 	else
-	$pager = "<a href=\"".htmlspecialchars("?".$addparam."&page=" . ($page - 1)) .
-	"\"><b>&lt;&lt;".$lang_forums['text_prev']."</b></a>";
+		$pager = "<a href=\"" . htmlspecialchars("?" . $addparam . "&page=" . ($page - 1)) .
+			"\"><b>&lt;&lt;" . $lang_forums['text_prev'] . "</b></a>";
 	$pager .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-	if ($page == $pages-1)
-	$pager .= "<font class=\"gray\"><b>".$lang_forums['text_next']." &gt;&gt;</b></font>\n";
+	if ($page == $pages - 1)
+		$pager .= "<font class=\"gray\"><b>" . $lang_forums['text_next'] . " &gt;&gt;</b></font>\n";
 	else
-	$pager .= "<a href=\"".htmlspecialchars("?".$addparam."&page=" . ($page + 1)) .
-	"\"><b>".$lang_forums['text_next']." &gt;&gt;</b></a>\n";
+		$pager .= "<a href=\"" . htmlspecialchars("?" . $addparam . "&page=" . ($page + 1)) .
+			"\"><b>" . $lang_forums['text_next'] . " &gt;&gt;</b></a>\n";
 
 	$pagerstr = join(" | ", $pagerarr);
-	$pagertop = "<p align=\"center\">".$pager."<br />".$pagerstr."</p>\n";
-	$pagerbottom = "<p align=\"center\">".$pagerstr."<br />".$pager."</p>\n";
+	$pagertop = "<p align=\"center\">" . $pager . "<br />" . $pagerstr . "</p>\n";
+	$pagerbottom = "<p align=\"center\">" . $pagerstr . "<br />" . $pager . "</p>\n";
 	//------ Get posts
 
 	$res = sql_query("SELECT * FROM posts $where ORDER BY id LIMIT $offset,$perpage") or sqlerr(__FILE__, __LINE__);
 
-	stdhead($lang_forums['head_view_topic']." \"".$orgsubject."\"");
-	begin_main_frame("",true);
+	stdhead($lang_forums['head_view_topic'] . " \"" . $orgsubject . "\"");
+	begin_main_frame("", true);
 
-	print("<h1 align=\"center\"><a class=\"faqlink\" href=\"forums.php\">".$SITENAME."&nbsp;".$lang_forums['text_forums']."</a>--><a class=\"faqlink\" href=\"".htmlspecialchars("?action=viewforum&forumid=".$forumid)."\">".$forumname."</a><b>--></b><span id=\"top\">".$subject.($locked ? "&nbsp;&nbsp;<b>[<font class=\"striking\">".$lang_forums['text_locked']."</font>]</b>" : "")."</span></h1>\n");
+	print("<h1 align=\"center\"><a class=\"faqlink\" href=\"forums.php\">" . $SITENAME . "&nbsp;" . $lang_forums['text_forums'] . "</a>--><a class=\"faqlink\" href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $forumid) . "\">" . $forumname . "</a><b>--></b><span id=\"top\">" . $subject . ($locked ? "&nbsp;&nbsp;<b>[<font class=\"striking\">" . $lang_forums['text_locked'] . "</font>]</b>" : "") . "</span></h1>\n");
 	end_main_frame();
 	print($pagertop);
 
@@ -636,12 +606,11 @@ if ($action == "viewtopic")
 
 	begin_main_frame();
 	print("<table border=\"0\" class=\"main\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\"><tr>\n");
-	print("<td class=\"embedded\" width=\"99%\">&nbsp;&nbsp;".$lang_forums['there_is']."<b>".$views."</b>".$lang_forums['hits_on_this_topic']);
+	print("<td class=\"embedded\" width=\"99%\">&nbsp;&nbsp;" . $lang_forums['there_is'] . "<b>" . $views . "</b>" . $lang_forums['hits_on_this_topic']);
 	print("</td>\n");
 	print("<td class=\"embedded nowrap\" width=\"1%\" align=\"right\">");
-	if ($maypost)
-	{
-		print("<a href=\"".htmlspecialchars("?action=reply&topicid=".$topicid)."\"><img class=\"f_reply\" src=\"pic/trans.gif\" alt=\"Add Reply\" title=\"".$lang_forums['title_reply_directly']."\" /></a>&nbsp;&nbsp;");
+	if ($maypost) {
+		print("<a href=\"" . htmlspecialchars("?action=reply&topicid=" . $topicid) . "\"><img class=\"f_reply\" src=\"pic/trans.gif\" alt=\"Add Reply\" title=\"" . $lang_forums['title_reply_directly'] . "\" /></a>&nbsp;&nbsp;");
 	}
 	print("</td>");
 	print("</tr></table>\n");
@@ -653,18 +622,16 @@ if ($action == "viewtopic")
 	$lpr = get_last_read_post_id($topicid);
 
 	if ($Advertisement->enable_ad())
-		$forumpostad=$Advertisement->get_ad('forumpost');
-		
+		$forumpostad = $Advertisement->get_ad('forumpost');
+
 	//Get post author
-	$postauthor = get_single_value("posts", "userid", "WHERE topicid=". sqlesc($topicid) . " ORDER by id");
-	while ($arr = mysql_fetch_assoc($res))
-	{
-			
-		if ($pn>=1)
-		{
-			if ($Advertisement->enable_ad()){
-				if ($forumpostad[$pn-1])
-				echo "<div align=\"center\" style=\"margin-top: 10px\" id=\"ad_forumpost_".$pn."\">".$forumpostad[$pn-1]."</div>";
+	$postauthor = get_single_value("posts", "userid", "WHERE topicid=" . sqlesc($topicid) . " ORDER by id");
+	while ($arr = mysql_fetch_assoc($res)) {
+
+		if ($pn >= 1) {
+			if ($Advertisement->enable_ad()) {
+				if ($forumpostad[$pn - 1])
+					echo "<div align=\"center\" style=\"margin-top: 10px\" id=\"ad_forumpost_" . $pn . "\">" . $forumpostad[$pn - 1] . "</div>";
 			}
 		}
 		++$pn;
@@ -672,7 +639,7 @@ if ($action == "viewtopic")
 		$postid = $arr["id"];
 		$posterid = $arr["userid"];
 
-		$added = gettime($arr["added"],true,false);
+		$added = gettime($arr["added"], true, false);
 
 		//---- Get poster details
 
@@ -681,77 +648,75 @@ if ($action == "viewtopic")
 		$downloaded = mksize($arr2["downloaded"]);
 		$ratio = get_ratio($arr2['id']);
 
-		if (!$forumposts = $Cache->get_value('user_'.$posterid.'_post_count')){
-			$forumposts = get_row_count("posts","WHERE userid=".$posterid);
-			$Cache->cache_value('user_'.$posterid.'_post_count', $forumposts, 3600);
+		if (!$forumposts = $Cache->get_value('user_' . $posterid . '_post_count')) {
+			$forumposts = get_row_count("posts", "WHERE userid=" . $posterid);
+			$Cache->cache_value('user_' . $posterid . '_post_count', $forumposts, 3600);
 		}
 
 		$signature = ($CURUSER["signatures"] == "yes" ? $arr2["signature"] : "");
 		$avatar = ($CURUSER["avatars"] == "yes" ? htmlspecialchars($arr2["avatar"]) : "");
 
 		$uclass = get_user_class_image($arr2["class"]);
-		$by = get_username($posterid,false,true,true,false,false,true);
+		$by = get_username($posterid, false, true, true, false, false, true);
 
 		if (!$avatar)
 			$avatar = "pic/default_avatar.png";
 
-		if ($pn == $pc)
-		{
+		if ($pn == $pc) {
 			print("<span id=\"last\"></span>\n");
-			if ($postid > $lpr){
+			if ($postid > $lpr) {
 				if ($lpr == $CURUSER['last_catchup']) // There is no record of this topic
-					sql_query("INSERT INTO readposts(userid, topicid, lastpostread) VALUES (".$userid.", ".$topicid.", ".$postid.")") or sqlerr(__FILE__, __LINE__);
+					sql_query("INSERT INTO readposts(userid, topicid, lastpostread) VALUES (" . $userid . ", " . $topicid . ", " . $postid . ")") or sqlerr(__FILE__, __LINE__);
 				elseif ($lpr > $CURUSER['last_catchup']) //There is record of this topic
 					sql_query("UPDATE readposts SET lastpostread=$postid WHERE userid=$userid AND topicid=$topicid") or sqlerr(__FILE__, __LINE__);
-				$Cache->delete_value('user_'.$CURUSER['id'].'_last_read_post_list');
+				$Cache->delete_value('user_' . $CURUSER['id'] . '_last_read_post_list');
 			}
 		}
 
-		print("<div style=\"margin-top: 8pt; margin-bottom: 8pt;\"><table id=\"pid".$postid."\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\"><tr><td class=\"embedded\" width=\"99%\"><a href=\"".htmlspecialchars("forums.php?action=viewtopic&topicid=".$topicid."&page=p".$postid."#pid".$postid)."\">#".$postid."</a>&nbsp;&nbsp;<font color=\"gray\">".$lang_forums['text_by']."</font>".$by."&nbsp;&nbsp;<font color=\"gray\">".$lang_forums['text_at']."</font>".$added);
+		print("<div style=\"margin-top: 8pt; margin-bottom: 8pt;\"><table id=\"pid" . $postid . "\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\"><tr><td class=\"embedded\" width=\"99%\"><a href=\"" . htmlspecialchars("forums.php?action=viewtopic&topicid=" . $topicid . "&page=p" . $postid . "#pid" . $postid) . "\">#" . $postid . "</a>&nbsp;&nbsp;<font color=\"gray\">" . $lang_forums['text_by'] . "</font>" . $by . "&nbsp;&nbsp;<font color=\"gray\">" . $lang_forums['text_at'] . "</font>" . $added);
 		if (is_valid_id($arr['editedby']))
 			print("");
 		print("&nbsp;&nbsp;<font color=\"gray\">|</font>&nbsp;&nbsp;");
 		if ($authorid)
-			print("<a href=\"?action=viewtopic&topicid=".$topicid."\">".$lang_forums['text_view_all_posts']."</a>");
+			print("<a href=\"?action=viewtopic&topicid=" . $topicid . "\">" . $lang_forums['text_view_all_posts'] . "</a>");
 		else
-			print("<a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$topicid."&authorid=".$posterid)."\">".$lang_forums['text_view_this_author_only']."</a>");
-		print("</td><td class=\"embedded nowrap\" width=\"1%\"><font class=\"big\">".$lang_forums['text_number']."<b>".($pn+$offset)."</b>".$lang_forums['text_lou']."&nbsp;&nbsp;</font><a href=\"#top\"><img class=\"top\" src=\"pic/trans.gif\" alt=\"Top\" title=\"".$lang_forums['text_back_to_top']."\" /></a>&nbsp;&nbsp;</td></tr>");
+			print("<a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $topicid . "&authorid=" . $posterid) . "\">" . $lang_forums['text_view_this_author_only'] . "</a>");
+		print("</td><td class=\"embedded nowrap\" width=\"1%\"><font class=\"big\">" . $lang_forums['text_number'] . "<b>" . ($pn + $offset) . "</b>" . $lang_forums['text_lou'] . "&nbsp;&nbsp;</font><a href=\"#top\"><img class=\"top\" src=\"pic/trans.gif\" alt=\"Top\" title=\"" . $lang_forums['text_back_to_top'] . "\" /></a>&nbsp;&nbsp;</td></tr>");
 
 		print("</table></div>\n");
 
 		print("<table class=\"main\" width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 
-		if(!$casinomode || ($casinomode && ($arr['userid'] == $CURUSER['id'] || $arr['userid'] == $postauthor || $CURUSER['id'] == $postauthor || get_user_class() >= $postmanage_class || is_forum_moderator($topicid, 'topic')))){
-		$body = "<div id=\"pid".$postid."body\">".format_comment($arr["body"]);
+		if (!$casinomode || ($casinomode && ($arr['userid'] == $CURUSER['id'] || $arr['userid'] == $postauthor || $CURUSER['id'] == $postauthor || get_user_class() >= $postmanage_class || is_forum_moderator($topicid, 'topic')))) {
+			$body = "<div id=\"pid" . $postid . "body\">" . format_comment($arr["body"]);
 
-		if ($highlight){
-			$body = highlight($highlight,$body);
+			if ($highlight) {
+				$body = highlight($highlight, $body);
+			}
+
+			if (is_valid_id($arr['editedby'])) {
+				$lastedittime = gettime($arr['editdate'], true, false);
+				$body .= "<br /><p><font class=\"small\">" . $lang_forums['text_last_edited_by'] . get_username($arr['editedby']) . $lang_forums['text_last_edit_at'] . $lastedittime . "</font></p>\n";
+			}
+			$body .= "</div>";
+		} else {
+			$body = "<div id=\"pid" . $postid . "body\">" . format_comment($lang_forums['text_cannot_view']) . "</div>";
 		}
 
-		if (is_valid_id($arr['editedby']))
-		{
-			$lastedittime = gettime($arr['editdate'],true,false);
-			$body .= "<br /><p><font class=\"small\">".$lang_forums['text_last_edited_by'].get_username($arr['editedby']).$lang_forums['text_last_edit_at'].$lastedittime."</font></p>\n";
-		}
-		$body .= "</div>";
-		}else{
-			$body = "<div id=\"pid".$postid."body\">".format_comment($lang_forums['text_cannot_view'])."</div>";
-		}
-		
-		
+
 		if ($signature)
-		$body .= "<p style='vertical-align:bottom'><br />____________________<br />" . format_comment($signature,false,false,false,true,500,true,true, 1, 200) . "</p>";
+			$body .= "<p style='vertical-align:bottom'><br />____________________<br />" . format_comment($signature, false, false, false, true, 500, true, true, 1, 200) . "</p>";
 
-		$stats = "<br />"."&nbsp;&nbsp;".$lang_forums['text_posts']."$forumposts<br />"."&nbsp;&nbsp;".$lang_forums['text_ul']."$uploaded <br />"."&nbsp;&nbsp;".$lang_forums['text_dl']."$downloaded<br />"."&nbsp;&nbsp;".$lang_forums['text_ratio']."$ratio";
+		$stats = "<br />" . "&nbsp;&nbsp;" . $lang_forums['text_posts'] . "$forumposts<br />" . "&nbsp;&nbsp;" . $lang_forums['text_ul'] . "$uploaded <br />" . "&nbsp;&nbsp;" . $lang_forums['text_dl'] . "$downloaded<br />" . "&nbsp;&nbsp;" . $lang_forums['text_ratio'] . "$ratio";
 		print("<tr><td class=\"rowfollow\" width=\"150\" valign=\"top\" align=\"left\" style='padding: 0px'>" .
-		return_avatar_image($avatar). "<br /><br /><br />&nbsp;&nbsp;<img alt=\"".get_user_class_name($arr2["class"],false,false,true)."\" title=\"".get_user_class_name($arr2["class"],false,false,true)."\" src=\"".$uclass."\" />".$stats."</td><td class=\"rowfollow\" valign=\"top\"><br />".$body."</td></tr>\n");
+			return_avatar_image($avatar) . "<br /><br /><br />&nbsp;&nbsp;<img alt=\"" . get_user_class_name($arr2["class"], false, false, true) . "\" title=\"" . get_user_class_name($arr2["class"], false, false, true) . "\" src=\"" . $uclass . "\" />" . $stats . "</td><td class=\"rowfollow\" valign=\"top\"><br />" . $body . "</td></tr>\n");
 		$secs = 900;
-		$dt = sqlesc(date("Y-m-d H:i:s",(TIMENOW - $secs))); // calculate date.
-		print("<tr><td class=\"rowfollow\" align=\"center\" valign=\"middle\">".(("'".$arr2['last_access']."'">$dt) && ( $arr2['showonline'] == "yes" ) ?"<img class=\"f_online\" src=\"pic/trans.gif\" alt=\"Online\" title=\"".$lang_forums['title_online']."\" />":"<img class=\"f_offline\" src=\"pic/trans.gif\" alt=\"Offline\" title=\"".$lang_forums['title_offline']."\" />" )."<a href=\"sendmessage.php?receiver=".htmlspecialchars(trim($arr2["id"]))."\"><img class=\"f_pm\" src=\"pic/trans.gif\" alt=\"PM\" title=\"".$lang_forums['title_send_message_to'].htmlspecialchars($arr2["username"])."\" /></a><a href=\"report.php?forumpost=$postid\"><img class=\"f_report\" src=\"pic/trans.gif\" alt=\"Report\" title=\"".$lang_forums['title_report_this_post']."\" /></a></td>");
+		$dt = sqlesc(date("Y-m-d H:i:s", (TIMENOW - $secs))); // calculate date.
+		print("<tr><td class=\"rowfollow\" align=\"center\" valign=\"middle\">" . (("'" . $arr2['last_access'] . "'" > $dt) && ($arr2['showonline'] == "yes") ? "<img class=\"f_online\" src=\"pic/trans.gif\" alt=\"Online\" title=\"" . $lang_forums['title_online'] . "\" />" : "<img class=\"f_offline\" src=\"pic/trans.gif\" alt=\"Offline\" title=\"" . $lang_forums['title_offline'] . "\" />") . "<a href=\"sendmessage.php?receiver=" . htmlspecialchars(trim($arr2["id"])) . "\"><img class=\"f_pm\" src=\"pic/trans.gif\" alt=\"PM\" title=\"" . $lang_forums['title_send_message_to'] . htmlspecialchars($arr2["username"]) . "\" /></a><a href=\"report.php?forumpost=$postid\"><img class=\"f_report\" src=\"pic/trans.gif\" alt=\"Report\" title=\"" . $lang_forums['title_report_this_post'] . "\" /></a></td>");
 		print("<td class=\"toolbox\" align=\"right\">");
 
-		if ($maypost){
-		    //print("<a id=\"sendbonus\" href=\"".htmlspecialchars("javascript: sendbonus(".$postid.");")."\">送米</a>");
+		if ($maypost) {
+			//print("<a id=\"sendbonus\" href=\"".htmlspecialchars("javascript: sendbonus(".$postid.");")."\">送米</a>");
 			//print("<div style=\"display:inline-block;vertical-align:top;margin-top:2px;\">");
 			//print("<select name=\"bonus\">");
 			//print("<option value=500>500</option>");
@@ -760,45 +725,44 @@ if ($action == "viewtopic")
 			//print("</select>");
 			//print("<button id=\"btnbonus\" onclick=\"javascript: sendbonus(this, $posterid);\">赠送魔力值</button>");
 			//print("</div>");
-		    print("<a href=\"".htmlspecialchars("?action=quotepost&postid=".$postid)."\"><img class=\"f_quote\" src=\"pic/trans.gif\" alt=\"Quote\" title=\"".$lang_forums['title_reply_with_quote']."\" /></a>");
+			print("<a href=\"" . htmlspecialchars("?action=quotepost&postid=" . $postid) . "\"><img class=\"f_quote\" src=\"pic/trans.gif\" alt=\"Quote\" title=\"" . $lang_forums['title_reply_with_quote'] . "\" /></a>");
 		}
 
 		if (get_user_class() >= $postmanage_class || $is_forummod)
-		print("<a href=\"".htmlspecialchars("?action=deletepost&postid=".$postid)."\"><img class=\"f_delete\" src=\"pic/trans.gif\" alt=\"Delete\" title=\"".$lang_forums['title_delete_post']."\" /></a>");
+			print("<a href=\"" . htmlspecialchars("?action=deletepost&postid=" . $postid) . "\"><img class=\"f_delete\" src=\"pic/trans.gif\" alt=\"Delete\" title=\"" . $lang_forums['title_delete_post'] . "\" /></a>");
 
 		if (($CURUSER["id"] == $posterid && !$locked) || get_user_class() >= $postmanage_class || $is_forummod)
-		print("<a href=\"".htmlspecialchars("?action=editpost&postid=".$postid)."\"><img class=\"f_edit\" src=\"pic/trans.gif\" alt=\"Edit\" title=\"".$lang_forums['title_edit_post']."\" /></a>");
+			print("<a href=\"" . htmlspecialchars("?action=editpost&postid=" . $postid) . "\"><img class=\"f_edit\" src=\"pic/trans.gif\" alt=\"Edit\" title=\"" . $lang_forums['title_edit_post'] . "\" /></a>");
 		print("</td></tr></table>");
 	}
 
 	//------ Mod options
 
-	if (get_user_class() >= $postmanage_class || $is_forummod)
-	{
+	if (get_user_class() >= $postmanage_class || $is_forummod) {
 		print("</td></tr><tr><td class=\"toolbox\" align=\"center\">\n");
 		print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\">\n");
 		print("<tr><td class=\"embedded\"><form method=\"post\" action=\"?action=setsticky\">\n");
-		print("<input type=\"hidden\" name=\"topicid\" value=\"".$topicid."\" />\n");
-		print("<input type=\"hidden\" name=\"returnto\" value=\"".htmlspecialchars($_SERVER[REQUEST_URI])."\" />\n");
-		print("<input type=\"hidden\" name=\"sticky\" value=\"".($sticky ? 'no' : 'yes')."\" /><input type=\"submit\" class=\"medium\" value=\"".($sticky ? $lang_forums['submit_unsticky'] : $lang_forums['submit_sticky'])."\" /></form></td>\n");
+		print("<input type=\"hidden\" name=\"topicid\" value=\"" . $topicid . "\" />\n");
+		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_SERVER[REQUEST_URI]) . "\" />\n");
+		print("<input type=\"hidden\" name=\"sticky\" value=\"" . ($sticky ? 'no' : 'yes') . "\" /><input type=\"submit\" class=\"medium\" value=\"" . ($sticky ? $lang_forums['submit_unsticky'] : $lang_forums['submit_sticky']) . "\" /></form></td>\n");
 		print("<td class=\"embedded\"><form method=\"post\" action=\"?action=setlocked\">\n");
-		print("<input type=\"hidden\" name=\"topicid\" value=\"".$topicid."\" />\n");
-		print("<input type=\"hidden\" name=\"returnto\" value=\"".htmlspecialchars($_SERVER[REQUEST_URI])."\" />\n");
-		print("<input type=\"hidden\" name=\"locked\" value=\"".($locked ? 'no' : 'yes')."\" /><input type=\"submit\" class=\"medium\" value=\"".($locked ? $lang_forums['submit_unlock'] : $lang_forums['submit_lock'])."\" /></form></td>\n");
+		print("<input type=\"hidden\" name=\"topicid\" value=\"" . $topicid . "\" />\n");
+		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_SERVER[REQUEST_URI]) . "\" />\n");
+		print("<input type=\"hidden\" name=\"locked\" value=\"" . ($locked ? 'no' : 'yes') . "\" /><input type=\"submit\" class=\"medium\" value=\"" . ($locked ? $lang_forums['submit_unlock'] : $lang_forums['submit_lock']) . "\" /></form></td>\n");
 		print("<td class=\"embedded\"><form method=\"get\" action=\"?\">\n");
 		print("<input type=\"hidden\" name=\"action\" value=\"deletetopic\" />\n");
-		print("<input type=\"hidden\" name=\"topicid\" value=\"".$topicid."\" />\n");
-		print("<input type=\"hidden\" name=\"forumid\" value=\"".$forumid."\" />\n");
-		print("<input type=\"submit\" class=\"medium\" value=\"".$lang_forums['submit_delete_topic']."\" /></form></td>\n");
-		print("<td class=\"embedded\"><form method=\"post\" action=\"".htmlspecialchars("?action=movetopic&topicid=".$topicid)."\">\n"."&nbsp;".$lang_forums['text_move_thread_to']."&nbsp;<select class=\"med\" name=\"forumid\">");
+		print("<input type=\"hidden\" name=\"topicid\" value=\"" . $topicid . "\" />\n");
+		print("<input type=\"hidden\" name=\"forumid\" value=\"" . $forumid . "\" />\n");
+		print("<input type=\"submit\" class=\"medium\" value=\"" . $lang_forums['submit_delete_topic'] . "\" /></form></td>\n");
+		print("<td class=\"embedded\"><form method=\"post\" action=\"" . htmlspecialchars("?action=movetopic&topicid=" . $topicid) . "\">\n" . "&nbsp;" . $lang_forums['text_move_thread_to'] . "&nbsp;<select class=\"med\" name=\"forumid\">");
 		$forums = get_forum_row();
-		foreach ($forums as $arr){
+		foreach ($forums as $arr) {
 			if ($arr["id"] != $forumid && get_user_class() >= $arr["minclasswrite"])
 				print("<option value=\"" . $arr["id"] . "\">" . htmlspecialchars($arr["name"]) . "</option>\n");
 		}
-		print("</select> <input type=\"submit\" class=\"medium\" value=\"".$lang_forums['submit_move']."\" /></form></td>");
-		print("<td class=\"embedded\"><form method=\"post\" action=\"".htmlspecialchars("?action=hltopic&topicid=".$topicid)."\">\n"."&nbsp;".$lang_forums['text_highlight_topic']."&nbsp;<select class=\"med\" name=\"color\">");
-		print("<option value='0'>".$lang_forums['select_color']."</option>
+		print("</select> <input type=\"submit\" class=\"medium\" value=\"" . $lang_forums['submit_move'] . "\" /></form></td>");
+		print("<td class=\"embedded\"><form method=\"post\" action=\"" . htmlspecialchars("?action=hltopic&topicid=" . $topicid) . "\">\n" . "&nbsp;" . $lang_forums['text_highlight_topic'] . "&nbsp;<select class=\"med\" name=\"color\">");
+		print("<option value='0'>" . $lang_forums['select_color'] . "</option>
 <option style='background-color: black' value=\"1\">Black</option>
 <option style='background-color: sienna' value=\"2\">Sienna</option>
 <option style='background-color: darkolivegreen' value=\"3\">Dark Olive Green</option>
@@ -840,8 +804,8 @@ if ($action == "viewtopic")
 <option style='background-color: plum' value=\"39\">Plum</option>
 <option style='background-color: white' value=\"40\">White</option>");
 		print("</select>");
-		print("<input type=\"hidden\" name=\"returnto\" value=\"".htmlspecialchars($_SERVER[REQUEST_URI])."\" />\n");
-		print("<input type=\"submit\" class=\"medium\" value=\"".$lang_forums['submit_change']."\" /></form></td>");
+		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_SERVER[REQUEST_URI]) . "\" />\n");
+		print("<input type=\"submit\" class=\"medium\" value=\"" . $lang_forums['submit_change'] . "\" /></form></td>");
 		print("</tr>\n");
 		print("</table>\n");
 	}
@@ -851,32 +815,30 @@ if ($action == "viewtopic")
 	end_main_frame();
 
 	print($pagerbottom);
-	if ($maypost){
-	print("<br /><table style='border:1px solid #000000;'><tr>".
-"<td class=\"text\" align=\"center\"><b>".$lang_forums['text_quick_reply']."</b><br /><br />".
-"<form id=\"compose\" name=\"compose\" method=\"post\" action=\"?action=post\" onsubmit=\"return postvalid(this);\">".
-"<input type=\"hidden\" name=\"id\" value=\"".$topicid."\" /><input type=\"hidden\" name=\"type\" value=\"reply\" /><br />");
-	quickreply('compose', 'body',$lang_forums['submit_add_reply']);
-	print("</form></td></tr></table>");
-	print("<p align=\"center\"><a class=\"index\" href=\"".htmlspecialchars("?action=reply&topicid=".$topicid)."\">".$lang_forums['text_add_reply']."</a></p>\n");
-	}
-	elseif ($locked)
+	if ($maypost) {
+		print("<br /><table style='border:1px solid #000000;'><tr>" .
+			"<td class=\"text\" align=\"center\"><b>" . $lang_forums['text_quick_reply'] . "</b><br /><br />" .
+			"<form id=\"compose\" name=\"compose\" method=\"post\" action=\"?action=post\" onsubmit=\"return postvalid(this);\">" .
+			"<input type=\"hidden\" name=\"id\" value=\"" . $topicid . "\" /><input type=\"hidden\" name=\"type\" value=\"reply\" /><br />");
+		quickreply('compose', 'body', $lang_forums['submit_add_reply']);
+		print("</form></td></tr></table>");
+		print("<p align=\"center\"><a class=\"index\" href=\"" . htmlspecialchars("?action=reply&topicid=" . $topicid) . "\">" . $lang_forums['text_add_reply'] . "</a></p>\n");
+	} elseif ($locked)
 		print($lang_forums['text_topic_locked_new_denied']);
 	else print($lang_forums['text_unpermitted_posting_here']);
 
-	print(key_shortcut($page,$pages-1));
+	print(key_shortcut($page, $pages - 1));
 	stdfoot();
 	die;
 }
 
 //-------- Action: Move topic
 
-if ($action == "movetopic")
-{
-	$forumid = 0+$_POST["forumid"];
+if ($action == "movetopic") {
+	$forumid = 0 + $_POST["forumid"];
 
-	$topicid = 0+$_GET["topicid"];
-	$ismod = is_forum_moderator($topicid,'topic');
+	$topicid = 0 + $_GET["topicid"];
+	$ismod = is_forum_moderator($topicid, 'topic');
 	if (!is_valid_id($forumid) || !is_valid_id($topicid) || (get_user_class() < $postmanage_class && !$ismod))
 		permissiondenied();
 
@@ -885,7 +847,7 @@ if ($action == "movetopic")
 	$res = @sql_query("SELECT minclasswrite FROM forums WHERE id=$forumid") or sqlerr(__FILE__, __LINE__);
 
 	if (mysql_num_rows($res) != 1)
-	stderr($lang_forums['std_error'], $lang_forums['std_forum_not_found']);
+		stderr($lang_forums['std_error'], $lang_forums['std_forum_not_found']);
 
 	$arr = mysql_fetch_row($res);
 
@@ -896,26 +858,25 @@ if ($action == "movetopic")
 	if (mysql_num_rows($res) != 1)
 		stderr($lang_forums['std_error'], $lang_forums['std_topic_not_found']);
 	$arr = mysql_fetch_row($res);
-	$old_forumid=$arr[0];
+	$old_forumid = $arr[0];
 
 	// get posts count
 	$res = sql_query("SELECT COUNT(id) AS nb_posts FROM posts WHERE topicid=$topicid") or sqlerr(__FILE__, __LINE__);
 	if (mysql_num_rows($res) != 1)
-	stderr($lang_forums['std_error'], $lang_forums['std_cannot_get_posts_count']);
+		stderr($lang_forums['std_error'], $lang_forums['std_cannot_get_posts_count']);
 	$arr = mysql_fetch_row($res);
 	$nb_posts = $arr[0];
 
 	// move topic
-	if ($old_forumid != $forumid)
-	{
+	if ($old_forumid != $forumid) {
 		@sql_query("UPDATE topics SET forumid=$forumid WHERE id=$topicid") or sqlerr(__FILE__, __LINE__);
 		// update counts
 		@sql_query("UPDATE forums SET topiccount=topiccount-1, postcount=postcount-$nb_posts WHERE id=$old_forumid") or sqlerr(__FILE__, __LINE__);
-		$Cache->delete_value('forum_'.$old_forumid.'_post_'.$today_date.'_count');
-		$Cache->delete_value('forum_'.$old_forumid.'_last_replied_topic_content');
+		$Cache->delete_value('forum_' . $old_forumid . '_post_' . $today_date . '_count');
+		$Cache->delete_value('forum_' . $old_forumid . '_last_replied_topic_content');
 		@sql_query("UPDATE forums SET topiccount=topiccount+1, postcount=postcount+$nb_posts WHERE id=$forumid") or sqlerr(__FILE__, __LINE__);
-		$Cache->delete_value('forum_'.$forumid.'_post_'.$today_date.'_count');
-		$Cache->delete_value('forum_'.$forumid.'_last_replied_topic_content');
+		$Cache->delete_value('forum_' . $forumid . '_post_' . $today_date . '_count');
+		$Cache->delete_value('forum_' . $forumid . '_last_replied_topic_content');
 	}
 
 	// Redirect to forum page
@@ -927,42 +888,39 @@ if ($action == "movetopic")
 
 //-------- Action: Delete topic
 
-if ($action == "deletetopic")
-{
-	$topicid = 0+$_GET["topicid"];
-	$res1 = sql_query("SELECT forumid, userid FROM topics WHERE id=".sqlesc($topicid)." LIMIT 1") or sqlerr(__FILE__, __LINE__);
+if ($action == "deletetopic") {
+	$topicid = 0 + $_GET["topicid"];
+	$res1 = sql_query("SELECT forumid, userid FROM topics WHERE id=" . sqlesc($topicid) . " LIMIT 1") or sqlerr(__FILE__, __LINE__);
 	$row1 = mysql_fetch_array($res1);
-	if (!$row1){
+	if (!$row1) {
 		die;
-	}
-	else {
+	} else {
 		$forumid = $row1['forumid'];
 		$userid = $row1['userid'];
 	}
-	$ismod = is_forum_moderator($topicid,'topic');
+	$ismod = is_forum_moderator($topicid, 'topic');
 	if (!is_valid_id($topicid) || (get_user_class() < $postmanage_class && !$ismod))
 		permissiondenied();
 
-	$sure = 0+$_GET["sure"];
-	if (!$sure)
-	{
+	$sure = 0 + $_GET["sure"];
+	if (!$sure) {
 		stderr($lang_forums['std_delete_topic'], $lang_forums['std_delete_topic_note'] .
-		"<a class=altlink href=?action=deletetopic&topicid=$topicid&sure=1>".$lang_forums['std_here_if_sure'],false);
+			"<a class=altlink href=?action=deletetopic&topicid=$topicid&sure=1>" . $lang_forums['std_here_if_sure'], false);
 	}
 
-	$postcount = get_row_count("posts","WHERE topicid=".sqlesc($topicid));
+	$postcount = get_row_count("posts", "WHERE topicid=" . sqlesc($topicid));
 
 	sql_query("DELETE FROM topics WHERE id=$topicid") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM posts WHERE topicid=$topicid") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM readposts WHERE topicid=$topicid") or sqlerr(__FILE__, __LINE__);
-	@sql_query("UPDATE forums SET topiccount=topiccount-1, postcount=postcount-$postcount WHERE id=".sqlesc($forumid)) or sqlerr(__FILE__, __LINE__);
-	$Cache->delete_value('forum_'.$forumid.'_post_'.$today_date.'_count');
-	$forum_last_replied_topic_row = $Cache->get_value('forum_'.$forumid.'_last_replied_topic_content');
+	@sql_query("UPDATE forums SET topiccount=topiccount-1, postcount=postcount-$postcount WHERE id=" . sqlesc($forumid)) or sqlerr(__FILE__, __LINE__);
+	$Cache->delete_value('forum_' . $forumid . '_post_' . $today_date . '_count');
+	$forum_last_replied_topic_row = $Cache->get_value('forum_' . $forumid . '_last_replied_topic_content');
 	if ($forum_last_replied_topic_row && $forum_last_replied_topic_row['id'] == $topicid)
-		$Cache->delete_value('forum_'.$forumid.'_last_replied_topic_content');
+		$Cache->delete_value('forum_' . $forumid . '_last_replied_topic_content');
 
 	//===remove karma
-	KPS("-",$starttopic_bonus,$userid);
+	KPS("-", $starttopic_bonus, $userid);
 	//===end
 
 	header("Location: " . get_protocol_prefix() . "$BASEURL/forums.php?action=viewforum&forumid=$forumid");
@@ -971,10 +929,9 @@ if ($action == "deletetopic")
 
 //-------- Action: Delete post
 
-if ($action == "deletepost")
-{
-	$postid = 0+$_GET["postid"];
-	$sure = 0+$_GET["sure"];
+if ($action == "deletepost") {
+	$postid = 0 + $_GET["postid"];
+	$sure = 0 + $_GET["sure"];
 
 	$ismod = is_forum_moderator($postid, 'post');
 	if ((get_user_class() < $postmanage_class && !$ismod) || !is_valid_id($postid))
@@ -990,39 +947,37 @@ if ($action == "deletepost")
 	$res = sql_query("SELECT id FROM posts WHERE topicid=$topicid AND id < $postid ORDER BY id DESC LIMIT 1") or sqlerr(__FILE__, __LINE__);
 	if (mysql_num_rows($res) == 0) // This is the first post of a topic
 		stderr($lang_forums['std_error'], $lang_forums['std_cannot_delete_post'] .
-	"<a class=altlink href=?action=deletetopic&topicid=$topicid&sure=1>".$lang_forums['std_delete_topic_instead'],false);
-	else
-	{
+			"<a class=altlink href=?action=deletetopic&topicid=$topicid&sure=1>" . $lang_forums['std_delete_topic_instead'], false);
+	else {
 		$arr = mysql_fetch_row($res);
 		$redirtopost = "&page=p$arr[0]#pid$arr[0]";
 	}
 
 	//------- Make sure we know what we do :-)
-	if (!$sure)
-	{
+	if (!$sure) {
 		stderr($lang_forums['std_delete_post'], $lang_forums['std_delete_post_note'] .
-		"<a class=altlink href=?action=deletepost&postid=$postid&sure=1>".$lang_forums['std_here_if_sure'],false);
+			"<a class=altlink href=?action=deletepost&postid=$postid&sure=1>" . $lang_forums['std_here_if_sure'], false);
 	}
 
 	//------- Delete post
 	sql_query("DELETE FROM posts WHERE id=$postid") or sqlerr(__FILE__, __LINE__);
-	$Cache->delete_value('user_'.$userid.'_post_count');
-	$Cache->delete_value('topic_'.$topicid.'_post_count');
+	$Cache->delete_value('user_' . $userid . '_post_count');
+	$Cache->delete_value('topic_' . $topicid . '_post_count');
 	// update forum
-	$forumid = get_single_value("topics","forumid","WHERE id=".sqlesc($topicid));
+	$forumid = get_single_value("topics", "forumid", "WHERE id=" . sqlesc($topicid));
 	if (!$forumid)
 		die();
-	else{
-		sql_query("UPDATE forums SET postcount=postcount-1 WHERE id=".sqlesc($forumid));
+	else {
+		sql_query("UPDATE forums SET postcount=postcount-1 WHERE id=" . sqlesc($forumid));
 	}
-	$forum_last_replied_topic_row = $Cache->get_value('forum_'.$forumid.'_last_replied_topic_content');
+	$forum_last_replied_topic_row = $Cache->get_value('forum_' . $forumid . '_last_replied_topic_content');
 	if ($forum_last_replied_topic_row && $forum_last_replied_topic_row['lastpost'] == $postid)
-		$Cache->delete_value('forum_'.$forumid.'_last_replied_topic_content');
+		$Cache->delete_value('forum_' . $forumid . '_last_replied_topic_content');
 	//------- Update topic
 	update_topic_last_post($topicid);
 
 	//===remove karma
-	KPS("-",$makepost_bonus,$userid);
+	KPS("-", $makepost_bonus, $userid);
 
 	header("Location: " . get_protocol_prefix() . "$BASEURL/forums.php?action=viewtopic&topicid=$topicid$redirtopost");
 	die;
@@ -1030,10 +985,9 @@ if ($action == "deletepost")
 
 //-------- Action: Set locked on/off
 
-if ($action == "setlocked")
-{
+if ($action == "setlocked") {
 	$topicid = 0 + $_POST["topicid"];
-	$ismod = is_forum_moderator($topicid,'topic');
+	$ismod = is_forum_moderator($topicid, 'topic');
 	if (!$topicid || (get_user_class() < $postmanage_class && !$ismod))
 		permissiondenied();
 
@@ -1044,30 +998,28 @@ if ($action == "setlocked")
 	die;
 }
 
-if ($action == 'hltopic')
-{
+if ($action == 'hltopic') {
 	$topicid = 0 + $_GET["topicid"];
-	$ismod = is_forum_moderator($topicid,'topic');
+	$ismod = is_forum_moderator($topicid, 'topic');
 	if (!$topicid || (get_user_class() < $postmanage_class && !$ismod))
 		permissiondenied();
 	$color = $_POST["color"];
-	if ($color==0 || get_hl_color($color))
-		sql_query("UPDATE topics SET hlcolor=".sqlesc($color)." WHERE id=".sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
+	if ($color == 0 || get_hl_color($color))
+		sql_query("UPDATE topics SET hlcolor=" . sqlesc($color) . " WHERE id=" . sqlesc($topicid)) or sqlerr(__FILE__, __LINE__);
 
-	$forumid = get_single_value("topics","forumid","WHERE id=".sqlesc($topicid));
-	$forum_last_replied_topic_row = $Cache->get_value('forum_'.$forumid.'_last_replied_topic_content');
+	$forumid = get_single_value("topics", "forumid", "WHERE id=" . sqlesc($topicid));
+	$forum_last_replied_topic_row = $Cache->get_value('forum_' . $forumid . '_last_replied_topic_content');
 	if ($forum_last_replied_topic_row && $forum_last_replied_topic_row['id'] == $topicid)
-		$Cache->delete_value('forum_'.$forumid.'_last_replied_topic_content');
+		$Cache->delete_value('forum_' . $forumid . '_last_replied_topic_content');
 	header("Location: $_POST[returnto]");
 	die;
 }
 
 //-------- Action: Set sticky on/off
 
-if ($action == "setsticky")
-{
+if ($action == "setsticky") {
 	$topicid = 0 + $_POST["topicid"];
-	$ismod = is_forum_moderator($topicid,'topic');
+	$ismod = is_forum_moderator($topicid, 'topic');
 	if (!topicid || (get_user_class() < $postmanage_class && !$ismod))
 		permissiondenied();
 
@@ -1080,98 +1032,87 @@ if ($action == "setsticky")
 
 //-------- Action: View forum
 
-if ($action == "viewforum")
-{
-	$forumid = 0+$_GET["forumid"];
-	int_check($forumid,true);
-	$userid = 0+$CURUSER["id"];
+if ($action == "viewforum") {
+	$forumid = 0 + $_GET["forumid"];
+	int_check($forumid, true);
+	$userid = 0 + $CURUSER["id"];
 	//------ Get forum name, moderators
 	$row = get_forum_row($forumid);
-	if (!$row){
+	if (!$row) {
 		write_log("User " . $CURUSER["username"] . "," . $CURUSER["ip"] . " is trying to visit forum that doesn't exist", 'mod');
-		stderr($lang_forums['std_forum_error'],$lang_forums['std_forum_not_found']);
+		stderr($lang_forums['std_forum_error'], $lang_forums['std_forum_not_found']);
 	}
 	if (get_user_class() < $row["minclassread"])
 		permissiondenied();
-	
+
 	$forumname = $row['name'];
-	$forummoderators = get_forum_moderators($forumid,false);
+	$forummoderators = get_forum_moderators($forumid, false);
 	$search = mysql_real_escape_string(trim($_GET["search"]));
-	if ($search){
+	if ($search) {
 		$wherea = " AND subject LIKE '%$search%'";
-		$addparam .= "&search=".rawurlencode($search);
-	}
-	else{
+		$addparam .= "&search=" . rawurlencode($search);
+	} else {
 		$wherea = "";
 		$addparam = "";
 	}
-	$num = get_row_count("topics","WHERE forumid=".sqlesc($forumid).$wherea);
+	$num = get_row_count("topics", "WHERE forumid=" . sqlesc($forumid) . $wherea);
 
-	list($pagertop, $pagerbottom, $limit) = pager($topicsperpage, $num, "?"."action=viewforum&forumid=".$forumid.$addparam."&");
-	if ($_GET["sort"]){
-		switch ($_GET["sort"]){
-			case 'firstpostasc': 
-			{
-				$orderby = "firstpost ASC";
-				break;
-			}
-			case 'firstpostdesc': 
-			{
-				$orderby = "firstpost DESC";
-				break;
-			}
-			case 'lastpostasc':
-			{
-				$orderby = "lastpost ASC";
-				break;
-			}
-			case 'lastpostdesc':
-			{
-				$orderby = "lastpost DESC";
-				break;
-			}
-			default:
-			{
-				$orderby = "lastpost DESC";
-			}
+	list($pagertop, $pagerbottom, $limit) = pager($topicsperpage, $num, "?" . "action=viewforum&forumid=" . $forumid . $addparam . "&");
+	if ($_GET["sort"]) {
+		switch ($_GET["sort"]) {
+			case 'firstpostasc': {
+					$orderby = "firstpost ASC";
+					break;
+				}
+			case 'firstpostdesc': {
+					$orderby = "firstpost DESC";
+					break;
+				}
+			case 'lastpostasc': {
+					$orderby = "lastpost ASC";
+					break;
+				}
+			case 'lastpostdesc': {
+					$orderby = "lastpost DESC";
+					break;
+				}
+			default: {
+					$orderby = "lastpost DESC";
+				}
 		}
-	}
-	else
-	{
+	} else {
 		$orderby = "lastpost DESC";
 	}
 	//------ Get topics data
-	$topicsres = sql_query("SELECT * FROM topics WHERE forumid=".sqlesc($forumid).$wherea." ORDER BY sticky DESC,".$orderby." ".$limit) or sqlerr(__FILE__, __LINE__);
+	$topicsres = sql_query("SELECT * FROM topics WHERE forumid=" . sqlesc($forumid) . $wherea . " ORDER BY sticky DESC," . $orderby . " " . $limit) or sqlerr(__FILE__, __LINE__);
 	$numtopics = mysql_num_rows($topicsres);
-	stdhead($lang_forums['head_forum']." ".$forumname);
-	begin_main_frame("",true);
-	print("<h1 align=\"center\"><a class=\"faqlink\" href=\"forums.php\">".$SITENAME."&nbsp;".$lang_forums['text_forums'] ."</a>--><a class=\"faqlink\" href=\"".htmlspecialchars("forums.php?action=viewforum&forumid=".$forumid)."\">".$forumname."</a></h1>\n");
+	stdhead($lang_forums['head_forum'] . " " . $forumname);
+	begin_main_frame("", true);
+	print("<h1 align=\"center\"><a class=\"faqlink\" href=\"forums.php\">" . $SITENAME . "&nbsp;" . $lang_forums['text_forums'] . "</a>--><a class=\"faqlink\" href=\"" . htmlspecialchars("forums.php?action=viewforum&forumid=" . $forumid) . "\">" . $forumname . "</a></h1>\n");
 	end_main_frame();
 	print("<br />");
 	$maypost = get_user_class() >= $row["minclasswrite"] && get_user_class() >= $row["minclasscreate"] && $CURUSER["forumpost"] == 'yes';
 
 	if (!$maypost)
-		print("<p><i>".$lang_forums['text_unpermitted_starting_new_topics']."</i></p>\n");
+		print("<p><i>" . $lang_forums['text_unpermitted_starting_new_topics'] . "</i></p>\n");
 
 	print("<table border=\"0\" class=\"main\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\"><tr>\n");
 	print("<td class=\"embedded\" width=\"90%\">");
-	print($forummoderators ? "&nbsp;&nbsp;<img class=\"forum_mod\" src=\"pic/trans.gif\" alt=\"Moderator\" title=\"".$lang_forums['col_moderator']."\">&nbsp;".$forummoderators : "");
+	print($forummoderators ? "&nbsp;&nbsp;<img class=\"forum_mod\" src=\"pic/trans.gif\" alt=\"Moderator\" title=\"" . $lang_forums['col_moderator'] . "\">&nbsp;" . $forummoderators : "");
 	print("</td><td class=\"embedded nowrap\" width=\"1%\">");
 	if ($maypost)
-		print("<a href=\"".htmlspecialchars("?action=newtopic&forumid=".$forumid)."\"><img class=\"f_new\" src=\"pic/trans.gif\" alt=\"New Topic\" title=\"".$lang_forums['title_new_topic']."\" /></a>&nbsp;&nbsp;");
+		print("<a href=\"" . htmlspecialchars("?action=newtopic&forumid=" . $forumid) . "\"><img class=\"f_new\" src=\"pic/trans.gif\" alt=\"New Topic\" title=\"" . $lang_forums['title_new_topic'] . "\" /></a>&nbsp;&nbsp;");
 	print("</td>");
 	print("</tr></table>\n");
-	if ($numtopics > 0)
-	{
+	if ($numtopics > 0) {
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\">");
 
-		print("<tr><td class=\"colhead\" align=\"center\" width=\"99%\">".$lang_forums['col_topic']."</td><td class=\"colhead\" align=\"center\"><a href=\"".htmlspecialchars("?action=viewforum&forumid=".$forumid.$addparam."&sort=".($_GET["sort"] == 'firstpostdesc' ? "firstpostasc" : "firstpostdesc"))."\" title=\"".($_GET["sort"] == 'firstpostdesc' ?  $lang_forums['title_order_topic_asc'] : $lang_forums['title_order_topic_desc'])."\">".$lang_forums['col_author']."</a></td><td class=\"colhead\" align=\"center\">".$lang_forums['col_replies']."/".$lang_forums['col_views']."</td><td class=\"colhead\" align=\"center\"><a href=\"".htmlspecialchars("?action=viewforum&forumid=".$forumid.$addparam."&sort=".($_GET["sort"] == 'lastpostasc' ? "lastpostdesc" : "lastpostasc"))."\" title=\"".($_GET["sort"] == 'lastpostasc' ? $lang_forums['title_order_post_desc'] : $lang_forums['title_order_post_asc'])."\">".$lang_forums['col_last_post']."</a></td>\n");
+		print("<tr><td class=\"colhead\" align=\"center\" width=\"99%\">" . $lang_forums['col_topic'] . "</td><td class=\"colhead\" align=\"center\"><a href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $forumid . $addparam . "&sort=" . ($_GET["sort"] == 'firstpostdesc' ? "firstpostasc" : "firstpostdesc")) . "\" title=\"" . ($_GET["sort"] == 'firstpostdesc' ?  $lang_forums['title_order_topic_asc'] : $lang_forums['title_order_topic_desc']) . "\">" . $lang_forums['col_author'] . "</a></td><td class=\"colhead\" align=\"center\">" . $lang_forums['col_replies'] . "/" . $lang_forums['col_views'] . "</td><td class=\"colhead\" align=\"center\"><a href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $forumid . $addparam . "&sort=" . ($_GET["sort"] == 'lastpostasc' ? "lastpostdesc" : "lastpostasc")) . "\" title=\"" . ($_GET["sort"] == 'lastpostasc' ? $lang_forums['title_order_post_desc'] : $lang_forums['title_order_post_asc']) . "\">" . $lang_forums['col_last_post'] . "</a></td>\n");
 
 		print("</tr>\n");
 		$counter = 0;
 
-		while ($topicarr = mysql_fetch_assoc($topicsres))
-		{
+		while ($topicarr = mysql_fetch_assoc($topicsres)) {
 			$topicid = $topicarr["id"];
 
 			$topic_userid = $topicarr["userid"];
@@ -1185,15 +1126,15 @@ if ($action == "viewforum")
 			$sticky = $topicarr["sticky"] == "yes";
 
 			$hlcolor = $topicarr["hlcolor"];
-			
+
 			$iscasino = $topicarr["casinomode"];
-			if($iscasino == "yes") $iscasino = 1;
+			if ($iscasino == "yes") $iscasino = 1;
 			else $iscasino = 0;
 
 			//---- Get reply count
-			if (!$posts = $Cache->get_value('topic_'.$topicid.'_post_count')){
-				$posts = get_row_count("posts","WHERE topicid=".sqlesc($topicid));
-				$Cache->cache_value('topic_'.$topicid.'_post_count', $posts, 3600);
+			if (!$posts = $Cache->get_value('topic_' . $topicid . '_post_count')) {
+				$posts = get_row_count("posts", "WHERE topicid=" . sqlesc($topicid));
+				$Cache->cache_value('topic_' . $topicid . '_post_count', $posts, 3600);
 			}
 
 			$replies = max(0, $posts - 1);
@@ -1201,28 +1142,26 @@ if ($action == "viewforum")
 			$tpages = floor($posts / $postsperpage);
 
 			if ($tpages * $postsperpage != $posts)
-			++$tpages;
+				++$tpages;
 
-			if ($tpages > 1)
-			{
+			if ($tpages > 1) {
 				$topicpages = " [<img class=\"multipage\" src=\"pic/trans.gif\" alt=\"multi-page\" /> ";
 				$dotted = 0;
 				$dotspace = 4;
 				$dotend = $tpages - $dotspace;
-				for ($i = 1; $i <= $tpages; ++$i){
+				for ($i = 1; $i <= $tpages; ++$i) {
 					if ($i > $dotspace && $i <= $dotend) {
 						if (!$dotted)
-						$topicpages .= " ... ";
+							$topicpages .= " ... ";
 						$dotted = 1;
 						continue;
 					}
-				$topicpages .= " <a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$topicid."&page=".($i-1))."\">$i</a>";
+					$topicpages .= " <a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $topicid . "&page=" . ($i - 1)) . "\">$i</a>";
 				}
 
 				$topicpages .= " ]";
-			}
-			else
-			$topicpages = "";
+			} else
+				$topicpages = "";
 
 			//---- Get userID and date of last post
 
@@ -1230,19 +1169,19 @@ if ($action == "viewforum")
 			$lppostid = 0 + $arr["id"];
 			$lpuserid = 0 + $arr["userid"];
 			$lpusername = get_username($lpuserid);
-			$lpadded = gettime($arr["added"],true,false);
+			$lpadded = gettime($arr["added"], true, false);
 			$onmouseover = "";
-			if ($enabletooltip_tweak == 'yes' && $CURUSER['showlastpost'] != 'no'){
+			if ($enabletooltip_tweak == 'yes' && $CURUSER['showlastpost'] != 'no') {
 				if ($CURUSER['timetype'] != 'timealive')
-					$lastposttime = $lang_forums['text_at_time'].$arr["added"];
+					$lastposttime = $lang_forums['text_at_time'] . $arr["added"];
 				else
-					$lastposttime = $lang_forums['text_blank'].gettime($arr["added"],true,false,true);
-				if(!$iscasino)
-				$lptext = format_comment(mb_substr($arr['body'],0,100,"UTF-8") . (mb_strlen($arr['body'],"UTF-8") > 100 ? " ......" : "" ),true,false,false,true,600,false,false);
+					$lastposttime = $lang_forums['text_blank'] . gettime($arr["added"], true, false, true);
+				if (!$iscasino)
+					$lptext = format_comment(mb_substr($arr['body'], 0, 100, "UTF-8") . (mb_strlen($arr['body'], "UTF-8") > 100 ? " ......" : ""), true, false, false, true, 600, false, false);
 				else
-				$lptext = format_comment($lang_forums['text_cannot_view'],true,false,false,true,600,false,false);
+					$lptext = format_comment($lang_forums['text_cannot_view'], true, false, false, true, 600, false, false);
 				$lastpost_tooltip[$counter]['id'] = "lastpost_" . $counter;
-				$lastpost_tooltip[$counter]['content'] = $lang_forums['text_last_posted_by'].$lpusername.$lastposttime."<br />".$lptext;
+				$lastpost_tooltip[$counter]['content'] = $lang_forums['text_last_posted_by'] . $lpusername . $lastposttime . "<br />" . $lptext;
 				$onmouseover = "onmouseover=\"domTT_activate(this, event, 'content', document.getElementById('" . $lastpost_tooltip[$counter]['id'] . "'), 'trail', false,'lifetime', 5000,'styleClass','niceTitle','fadeMax', 87,'maxWidth', 400);\"";
 			}
 
@@ -1250,90 +1189,88 @@ if ($action == "viewforum")
 			$fpuserid = 0 + $arr["userid"];
 			$fpauthor = get_username($arr["userid"]);
 
-			$subject = ($sticky ? "<img class=\"sticky\" src=\"pic/trans.gif\" alt=\"Sticky\" title=\"".$lang_forums['title_sticky']."\" />&nbsp;&nbsp;" : "") . "<a href=\"".htmlspecialchars("?action=viewtopic&forumid=".$forumid."&topicid=".$topicid)."\" ".$onmouseover.">" .highlight_topic(highlight($search,htmlspecialchars($topicarr["subject"])), $hlcolor) . "</a>";
-			
+			$subject = ($sticky ? "<img class=\"sticky\" src=\"pic/trans.gif\" alt=\"Sticky\" title=\"" . $lang_forums['title_sticky'] . "\" />&nbsp;&nbsp;" : "") . "<a href=\"" . htmlspecialchars("?action=viewtopic&forumid=" . $forumid . "&topicid=" . $topicid) . "\" " . $onmouseover . ">" . highlight_topic(highlight($search, htmlspecialchars($topicarr["subject"])), $hlcolor) . "</a>";
+
 			//show casino mode
-			if($iscasino){
+			if ($iscasino) {
 				$subject = $subject . $lang_forums['title_casino'];
 			}
-			
+
 			$subject = $subject . $topicpages;
-			
+
 			$lastpostread = get_last_read_post_id($topicid);
 
 			if ($lastpostread >= $lppostid)
 				$img = get_topic_image($locked ? "locked" : "read");
-			else{
+			else {
 				$img = get_topic_image($locked ? "lockednew" : "unread");
 				if ($lastpostread != $CURUSER['last_catchup'])
-					$subject .= "&nbsp;&nbsp;<a href=\"".htmlspecialchars("?action=viewtopic&forumid=".$forumid."&topicid=".$topicid."&page=p".$lastpostread."#pid".$lastpostread)."\" title=\"".$lang_forums['title_jump_to_unread']."\"><font class=\"small new\"><b>".$lang_forums['text_new']."</b></font></a>";
+					$subject .= "&nbsp;&nbsp;<a href=\"" . htmlspecialchars("?action=viewtopic&forumid=" . $forumid . "&topicid=" . $topicid . "&page=p" . $lastpostread . "#pid" . $lastpostread) . "\" title=\"" . $lang_forums['title_jump_to_unread'] . "\"><font class=\"small new\"><b>" . $lang_forums['text_new'] . "</b></font></a>";
 			}
 
-			
-			$topictime = substr($arr['added'],0,10);
+
+			$topictime = substr($arr['added'], 0, 10);
 			if (strtotime($arr['added']) +  86400 > TIMENOW)
-				$topictime = "<font class=\"new small\">".$topictime."</font>";
+				$topictime = "<font class=\"new small\">" . $topictime . "</font>";
 			else
-				$topictime = "<font color=\"gray\" class=\"small\">".$topictime."</font>";
+				$topictime = "<font color=\"gray\" class=\"small\">" . $topictime . "</font>";
 
 			print("<tr><td class=\"rowfollow\" align=\"left\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr>" .
-			"<td class=\"embedded\" style='padding-right: 10px'>".$img .
-			"</td><td class=\"embedded\" align=\"left\">\n" .
-			$subject."</td></tr></table></td><td class=\"rowfollow\" align=\"center\">".get_username($fpuserid)."<br />".$topictime."</td><td class=\"rowfollow\" align=\"center\">".$replies." / <font color=\"gray\">".$views."</font></td>\n" .
-			"<td class=\"rowfollow nowrap\" align=\"center\">".$lpadded."<br />".$lpusername."</td>\n");
+				"<td class=\"embedded\" style='padding-right: 10px'>" . $img .
+				"</td><td class=\"embedded\" align=\"left\">\n" .
+				$subject . "</td></tr></table></td><td class=\"rowfollow\" align=\"center\">" . get_username($fpuserid) . "<br />" . $topictime . "</td><td class=\"rowfollow\" align=\"center\">" . $replies . " / <font color=\"gray\">" . $views . "</font></td>\n" .
+				"<td class=\"rowfollow nowrap\" align=\"center\">" . $lpadded . "<br />" . $lpusername . "</td>\n");
 
 			print("</tr>\n");
 			$counter++;
-
 		} // while
 
 		//print("</table>\n");
 		//print("<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\">");
 		print("<tr><td align=\"left\">\n");
-		print("<form method=\"get\" action=\"forums.php\"><b>".$lang_forums['text_fast_search']."</b><input type=\"hidden\" name=\"action\" value=\"viewforum\" /><input type=\"hidden\" name=\"forumid\" value=\"".$forumid."\" /><input type=\"text\" style=\"width: 180px\" name=\"search\" />&nbsp;<input type=\"submit\" value=\"".$lang_forums['text_go']."\" /></form>");
+		print("<form method=\"get\" action=\"forums.php\"><b>" . $lang_forums['text_fast_search'] . "</b><input type=\"hidden\" name=\"action\" value=\"viewforum\" /><input type=\"hidden\" name=\"forumid\" value=\"" . $forumid . "\" /><input type=\"text\" style=\"width: 180px\" name=\"search\" />&nbsp;<input type=\"submit\" value=\"" . $lang_forums['text_go'] . "\" /></form>");
 		print("</td>");
-?>
-<td align="left" colspan="3">
-<span id="order" onclick="dropmenu(this);"><span style="cursor: pointer;"><b><?= $lang_forums['text_order']?></b></span>
-<span id="orderlist" class="dropmenu" style="display: none"><ul>
-<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=firstpostdesc"><?= $lang_forums['text_topic_desc']?></a></li>
-<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=firstpostasc"><?= $lang_forums['text_topic_asc']?></a></li>
-<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=lastpostdesc"><?= $lang_forums['text_post_desc']?></a></li>
-<li><a href="?action=viewforum&amp;forumid=<?= $forumid.$addparam?>&amp;sort=lastpostasc"><?= $lang_forums['text_post_asc']?></a></li>
-</ul>
-</span>
-</span>
-</td>
-<?php
+	?>
+		<td align="left" colspan="3">
+			<span id="order" onclick="dropmenu(this);"><span style="cursor: pointer;"><b><?= $lang_forums['text_order'] ?></b></span>
+				<span id="orderlist" class="dropmenu" style="display: none">
+					<ul>
+						<li><a href="?action=viewforum&amp;forumid=<?= $forumid . $addparam ?>&amp;sort=firstpostdesc"><?= $lang_forums['text_topic_desc'] ?></a></li>
+						<li><a href="?action=viewforum&amp;forumid=<?= $forumid . $addparam ?>&amp;sort=firstpostasc"><?= $lang_forums['text_topic_asc'] ?></a></li>
+						<li><a href="?action=viewforum&amp;forumid=<?= $forumid . $addparam ?>&amp;sort=lastpostdesc"><?= $lang_forums['text_post_desc'] ?></a></li>
+						<li><a href="?action=viewforum&amp;forumid=<?= $forumid . $addparam ?>&amp;sort=lastpostasc"><?= $lang_forums['text_post_asc'] ?></a></li>
+					</ul>
+				</span>
+			</span>
+		</td>
+	<?php
 		print("</tr></table>");
 		print($pagerbottom);
 		if ($enabletooltip_tweak == 'yes' && $CURUSER['showlastpost'] != 'no')
 			create_tooltip_container($lastpost_tooltip, 400);
 	} // if
 	else
-		print("<p>".$lang_forums['text_no_topics_found']."</p>");
+		print("<p>" . $lang_forums['text_no_topics_found'] . "</p>");
 	stdfoot();
 	die;
 }
 
 //-------- Action: View unread posts
 
-if ($action == "viewunread")
-{
+if ($action == "viewunread") {
 	$userid = $CURUSER['id'];
 
-	$beforepostid = 0+$_GET['beforepostid'];
+	$beforepostid = 0 + $_GET['beforepostid'];
 	$maxresults = 25;
-	$res = sql_query("SELECT id, forumid, subject, lastpost, hlcolor FROM topics WHERE lastpost > ".$CURUSER['last_catchup'].($beforepostid ? " AND lastpost < ".sqlesc($beforepostid) : "")." ORDER BY lastpost DESC LIMIT 100") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT id, forumid, subject, lastpost, hlcolor FROM topics WHERE lastpost > " . $CURUSER['last_catchup'] . ($beforepostid ? " AND lastpost < " . sqlesc($beforepostid) : "") . " ORDER BY lastpost DESC LIMIT 100") or sqlerr(__FILE__, __LINE__);
 
 	stdhead($lang_forums['head_view_unread']);
-	print("<h1 align=\"center\"><a class=\"faqlink\" href=\"forums.php\">".$SITENAME."&nbsp;".$lang_forums['text_forums']."</a>-->".$lang_forums['text_topics_with_unread_posts']."</h1>");
+	print("<h1 align=\"center\"><a class=\"faqlink\" href=\"forums.php\">" . $SITENAME . "&nbsp;" . $lang_forums['text_forums'] . "</a>-->" . $lang_forums['text_topics_with_unread_posts'] . "</h1>");
 
 	$n = 0;
 	$uc = get_user_class();
 
-	while ($arr = mysql_fetch_assoc($res))
-	{
+	while ($arr = mysql_fetch_assoc($res)) {
 		$topiclastpost = $arr['lastpost'];
 		$topicid = $arr['id'];
 
@@ -1353,121 +1290,115 @@ if ($action == "viewunread")
 			break;
 
 		$forumname = $a['name'];
-		if ($n == 1)
-		{
+		if ($n == 1) {
 			print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-			print("<tr><td class=\"colhead\" align=\"left\">".$lang_forums['col_topic']."</td><td class=\"colhead\" align=\"left\">".$lang_forums['col_forum']."</td></tr>\n");
+			print("<tr><td class=\"colhead\" align=\"left\">" . $lang_forums['col_topic'] . "</td><td class=\"colhead\" align=\"left\">" . $lang_forums['col_forum'] . "</td></tr>\n");
 		}
 		print("<tr><td class=\"rowfollow\" align=\"left\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"embedded\" style='padding-right: 10px'>" .
-		get_topic_image("unread")."</td><td class=\"embedded\">" .
-		"<a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$topicid.($lastpostread > 0 && $lastpostread != $CURUSER['last_catchup'] ? "&page=p".$lastpostread."#pid".$lastpostread : ""))."\">" . highlight_topic(htmlspecialchars($arr["subject"]), $arr["hlcolor"]).
-		"</a></td></tr></table></td><td class=\"rowfollow\" align=\"left\"><a href=\"".htmlspecialchars("?action=viewforum&forumid=".$forumid)."\"><b>".$forumname."</b></a></td></tr>\n");
+			get_topic_image("unread") . "</td><td class=\"embedded\">" .
+			"<a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $topicid . ($lastpostread > 0 && $lastpostread != $CURUSER['last_catchup'] ? "&page=p" . $lastpostread . "#pid" . $lastpostread : "")) . "\">" . highlight_topic(htmlspecialchars($arr["subject"]), $arr["hlcolor"]) .
+			"</a></td></tr></table></td><td class=\"rowfollow\" align=\"left\"><a href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $forumid) . "\"><b>" . $forumname . "</b></a></td></tr>\n");
 	}
-	if ($n > 0)
-	{
+	if ($n > 0) {
 		print("</table>\n");
-		print("<table border=\"0\" class=\"main\" cellspacing=\"0\" cellpadding=\"5\" width=\"1%\"><tr><td class=\"embedded\"><form method=\"get\" action=\"?\"><input type=\"hidden\" name=\"catchup\" value=\"1\" /><input type=\"submit\" value=\"".$lang_forums['text_catch_up']."\" class=\"btn\" /></form></td>");
-		if ($n > $maxresults){
-			print("<td class=\"embedded\"><form method=\"get\" action=\"?\"><input type=\"hidden\" name=\"action\" value=\"viewunread\" /><input type=\"hidden\" name=\"beforepostid\" value=\"".$topiclastpost."\" /><input type=\"submit\" value=\"".$lang_forums['submit_show_more']."\" class=\"btn\" /></form></td>");
+		print("<table border=\"0\" class=\"main\" cellspacing=\"0\" cellpadding=\"5\" width=\"1%\"><tr><td class=\"embedded\"><form method=\"get\" action=\"?\"><input type=\"hidden\" name=\"catchup\" value=\"1\" /><input type=\"submit\" value=\"" . $lang_forums['text_catch_up'] . "\" class=\"btn\" /></form></td>");
+		if ($n > $maxresults) {
+			print("<td class=\"embedded\"><form method=\"get\" action=\"?\"><input type=\"hidden\" name=\"action\" value=\"viewunread\" /><input type=\"hidden\" name=\"beforepostid\" value=\"" . $topiclastpost . "\" /><input type=\"submit\" value=\"" . $lang_forums['submit_show_more'] . "\" class=\"btn\" /></form></td>");
 		}
 		print("</tr></table>");
-	}
-	else
-		print("<p>".$lang_forums['text_nothing_found']."</p>");
+	} else
+		print("<p>" . $lang_forums['text_nothing_found'] . "</p>");
 	stdfoot();
 	die;
 }
 
-if ($action == "search")
-{
+if ($action == "search") {
 	stdhead($lang_forums['head_forum_search']);
 	unset($error);
 	$error = true;
 	$found = "";
 	$keywords = htmlspecialchars(trim($_GET["keywords"]));
-	if ($keywords != "")
-	{
-		$extraSql 	= " LIKE '%".mysql_real_escape_string($keywords)."%'";
+	if ($keywords != "") {
+		$extraSql 	= " LIKE '%" . mysql_real_escape_string($keywords) . "%'";
 
-		$res = sql_query("SELECT COUNT(posts.id) FROM posts LEFT JOIN topics ON posts.topicid = topics.id LEFT JOIN forums ON topics.forumid = forums.id WHERE forums.minclassread <= ".sqlesc(get_user_class())." AND ((topics.subject $extraSql AND posts.id=topics.firstpost) OR posts.body $extraSql) AND topics.casinomode = \"no\"") or sqlerr(__FILE__, __LINE__);
+		$res = sql_query("SELECT COUNT(posts.id) FROM posts LEFT JOIN topics ON posts.topicid = topics.id LEFT JOIN forums ON topics.forumid = forums.id WHERE forums.minclassread <= " . sqlesc(get_user_class()) . " AND ((topics.subject $extraSql AND posts.id=topics.firstpost) OR posts.body $extraSql) AND topics.casinomode = \"no\"") or sqlerr(__FILE__, __LINE__);
 		$arr = mysql_fetch_row($res);
 		$hits = 0 + $arr[0];
-		if ($hits){
+		if ($hits) {
 			$error = false;
-			$found = "[<b><font class=\"striking\"> ".$lang_forums['text_found'].$hits.$lang_forums['text_num_posts']." </font></b>]";
+			$found = "[<b><font class=\"striking\"> " . $lang_forums['text_found'] . $hits . $lang_forums['text_num_posts'] . " </font></b>]";
 		}
 	}
-?>
-<style type="text/css">
-.search{
-	background-image:url(pic/search.gif);
-	background-repeat:no-repeat;
-	width:579px;
-	height:95px;
-	margin:5px 0 5px 0;
-	text-align:left;
-}
-.search_title{
-	color:#0062AE;
-	background-color:#DAF3FB;
-	font-size:12px;
-	font-weight:bold;
-	text-align:left;
-	padding:7px 0 0 15px;
-}
+	?>
+	<style type="text/css">
+		.search {
+			background-image: url(pic/search.gif);
+			background-repeat: no-repeat;
+			width: 579px;
+			height: 95px;
+			margin: 5px 0 5px 0;
+			text-align: left;
+		}
 
-.search_table {
-	border-collapse: collapse;
-	border: none;
-	background-color: #ffffff; 
-}
+		.search_title {
+			color: #0062AE;
+			background-color: #DAF3FB;
+			font-size: 12px;
+			font-weight: bold;
+			text-align: left;
+			padding: 7px 0 0 15px;
+		}
 
-</style>
-<div class="search">
-	<div class="search_title"><?= $lang_forums['text_search_on_forum'] ?> <?= ($error && $keywords != "" ? "[<b><font color=striking> ".$lang_forums['text_nothing_found']."</font></b> ]" : $found)?></div>
-	<div style="margin-left: 53px; margin-top: 13px;">
-		<form method="get" action="forums.php" id="search_form" style="margin: 0pt; padding: 0pt; font-family: Tahoma,Arial,Helvetica,sans-serif; font-size: 11px;">
-		<input type="hidden" name="action" value="search" />
-		<table border="0" cellpadding="0" cellspacing="0" width="512" class="search_table">
-		<tbody>
-		<tr>
-		<td style="padding-bottom: 3px; border: 0;" valign="top"><?= $lang_forums['text_by_keyword'] ?></td>
-		</tr>
-		<tr>
-		<td style="padding-bottom: 3px; border: 0;" valign="top">			
-			<input name="keywords" type="text" value="<?= $keywords?>" style="width: 400px;" /></td>
-			<td style="padding-bottom: 3px; border: 0;" valign="top"><input name="image" type="image" style="vertical-align: middle; padding-bottom: 0px; margin-left: 0px;" src="<?= get_forum_pic_folder()?>/search_button.gif" alt="Search" /></td>
-		</tr>
-		</tbody>
-		</table>
-		</form>
+		.search_table {
+			border-collapse: collapse;
+			border: none;
+			background-color: #ffffff;
+		}
+	</style>
+	<div class="search">
+		<div class="search_title"><?= $lang_forums['text_search_on_forum'] ?> <?= ($error && $keywords != "" ? "[<b><font color=striking> " . $lang_forums['text_nothing_found'] . "</font></b> ]" : $found) ?></div>
+		<div style="margin-left: 53px; margin-top: 13px;">
+			<form method="get" action="forums.php" id="search_form" style="margin: 0pt; padding: 0pt; font-family: Tahoma,Arial,Helvetica,sans-serif; font-size: 11px;">
+				<input type="hidden" name="action" value="search" />
+				<table border="0" cellpadding="0" cellspacing="0" width="512" class="search_table">
+					<tbody>
+						<tr>
+							<td style="padding-bottom: 3px; border: 0;" valign="top"><?= $lang_forums['text_by_keyword'] ?></td>
+						</tr>
+						<tr>
+							<td style="padding-bottom: 3px; border: 0;" valign="top">
+								<input name="keywords" type="text" value="<?= $keywords ?>" style="width: 400px;" />
+							</td>
+							<td style="padding-bottom: 3px; border: 0;" valign="top"><input name="image" type="image" style="vertical-align: middle; padding-bottom: 0px; margin-left: 0px;" src="<?= get_forum_pic_folder() ?>/search_button.gif" alt="Search" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
 	</div>
-</div>
 <?php
 
-	if (!$error)
-	{
+	if (!$error) {
 		$perpage = $topicsperpage;
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $hits, "forums.php?action=search&keywords=".rawurlencode($keywords)."&");
-		$res = sql_query("SELECT posts.id, posts.topicid, posts.userid, posts.added, topics.subject, topics.hlcolor, forums.id AS forumid, forums.name AS forumname FROM posts LEFT JOIN topics ON posts.topicid = topics.id LEFT JOIN forums ON topics.forumid = forums.id WHERE forums.minclassread <= ".sqlesc(get_user_class())." AND ((topics.subject $extraSql AND posts.id=topics.firstpost) OR posts.body $extraSql) AND topics.casinomode = \"no\" ORDER BY posts.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+		list($pagertop, $pagerbottom, $limit) = pager($perpage, $hits, "forums.php?action=search&keywords=" . rawurlencode($keywords) . "&");
+		$res = sql_query("SELECT posts.id, posts.topicid, posts.userid, posts.added, topics.subject, topics.hlcolor, forums.id AS forumid, forums.name AS forumname FROM posts LEFT JOIN topics ON posts.topicid = topics.id LEFT JOIN forums ON topics.forumid = forums.id WHERE forums.minclassread <= " . sqlesc(get_user_class()) . " AND ((topics.subject $extraSql AND posts.id=topics.firstpost) OR posts.body $extraSql) AND topics.casinomode = \"no\" ORDER BY posts.id DESC $limit") or sqlerr(__FILE__, __LINE__);
 
 		print($pagertop);
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"940\">\n");
-		print("<tr><td class=\"colhead\" align=\"center\">".$lang_forums['col_post']."</td><td class=\"colhead\" align=\"center\" width=\"70%\">".$lang_forums['col_topic']."</td><td class=\"colhead\" align=\"left\">".$lang_forums['col_forum']."</td><td class=\"colhead\" align=\"left\">".$lang_forums['col_posted_by']."</td></tr>\n");
+		print("<tr><td class=\"colhead\" align=\"center\">" . $lang_forums['col_post'] . "</td><td class=\"colhead\" align=\"center\" width=\"70%\">" . $lang_forums['col_topic'] . "</td><td class=\"colhead\" align=\"left\">" . $lang_forums['col_forum'] . "</td><td class=\"colhead\" align=\"left\">" . $lang_forums['col_posted_by'] . "</td></tr>\n");
 
-		while ($post = mysql_fetch_array($res))
-		{
-			print("<tr><td class=\"rowfollow\" align=\"center\" width=\"1%\">".$post[id]."</td><td class=\"rowfollow\" align=\"left\"><a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$post[topicid]."&highlight=".rawurlencode($keywords)."&page=p".$post[id]."#pid".$post[id])."\">" . highlight_topic(highlight($keywords,htmlspecialchars($post['subject'])), $post['hlcolor']) . "</a></td><td class=\"rowfollow nowrap\" align=\"left\"><a href=\"".htmlspecialchars("?action=viewforum&forumid=".$post['forumid'])."\"><b>" . htmlspecialchars($post["forumname"]) . "</b></a></td><td class=\"rowfollow nowrap\" align=\"left\">" . gettime($post['added'],true,false) . "&nbsp;|&nbsp;". get_username($post['userid']) ."</td></tr>\n");
+		while ($post = mysql_fetch_array($res)) {
+			print("<tr><td class=\"rowfollow\" align=\"center\" width=\"1%\">" . $post[id] . "</td><td class=\"rowfollow\" align=\"left\"><a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $post[topicid] . "&highlight=" . rawurlencode($keywords) . "&page=p" . $post[id] . "#pid" . $post[id]) . "\">" . highlight_topic(highlight($keywords, htmlspecialchars($post['subject'])), $post['hlcolor']) . "</a></td><td class=\"rowfollow nowrap\" align=\"left\"><a href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $post['forumid']) . "\"><b>" . htmlspecialchars($post["forumname"]) . "</b></a></td><td class=\"rowfollow nowrap\" align=\"left\">" . gettime($post['added'], true, false) . "&nbsp;|&nbsp;" . get_username($post['userid']) . "</td></tr>\n");
 		}
 
 		print("</table>\n");
 		print($pagerbottom);
 	}
-stdfoot();
-die;
+	stdfoot();
+	die;
 }
 
-if ($_GET["catchup"] == 1){
+if ($_GET["catchup"] == 1) {
 	catch_up();
 }
 
@@ -1479,44 +1410,42 @@ if ($action != "")
 
 //-------- Get forums
 if ($CURUSER)
-	$USERUPDATESET[] = "forum_access = ".sqlesc(date("Y-m-d H:i:s"));
+	$USERUPDATESET[] = "forum_access = " . sqlesc(date("Y-m-d H:i:s"));
 
 stdhead($lang_forums['head_forums']);
 begin_main_frame();
-print("<h1 align=\"center\">".$SITENAME."&nbsp;".$lang_forums['text_forums']."</h1>");
-print("<p align=\"center\"><a href=\"?action=search\"><b>".$lang_forums['text_search']."</b></a> | <a href=\"?action=viewunread\"><b>".$lang_forums['text_view_unread']."</b></a> | <a href=\"?catchup=1\"><b>".$lang_forums['text_catch_up']."</b></a> ".(get_user_class() >= $forummanage_class ? "| <a href=\"forummanage.php\"><b>".$lang_forums['text_forum_manager']."</b></a>":"")."</p>");
+print("<h1 align=\"center\">" . $SITENAME . "&nbsp;" . $lang_forums['text_forums'] . "</h1>");
+print("<p align=\"center\"><a href=\"?action=search\"><b>" . $lang_forums['text_search'] . "</b></a> | <a href=\"?action=viewunread\"><b>" . $lang_forums['text_view_unread'] . "</b></a> | <a href=\"?catchup=1\"><b>" . $lang_forums['text_catch_up'] . "</b></a> " . (get_user_class() >= $forummanage_class ? "| <a href=\"forummanage.php\"><b>" . $lang_forums['text_forum_manager'] . "</b></a>" : "") . "</p>");
 print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\n");
 
-if (!$overforums = $Cache->get_value('overforums_list')){
+if (!$overforums = $Cache->get_value('overforums_list')) {
 	$overforums = array();
 	$res = sql_query("SELECT * FROM overforums ORDER BY sort ASC") or sqlerr(__FILE__, __LINE__);
 	while ($row = mysql_fetch_array($res))
 		$overforums[] = $row;
 	$Cache->cache_value('overforums_list', $overforums, 86400);
 }
-$count=0;
+$count = 0;
 if ($Advertisement->enable_ad())
-	$interoverforumsad=$Advertisement->get_ad('interoverforums');
+	$interoverforumsad = $Advertisement->get_ad('interoverforums');
 
-foreach ($overforums as $a)
-{
+foreach ($overforums as $a) {
 	if (get_user_class() < $a["minclassview"])
 		continue;
-	if ($count>=1)
-	if ($Advertisement->enable_ad()){
-		if ($interoverforumsad[$count-1])
-			echo "<tr><td colspan=\"5\" align=\"center\" id=\"ad_interoverforums_".($count-1)."\">".$interoverforumsad[$count-1]."</td></tr>";
-	}
+	if ($count >= 1)
+		if ($Advertisement->enable_ad()) {
+			if ($interoverforumsad[$count - 1])
+				echo "<tr><td colspan=\"5\" align=\"center\" id=\"ad_interoverforums_" . ($count - 1) . "\">" . $interoverforumsad[$count - 1] . "</td></tr>";
+		}
 	$forid = $a["id"];
 	$overforumname = $a["name"];
 
-	print("<tr><td align=\"left\" class=\"colhead\" width=\"99%\">".htmlspecialchars($overforumname)."</td><td align=\"center\" class=\"colhead\">".$lang_forums['col_topics']."</td>" .
-	"<td align=\"center\" class=\"colhead\">".$lang_forums['col_posts']."</td>" .
-	"<td align=\"left\" class=\"colhead\">".$lang_forums['col_last_post']."</td><td class=\"colhead\" align=\"left\">".$lang_forums['col_moderator']."</td></tr>\n");
+	print("<tr><td align=\"left\" class=\"colhead\" width=\"99%\">" . htmlspecialchars($overforumname) . "</td><td align=\"center\" class=\"colhead\">" . $lang_forums['col_topics'] . "</td>" .
+		"<td align=\"center\" class=\"colhead\">" . $lang_forums['col_posts'] . "</td>" .
+		"<td align=\"left\" class=\"colhead\">" . $lang_forums['col_last_post'] . "</td><td class=\"colhead\" align=\"left\">" . $lang_forums['col_moderator'] . "</td></tr>\n");
 
 	$forums = get_forum_row();
-	foreach ($forums as $forums_arr)
-	{
+	foreach ($forums as $forums_arr) {
 		if ($forums_arr['forid'] != $forid)
 			continue;
 		if (get_user_class() < $forums_arr["minclassread"])
@@ -1526,38 +1455,37 @@ foreach ($overforums as $a)
 		$forumname = htmlspecialchars($forums_arr["name"]);
 		$forumdescription = htmlspecialchars($forums_arr["description"]);
 
-		$forummoderators = get_forum_moderators($forums_arr['id'],false);
+		$forummoderators = get_forum_moderators($forums_arr['id'], false);
 		if (!$forummoderators)
-			$forummoderators = "<a href=\"contactstaff.php\"><i>".$lang_forums['text_apply_now']."</i></a>";
+			$forummoderators = "<a href=\"contactstaff.php\"><i>" . $lang_forums['text_apply_now'] . "</i></a>";
 
 		$topiccount = number_format($forums_arr["topiccount"]);
 		$postcount = number_format($forums_arr["postcount"]);
 
 		// Find last post ID
 		//Returns the ID of the last post of a forum
-		if (!$arr = $Cache->get_value('forum_'.$forumid.'_last_replied_topic_content')){
-			$res = sql_query("SELECT * FROM topics WHERE forumid=".sqlesc($forumid)." ORDER BY lastpost DESC LIMIT 1") or sqlerr(__FILE__, __LINE__);
+		if (!$arr = $Cache->get_value('forum_' . $forumid . '_last_replied_topic_content')) {
+			$res = sql_query("SELECT * FROM topics WHERE forumid=" . sqlesc($forumid) . " ORDER BY lastpost DESC LIMIT 1") or sqlerr(__FILE__, __LINE__);
 			$arr = mysql_fetch_array($res);
-			$Cache->cache_value('forum_'.$forumid.'_last_replied_topic_content', $arr, 900);
+			$Cache->cache_value('forum_' . $forumid . '_last_replied_topic_content', $arr, 900);
 		}
 
-		if ($arr)
-		{
+		if ($arr) {
 			$lastpostid = $arr['lastpost'];
 			// Get last post info
 			$post_arr = get_post_row($lastpostid);
 			$lastposterid = $post_arr["userid"];
-			$lastpostdate = gettime($post_arr["added"],true,false);
+			$lastpostdate = gettime($post_arr["added"], true, false);
 			$lasttopicid = $arr['id'];
 			$hlcolor = $arr['hlcolor'];
 			$lasttopicdissubject = $lasttopicsubject = $arr['subject'];
 			$max_length_of_topic_subject = 35;
-			$count_dispname = mb_strlen($lasttopicdissubject,"UTF-8");
+			$count_dispname = mb_strlen($lasttopicdissubject, "UTF-8");
 			if ($count_dispname > $max_length_of_topic_subject)
-				$lasttopicdissubject = mb_substr($lasttopicdissubject, 0, $max_length_of_topic_subject-2,"UTF-8") . "..";
+				$lasttopicdissubject = mb_substr($lasttopicdissubject, 0, $max_length_of_topic_subject - 2, "UTF-8") . "..";
 			$lasttopic = highlight_topic(htmlspecialchars($lasttopicdissubject), $hlcolor);
 
-			$lastpost = "<a href=\"".htmlspecialchars("?action=viewtopic&topicid=".$lasttopicid."&page=last#last")."\" title=\"".htmlspecialchars($lasttopicsubject)."\">".$lasttopic."</a><br />". $lastpostdate."&nbsp;|&nbsp;".get_username($lastposterid);
+			$lastpost = "<a href=\"" . htmlspecialchars("?action=viewtopic&topicid=" . $lasttopicid . "&page=last#last") . "\" title=\"" . htmlspecialchars($lasttopicsubject) . "\">" . $lasttopic . "</a><br />" . $lastpostdate . "&nbsp;|&nbsp;" . get_username($lastposterid);
 
 			$lastreadpost = get_last_read_post_id($lasttopicid);
 
@@ -1565,25 +1493,23 @@ foreach ($overforums as $a)
 				$img = get_topic_image("read");
 			else
 				$img = get_topic_image("unread");
-		}
-		else
-		{
+		} else {
 			$lastpost = "N/A";
 			$img = get_topic_image("read");
 		}
-		$posttodaycount = $Cache->get_value('forum_'.$forumid.'_post_'.$today_date.'_count');
-		if ($posttodaycount == ""){
-			$res3 = sql_query("SELECT COUNT(posts.id) FROM posts LEFT JOIN topics ON posts.topicid = topics.id WHERE posts.added > ".sqlesc(date("Y-m-d"))." AND topics.forumid=".sqlesc($forumid)) or sqlerr(__FILE__, __LINE__);
+		$posttodaycount = $Cache->get_value('forum_' . $forumid . '_post_' . $today_date . '_count');
+		if ($posttodaycount == "") {
+			$res3 = sql_query("SELECT COUNT(posts.id) FROM posts LEFT JOIN topics ON posts.topicid = topics.id WHERE posts.added > " . sqlesc(date("Y-m-d")) . " AND topics.forumid=" . sqlesc($forumid)) or sqlerr(__FILE__, __LINE__);
 			$row3 = mysql_fetch_row($res3);
 			$posttodaycount = $row3[0];
-			$Cache->cache_value('forum_'.$forumid.'_post_'.$today_date.'_count', $posttodaycount, 1800);
+			$Cache->cache_value('forum_' . $forumid . '_post_' . $today_date . '_count', $posttodaycount, 1800);
 		}
 		if ($posttodaycount > 0)
-			$posttoday = "&nbsp;&nbsp;(".$lang_forums['text_today']."<b><font class=\"new\">".$posttodaycount."</font></b>)";
+			$posttoday = "&nbsp;&nbsp;(" . $lang_forums['text_today'] . "<b><font class=\"new\">" . $posttodaycount . "</font></b>)";
 		else $posttoday = "";
-		print("<tr><td class=\"rowfollow\" align=\"left\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"embedded\" style='padding-right: 10px'>".$img."</td><td class=\"embedded\"><a href=\"".htmlspecialchars("?action=viewforum&forumid=".$forumid)."\"><font class=\"big\"><b>".$forumname."</b></font></a>" .$posttoday.
-		"<br />".$forumdescription."</td></tr></table></td><td class=\"rowfollow\" align=\"center\" width=\"1%\">".$topiccount."</td><td class=\"rowfollow\" align=\"center\" width=\"1%\">".$postcount."</td>" .
-		"<td class=\"rowfollow nowrap\" align=\"left\">".$lastpost."</td><td class=\"rowfollow\" align=\"left\">".$forummoderators."</td></tr>\n");
+		print("<tr><td class=\"rowfollow\" align=\"left\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"embedded\" style='padding-right: 10px'>" . $img . "</td><td class=\"embedded\"><a href=\"" . htmlspecialchars("?action=viewforum&forumid=" . $forumid) . "\"><font class=\"big\"><b>" . $forumname . "</b></font></a>" . $posttoday .
+			"<br />" . $forumdescription . "</td></tr></table></td><td class=\"rowfollow\" align=\"center\" width=\"1%\">" . $topiccount . "</td><td class=\"rowfollow\" align=\"center\" width=\"1%\">" . $postcount . "</td>" .
+			"<td class=\"rowfollow nowrap\" align=\"left\">" . $lastpost . "</td><td class=\"rowfollow\" align=\"left\">" . $forummoderators . "</td></tr>\n");
 	}
 	$count++;
 }

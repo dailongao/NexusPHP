@@ -53,6 +53,37 @@ function oldReadConfig ($configname) {
 }
 
 
+function parse_sign_in_reward_str($str) {
+    
+    // 结果
+    $result = array();
+    
+    // null 判断
+    if(isset($str)) {
+        
+        $items = explode(',', $str);
+
+        foreach ($items as $i) {
+            
+            // 删除空格
+            $i = trim($i);
+            
+            // 范围 a-b
+            if (preg_match("/^(\d+)\-(\d+)$/i", $i, $matches) != 0) {
+                $newItem = array(intval($matches[1]), intval($matches[2]));
+                $result[] = $newItem;
+            // 单个范围 a
+            } elseif (preg_match("/^(\d+)$/i", $i, $matches) != 0) {
+                 $newItem = array(intval($matches[1]), intval($matches[1]));
+                 $result[] = $newItem;
+            }
+        }
+    }
+    
+    return $result;
+}
+
+
 if (file_exists('config/allconfig.php')) {
 	require('config/allconfig.php');
 } else {
@@ -61,8 +92,7 @@ if (file_exists('config/allconfig.php')) {
 
 $SITENAME = $BASIC['SITENAME'];
 $BASEURL = $BASIC['BASEURL'];
-$announce_urls = array();
-$announce_urls[] = $BASIC['announce_url'];
+$announce_urls = preg_split('/(\r|\n)/i', $BASIC['announce_url'], null, PREG_SPLIT_NO_EMPTY);
 $mysql_host = $BASIC['mysql_host'];
 $mysql_user = $BASIC['mysql_user'];
 $mysql_pass = $BASIC['mysql_pass'];
@@ -163,8 +193,7 @@ $eYouUrl = $SMTP['eYouUrl'];
 
 $securelogin = $SECURITY['securelogin'];
 $securetracker = $SECURITY['securetracker'];
-$https_announce_urls = array();
-$https_announce_urls[] = $SECURITY['https_announce_url'];
+$https_announce_urls = preg_split('/(\r|\n)/i', $SECURITY['https_announce_url'], null, PREG_SPLIT_NO_EMPTY);
 $ignoreipchecklist = explode(",", $SECURITY['ignoreipchecklist']);
 $maxip = $SECURITY['maxip'];
 $maxloginattempts = $SECURITY['maxloginattempts'];
@@ -238,6 +267,12 @@ $prolinkimg = $TWEAK['prolinkimg'];
 $analyticscode_tweak = $TWEAK['analyticscode'];
 $casino_tweak = $TWEAK['enable_casino'];
 $casino_min_bonus_tweak = intval($TWEAK['casino_min_bonus']);
+
+$enable_sign_in = $TWEAK['enable_sign_in'];
+$sign_in_topic_id = intval($TWEAK['sign_in_topic_id']);
+$sign_in_template = $TWEAK['sign_in_template'];
+$sign_in_reward = parse_sign_in_reward_str($TWEAK['sign_in_reward']);
+$sign_in_bonus_record = $TWEAK['sign_in_bonus_record'];
 
 $enableattach_attachment = $ATTACHMENT['enableattach'];
 $classone_attachment = $ATTACHMENT['classone'];

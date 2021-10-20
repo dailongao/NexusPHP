@@ -36,6 +36,22 @@ function convert_ipv4_to_integer($ip) {
 	return ((int)$ip_seg[0] << 24) | ((int)$ip_seg[1] << 16) | ((int)$ip_seg[2] << 8) | (int)$ip_seg[3];
 }
 
+
+// 如果有必要，将 IP 字符串转换为整数的函数。
+function check_ip_str($value) {
+		
+	// 整数时后不需要任何处理
+	if (is_int($value)) {
+		return $value;
+	// 字符串时进行转换
+	} elseif (is_string($value)) {
+		return convert_ipv4_to_integer($value);
+	// 其他类型将引发异常
+	} else {
+		throw new InvalidArgumentException('Type of the argument should be either int or string.');
+	}
+}
+	
 /**
  * 判断 IP 地址是否位于给定的子网内。
  * @param mixed $ip 要判断的 IP 地址。可以是整数或者字符串。
@@ -45,21 +61,6 @@ function convert_ipv4_to_integer($ip) {
  */
 function ip_is_in_subnet($ip, $subnet_start, $subnet_perfex_length) {
 
-	// 如果有必要，将 IP 字符串转换为整数的函数。
-	function check_ip_str($value) {
-			
-		// 整数时后不需要任何处理
-		if (is_int($value)) {
-			return $value;
-		// 字符串时进行转换
-		} elseif (is_string($value)) {
-			return convert_ipv4_to_integer($value);
-		// 其他类型将引发异常
-		} else {
-			throw new InvalidArgumentException('Type of the argument should be either int or string.');
-		}
-	};
-	
 	// 转换参数。
 	$real_ip = check_ip_str($ip);
 	$real_subnet_start = check_ip_str($subnet_start);
@@ -130,6 +131,27 @@ function validip($ip)
 	else return false;
 }
 
+function get_ip_from_proxy_string($ip) {
+	
+	/*
+		The Forward Header maybe: IP1:Port1, IP2:Port2, ...
+	*/
+
+	$items = explode(",", $ip);
+	$first_ip = trim($items[0]);
+
+	// Brackets IPv6
+	if (preg_match('/^\[(.*)\]$/i', $first_ip, $matches)) {
+		$host_name = $matches[1];
+	} elseif (substr_count($first_ip, ":") > 1) { // IPV6
+		$host_name = $first_ip;
+	} else {
+		$host_name = parse_url("http://" . $first_ip, PHP_URL_HOST);
+	}
+
+	return $host_name;
+}
+
 function getip() {
 	if (isset($_SERVER)) {
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && validip($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -149,7 +171,7 @@ function getip() {
 		}
 	}
 
-	return $ip;
+	return get_ip_from_proxy_string($ip);
 }
 
 function sql_query($query)

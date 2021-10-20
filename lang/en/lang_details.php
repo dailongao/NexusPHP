@@ -231,7 +231,11 @@ $lang_details = array
 	'text_track' => "Tracks: ",
 	'buy_promotion_for_torrent' => "Torrent Promotion",
 	'title_buy_promotion' => "Promote a torrent by Karma Bonus Points!",
-	
+  'text_view_bbcode' => "Copy BBCode",
+  'title_view_bbcode' => "Copy the BBCode of this torrent's information to the clipboard.",
+  'msg_view_bbcode_success' => "BBCode copied successfully!",
+	'text_clone_torrent' => "Click to Clone",
+	'title_clone_torrent' => "Upload a new torrent using this same fields from this torrent.",
 );
 
 ?>

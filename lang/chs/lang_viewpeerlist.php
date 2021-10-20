@@ -22,7 +22,15 @@ $lang_viewpeerlist = array
 	'row_leechers' => "下载者",
 	'text_yes' => "是",
 	'text_no' => "否",
-	'text_inf' => "无限"
+	'text_inf' => "无限",
+
+	'ipv4_connectable' => '这个用户具有校内 IPV4 地址，并且可连接',
+	'ipv4_non_connectable' => '这个用户具有校内 IPV4 地址，但不可连接',
+	'ipv4_none' => '这个用户没有校内 IPV4 地址',
+
+	'ipv6_connectable' => '这个用户具有 IPV6 地址，并且可连接',
+	'ipv6_non_connectable' => '这个用户具有 IPV6 地址，但不可连接',
+	'ipv6_none' => '这个用户没有 IPV6 地址',
 );
 
 ?>

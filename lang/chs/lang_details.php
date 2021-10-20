@@ -234,6 +234,8 @@ $lang_details = array
   'text_view_bbcode' => "复制 BBCode",
   'title_view_bbcode' => "将该种子简介内容的原始 BBCode 复制到剪贴板",
   'msg_view_bbcode_success' => "简介内容的 BBCode 已经复制到剪贴板。",
+	'text_clone_torrent' => "一键克隆",
+	'title_clone_torrent' => "复制该种子信息，一键发布新种（注意上传新的种子文件哦~）",
 );
 
 ?>

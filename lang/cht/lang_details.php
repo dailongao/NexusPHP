@@ -228,8 +228,11 @@ $lang_details = array
 	'text_media' => "介質: ",
 	'text_summary' => "簡介: ",
 	'text_track' => "音軌: ",
-
-	
+  'text_view_bbcode' => "複製 BBCode",
+  'title_view_bbcode' => "將該種子簡介内容的原始 BBCode 複製到剪貼板",
+  'msg_view_bbcode_success' => "簡介内容的 BBCode 已經複製到剪貼板",
+	'text_clone_torrent' => "一鍵克隆",
+	'title_clone_torrent' => "複製該種子信息，一鍵發佈新種（注意上傳新的種子文件哦~）",
 );
 
 ?>

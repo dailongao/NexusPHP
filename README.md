@@ -1,4 +1,3 @@
-NexusPHP
-========
+# NexusPHP
 
-A simple clone of NexusPHP. *IT'S NOT AN OFFICIAL VERSION!!!*
+A simple clone of NexusPHP. _IT'S NOT AN OFFICIAL VERSION!!!_

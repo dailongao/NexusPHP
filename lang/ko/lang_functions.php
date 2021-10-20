@@ -166,7 +166,7 @@ $lang_functions = array
 	'title_no_new_comment' => "새 덧글이 없습니다",
 	'row_external_info' => "외부&nbsp;정보",
 	'row_imdb_url' => "IMDb&nbsp;URL",
-	'text_imdb_url_note' => "(영화  정보는<strong><a href=\"http://www.imdb.com\">IMDb</a></strong>에서 가져옵니다. 예제.&nbsp;<b>The Dark Knight</b>의 URL은 <b>http://www.imdb.com/title/tt0468569/</b>)",
+	'text_imdb_url_note' => "(영화  정보는<strong><a href=\"https://www.imdb.com\">IMDb</a></strong>에서 가져옵니다. 예제.&nbsp;<b>The Dark Knight</b>의 URL은 <b>https://www.imdb.com/title/tt0468569/</b>)",
 	'text_artist' => "&nbsp;아티스트:&nbsp;",
 	'text_album' => "앨범:&nbsp;",
 	'title_get_rss' => "RSS&nbsp;보기",

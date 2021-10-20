@@ -172,9 +172,9 @@ $lang_functions = array
 	'title_no_new_comment' => "无新评论",
 	'row_external_info' => "外部信息",
 	'row_imdb_url' => "IMDb链接",
-	'text_imdb_url_note' => "(来自<strong><a href=\"http://www.imdb.com\">IMDb</a></strong>的链接。如电影<b>The Dark Knight</b>的链接是<b>http://www.imdb.com/title/tt0468569/</b>)",
+	'text_imdb_url_note' => "(来自<strong><a href=\"https://www.imdb.com\">IMDb</a></strong>的链接。如电影<b>The Dark Knight</b>的链接是<b>https://www.imdb.com/title/tt0468569/</b>)",
 	'row_douban_url' => "Douban链接",
-	'text_douban_url_note' => "(来自<strong><a href=\"http://www.douban.com\">Douban</a></strong>的链接(电影或唱片)。如电影<b>The Dark Knight</b>的链接是<b>http://movie.douban.com/subject/1851857/</b>)",
+	'text_douban_url_note' => "(来自<strong><a href=\"https://www.douban.com\">Douban</a></strong>的链接(电影或唱片)。如电影<b>The Dark Knight</b>的链接是<b>https://movie.douban.com/subject/1851857/</b>)",
 	'text_artist' => "艺术家：",
 	'text_album' => "专辑名：",
 	'title_get_rss' => "获取RSS",
@@ -310,7 +310,9 @@ $lang_functions = array
 	'text_collapsed_text' => "隐藏内容",
     
     'text_sign_in' => "签到",
-    'text_signed_in' => "已签到",
+	'text_signed_in' => "已签到",
+	
+	'text_donate' => "我要捐助!",
 );
 
 ?>

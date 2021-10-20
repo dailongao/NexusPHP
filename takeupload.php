@@ -456,4 +456,3 @@ while($arr = mysql_fetch_array($res))
 }
 
 header("Location: " . get_protocol_prefix() . "$BASEURL/details.php?id=".htmlspecialchars($id)."&uploaded=1");
-?>

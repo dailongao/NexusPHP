@@ -109,20 +109,20 @@ if ($showclientnotice)
 <table width="100%">
 <tr>
 <td class="embedded" style="text-align: center; padding: 5px;" width="50%">
-<a href="http://www.utorrent.com/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?>uTorrent"><img src="pic/utorrentbig.png" alt="uTorrent" /></a>
+<a href="https://www.qbittorrent.org/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?> qBittorrent"><img src="pic/qBittorrentbig.png" alt="qBittorrent" /></a>
 </td>
 <td class="embedded" style="text-align: center; padding: 5px;" width="50%">
-<a href="http://azureus.sourceforge.net/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?>Vuze"><img src="pic/vuzebig.png" alt="Vuze" /></a>
+<a href="http://www.utorrent.com/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?> uTorrent"><img src="pic/utorrentbig.png" alt="uTorrent" /></a>
 </td>
 </tr>
 <tr>
 <td class="embedded" style="text-align: center; padding: 5px;">
-<div class="big"><a href="http://www.utorrent.com/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?>uTorrent"><b>uTorrent</b></a></div>
-<div><?php echo $lang_downloadnotice['text_for']?>Windows</div>
+<div class="big"><a href="https://www.qbittorrent.org/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?> qBittorrent"><b>qBittorrent</b></a></div>
+<div><?php echo $lang_downloadnotice['text_for']?>Windows, Linux, Mac OS X</div>
 </td>
 <td class="embedded" style="text-align: center; padding: 5px;">
-<div class="big"><a href="http://azureus.sourceforge.net/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?>Vuze"><b>Vuze</b></a></div>
-<div><?php echo $lang_downloadnotice['text_for']?>Windows, Linux, Mac OS X</div>
+<div class="big"><a href="http://www.utorrent.com/download.php" target="_blank" title="<?php echo $lang_downloadnotice['title_download']?> uTorrent"><b>uTorrent</b></a></div>
+<div><?php echo $lang_downloadnotice['text_for']?>Windows</div>
 </td>
 </tr>
 </table>

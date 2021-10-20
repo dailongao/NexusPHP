@@ -16,6 +16,7 @@ $offlineimg = "<img class=\"button_offline\" src=\"pic/trans.gif\" alt=\"offline
 $sendpmimg = "<img class=\"button_pm\" src=\"pic/trans.gif\" alt=\"pm\" />";
 //--------------------- FIRST LINE SUPPORT SECTION ---------------------------//
 unset($ppl);
+
 $res = sql_query("SELECT * FROM users WHERE users.support='yes' AND users.status='confirmed' ORDER BY users.username") or sqlerr();
 while ($arr = mysql_fetch_assoc($res))
 {

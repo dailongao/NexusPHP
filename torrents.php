@@ -720,7 +720,7 @@ if (isset($searchstr))
 	$search_area = 0 + $_GET["search_area"];
 
 	if ($search_area == 4) {
-		$searchstr = (int)parse_imdb_id($searchstr);
+		$searchstr = (string)parse_imdb_id($searchstr);
 	}
 	$like_expression_array =array();
 	unset($like_expression_array);
@@ -1068,15 +1068,16 @@ if ($allsec != 1 || $enablespecial != 'yes'){ //do not print searchbox if showin
 						</td>
 					</tr>
 <?php
-$Cache->new_page('hot_search', 3670, true);
+$Cache->new_page('hot_search', 900, true);
 if (!$Cache->get_page()){
 	$secs = 3*24*60*60;
 	$dt = sqlesc(date("Y-m-d H:i:s",(TIMENOW - $secs)));
 	$dt2 = sqlesc(date("Y-m-d H:i:s",(TIMENOW - $secs*2)));
 	sql_query("DELETE FROM suggest WHERE adddate <" . $dt2) or sqlerr();
-	$searchres = sql_query("SELECT keywords, COUNT(DISTINCT userid) as count FROM suggest WHERE adddate >" . $dt . " GROUP BY keywords ORDER BY count DESC LIMIT 15") or sqlerr();
+	$searchres = sql_query("SELECT keywords, COUNT(DISTINCT userid) as count FROM suggest WHERE adddate > " . $dt . " GROUP BY keywords ORDER BY count DESC, adddate DESC LIMIT 15") or sqlerr();
 	$hotcount = 0;
 	$hotsearch = "";
+	
 	while ($searchrow = mysql_fetch_assoc($searchres))
 	{
 		$hotsearch .= "<a href=\"".htmlspecialchars("?search=" . rawurlencode($searchrow["keywords"]) . "&notnewword=1")."\"><u>" . $searchrow["keywords"] . "</u></a>&nbsp;&nbsp;";
@@ -1084,12 +1085,18 @@ if (!$Cache->get_page()){
 		if ($hotcount > 60)
 			break;
 	}
+
 	$Cache->add_whole_row();
+
 	if ($hotsearch)
-	print("<tr><td class=\"embedded\" colspan=\"3\">&nbsp;&nbsp;".$hotsearch."</td></tr>");
+	{
+		print("<tr><td class=\"embedded\" colspan=\"3\">&nbsp;&nbsp;".$hotsearch."</td></tr>");
+	}
+
 	$Cache->end_whole_row();
 	$Cache->cache_page();
 }
+// $Cache->Row = -1;
 echo $Cache->next_row();
 ?>
 				</table>

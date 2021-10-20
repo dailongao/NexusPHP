@@ -30,6 +30,8 @@ $lang_upload = array
 	'checkbox_hide_uploader_note' => "不要在发布者项目中显示我的用户名",
 	'text_read_rules' => "我已经阅读过规则",
 	'submit_upload' => "发布",
+	'preview_descr' => "预览",
+	'edit_descr' => "编辑",
 	'text_to_browse_section' => "发布至<b>种子</b>区 ",
 	'text_to_special_section' => "或<b>音乐</b>区 ",
 	'text_type_note' => "&nbsp;&nbsp; <font class=\"small\"><b>只选</b>两者之一</font>",

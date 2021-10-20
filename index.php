@@ -1,4 +1,7 @@
 <?php
+
+// 2019-6-11 樱桃：去掉浏览器推荐提示
+
 require "include/bittorrent.php";
 dbconn(true);
 require_once(get_langfile_path());
@@ -615,10 +618,14 @@ if ($showtrackerload == "yes") {
 // ------------- end: links ------------------//
 // ------------- start: browser, client and code note ------------------//
 ?>
-<table width="100%" class="main" border="0" cellspacing="0" cellpadding="0"><tr><td class="embedded">
-<div align="center"><br /><font class="medium"><?php echo $lang_index['text_browser_note'] ?></font></div>
-<div align="center"><a href="http://sourceforge.net/projects/nexusphp/" title="<?php echo PROJECTNAME?>" target="_blank"><img src="pic/nexus.png" alt="<?php echo PROJECTNAME?>" /></a></div>
-</td></tr></table>
+<table width="100%" class="main" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="embedded">
+			<!-- <div align="center"><br /><font class="medium"><?php echo $lang_index['text_browser_note'] ?></font></div> -->
+			<div align="center"><a href="http://sourceforge.net/projects/nexusphp/" title="<?php echo PROJECTNAME?>" target="_blank"><img src="pic/nexus.png" alt="<?php echo PROJECTNAME?>" /></a></div>
+		</td>
+	</tr>
+</table>
 <?php
 // ------------- end: browser, client and code note ------------------//
 if ($CURUSER)

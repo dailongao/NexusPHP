@@ -129,6 +129,7 @@ class CACHE extends Memcache{
 	// You should only use this function if the row is only going to have one part in it (convention),
 	// although it will theoretically work with multiple parts.
 	function add_whole_row(){
+
 		$this->Part = 0;
 		$this->Page[$this->Row] = array();
 		ob_start();
@@ -182,7 +183,9 @@ class CACHE extends Memcache{
 
 	// Cache $this->Page and resets $this->Row and $this->Part
 	function cache_page(){
+
 		$this->cache_value($this->MemKey,$this->Page, $this->Duration);
+
 		$this->Row = 0;
 		$this->Part = 0;
 	}
@@ -207,8 +210,10 @@ class CACHE extends Memcache{
 	// Returns the next row in the page
 	// If there's only one part in the row, return that part.
 	function next_row(){
+
 		$this->Row++;
 		$this->Part = 0;
+
 		if($this->Page[$this->Row] == false){
 			return false;
 		}
@@ -240,6 +245,7 @@ class CACHE extends Memcache{
 	// If a cached version of the page exists, set $this->Page to it and return true.
 	// Otherwise, return false.
 	function get_page(){
+
 		$Result = $this->get_value($this->MemKey);
 		if($Result){
 			$this->Row = 0;

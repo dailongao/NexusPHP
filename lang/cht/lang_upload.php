@@ -30,6 +30,8 @@ $lang_upload = array
 	'checkbox_hide_uploader_note' => "不要在發布者專案中顯示我的用戶名",
 	'text_read_rules' => "我已經閱讀過規則",
 	'submit_upload' => "發布",
+	'edit_descr' => "預覽",
+	'raw_descr' => "編輯",
 	'text_to_browse_section' => "發布至<b>種子</b>區 ",
 	'text_to_special_section' => "或<b>音樂</b>區 ",
 	'text_type_note' => "&nbsp;&nbsp; <font class=\"small\"><b>只選</b>兩者之一</font>",

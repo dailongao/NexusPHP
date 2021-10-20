@@ -9,9 +9,41 @@ header("Cache-Control: no-cache, must-revalidate" );
 header("Pragma: no-cache" );
 header("Content-Type: text/xml; charset=utf-8");
 
-$id = 0 + $_GET['id'];
-if(isset($CURUSER))
-{
+function get_connect_data($row) {
+
+	global $lang_viewpeerlist;
+
+	$ipv4 = $row["ip"];
+	$ipv6 = $row["ipv6"];
+
+	if ($ipv4) {
+
+		if ($row["connectable"] == "yes") {
+			$v4_color = "darkgreen";
+			$v4_des = $lang_viewpeerlist["ipv4_connectable"];
+		} else {
+			$v4_color = "orange";
+			$v4_des = $lang_viewpeerlist["ipv4_non_connectable"];
+		}
+
+		$v4str = '<strong style="color: ' . $v4_color . '; cursor: help;" title="' . htmlspecialchars($v4_des) . '">[4]</strong>';
+	}
+	else {
+		$v4str = '';
+	}
+
+	if ($ipv6) {
+		$v6_color = "darkgreen";
+		$v6_des = $lang_viewpeerlist["ipv6_connectable"];
+
+		$v6str = '<strong style="color: ' . $v6_color . '; cursor: help;" title="' . htmlspecialchars($v6_des) . '">[6]</strong>';
+	} else {
+		$v6str = '';
+	}
+
+	return $v4str . $v6str;
+}
+
 function dltable($name, $arr, $torrent)
 {
 	global $lang_viewpeerlist,$viewanonymous_class,$userprofile_class,$enablelocation_tweak;
@@ -62,7 +94,7 @@ function dltable($name, $arr, $torrent)
 		}
 		else $location = "";
 
-		$s .= "<td class=rowfollow align=center width=1%><nobr>" . ($e[connectable] == "yes" ? $lang_viewpeerlist['text_yes'] : "<font color=red>".$lang_viewpeerlist['text_no']."</font>") . "</nobr></td>\n";
+		$s .= "<td class=rowfollow align=center width=1%><nobr>" . get_connect_data($e) . "</nobr></td>\n";
 		$s .= "<td class=rowfollow align=center width=1%><nobr>" . mksize($e["uploaded"]) . "</nobr></td>\n";
 
 		$s .= "<td class=rowfollow align=center width=1%><nobr>" . mksize(($e["uploaded"] - $e["uploadoffset"]) / $secs) . "/s</nobr></td>\n";
@@ -91,9 +123,13 @@ function dltable($name, $arr, $torrent)
 	return $s;
 }
 
+$id = 0 + $_GET['id'];
+
+if(isset($CURUSER))
+{
 	$downloaders = array();
 	$seeders = array();
-	$subres = sql_query("SELECT seeder, finishedat, downloadoffset, uploadoffset, ip, port, uploaded, downloaded, to_go, UNIX_TIMESTAMP(started) AS st, connectable, agent, peer_id, UNIX_TIMESTAMP(last_action) AS la, userid FROM peers WHERE torrent = $id") or sqlerr();
+	$subres = sql_query("SELECT seeder, finishedat, downloadoffset, uploadoffset, ip, ipv6, port, uploaded, downloaded, to_go, UNIX_TIMESTAMP(started) AS st, connectable, agent, peer_id, UNIX_TIMESTAMP(last_action) AS la, userid FROM peers WHERE torrent = $id") or sqlerr();
 	while ($subrow = mysql_fetch_array($subres)) {
 	if ($subrow["seeder"] == "yes")
 		$seeders[] = $subrow;

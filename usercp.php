@@ -773,16 +773,16 @@ if ($action){
 					if ($changedemail == 1) {
 						$sec = mksecret();
 						$hash = md5($sec . $email . $sec);
-						$obemail = rawurlencode($email);
 						$updateset[] = "editsecret = " . sqlesc($sec);
 						$subject = "$SITENAME".$lang_usercp['mail_profile_change_confirmation'];
+						$linkAddr = sprintf('http://%1$s/confirmemail.php?id=%2$s&hash=%3$s&mail=%4$s', $BASEURL, urlencode($CURUSER["id"]), urldecode($hash), urlencode($email));
 						$body = <<<EOD
 {$lang_usercp['mail_change_email_one']}{$CURUSER["username"]}{$lang_usercp['mail_change_email_two']}($email){$lang_usercp['mail_change_email_three']}
 
 {$lang_usercp['mail_change_email_four']}{$_SERVER["REMOTE_ADDR"]}{$lang_usercp['mail_change_email_five']}
 
-{$lang_usercp['mail_change_email_six']}<b><a href="http://$BASEURL/confirmemail.php/{$CURUSER["id"]}/$hash/$obemail" target="_blank">{$lang_usercp['mail_here']}</a></b>{$lang_usercp['mail_change_email_six_1']}<br />
-http://$BASEURL/confirmemail.php/{$CURUSER["id"]}/$hash/$obemail
+{$lang_usercp['mail_change_email_six']}<b><a href="$linkAddr" target="_blank">{$lang_usercp['mail_here']}</a></b>{$lang_usercp['mail_change_email_six_1']}<br />
+$linkAddr
 
 {$lang_usercp['mail_change_email_seven']}
 

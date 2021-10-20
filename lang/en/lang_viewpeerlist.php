@@ -22,7 +22,16 @@ $lang_viewpeerlist = array
 	'row_leechers' => "Leechers",
 	'text_yes' => "Yes",
 	'text_no' => "No",
-	'text_inf' => "Inf."
+	'text_inf' => "Inf.",
+
+	
+	'ipv4_connectable' => 'This user has a connetable school IPV4 address',
+	'ipv4_non_connectable' => 'This user has a non-connetable school IPV4 address',
+	'ipv4_none' => 'This user does not have a school IPV4 address',
+
+	'ipv6_connectable' => 'This user has a connetable IPV6 address',
+	'ipv6_non_connectable' => 'This user has a non-connetable IPV6 address',
+	'ipv6_none' => 'This user does not have IPV6 address',
 );
 
 ?>
