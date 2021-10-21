@@ -217,10 +217,10 @@
     }
    } // end cache
 
-   $req = new IMDB_Request("");
-   $req->setURL("http://".$this->imdbsite."/title/tt".$this->imdbID.$urlname);
-   $response = $req->send();
-$responseBody = $response->getBody();
+    $req = new IMDB_Request("");
+    $req->setURL("https://".$this->imdbsite."/title/tt".$this->imdbID.$urlname);
+    $response = $req->send();
+    $responseBody = $response->getBody();
    if ($responseBody) {
        $this->page[$wt] = utf8_encode($responseBody);
    }
@@ -363,7 +363,7 @@ $responseBody = $response->getBody();
    * @return string url
    */
   function main_url(){
-   return "http://".$this->imdbsite."/title/tt".$this->imdbid()."/";
+   return "https://".$this->imdbsite."/title/tt".$this->imdbid()."/";
   }
 
   /** Get movie title
@@ -509,8 +509,8 @@ $responseBody = $response->getBody();
       $comment_s_fix = $forward_safeval - strpos(substr($this->page["Title"], $comment_s - $forward_safeval, $comment_e - $comment_s + $forward_safeval),"<div class=\"small\">") - strlen("<div class=\"small\">");
       
       $this->main_comment = substr ($this->page["Title"], $comment_s - $comment_s_fix, $comment_e - $comment_s + $comment_s_fix);
-      $this->main_comment = preg_replace("/a href\=\"\//i","a href=\"http://".$this->imdbsite."/",$this->main_comment);
-      $this->main_comment = preg_replace("/http:\/\/[a-zA-Z.-]+\/images\/showtimes\//i","pic/imdb_pic/",$this->main_comment);
+      $this->main_comment = preg_replace("/a href\=\"\//i","a href=\"https://".$this->imdbsite."/",$this->main_comment);
+      $this->main_comment = preg_replace("/https:\/\/[a-zA-Z.-]+\/images\/showtimes\//i","pic/imdb_pic/",$this->main_comment);
       $this->main_comment = preg_replace("/<\/?div.*>/i","",$this->main_comment);
       $this->main_comment = preg_replace("/<form.*>/i","",$this->main_comment);
      }
@@ -530,7 +530,7 @@ $responseBody = $response->getBody();
     $vote_s = $vote_s + 13;
     $vote_e = strpos ($this->page["Title"], "</span>", $vote_s);
     $this->main_votes = substr ($this->page["Title"], $vote_s, $vote_e - $vote_s );
-	$this->main_votes = "<a href=\"http://".$this->imdbsite."/title/tt".$this->imdbID."/ratings\">" . $this->main_votes . "</a>";
+	$this->main_votes = "<a href=\"https://".$this->imdbsite."/title/tt".$this->imdbID."/ratings\">" . $this->main_votes . "</a>";
     if ($vote_e - $vote_s > 9) $this->main_votes = "";
 	return $this->main_votes;
    }
@@ -698,7 +698,7 @@ $responseBody = $response->getBody();
     {
 		$plot_e = strpos ($this->page["Plot"], "</p>", $plot_s);
 		$tmplot = substr ($this->page["Plot"], $plot_s + 19, $plot_e - $plot_s - 19);
-		$tmplot = str_replace("href=\"/", "href=\"http://". $this->imdbsite ."/", $tmplot); 
+		$tmplot = str_replace("href=\"/", "href=\"https://". $this->imdbsite ."/", $tmplot); 
 		$this->plot_plot[$i] = $tmplot;
 		$i++;
     }
@@ -856,7 +856,7 @@ $responseBody = $response->getBody();
     $vote_s = strpos ($this->page["Title"], "<a", $vote_s);
     $vote_e = strpos ($this->page["Title"], "</a>", $vote_s);
     $this->main_creator = substr ($this->page["Title"], $vote_s, $vote_e - $vote_s);
-    $this->main_creator = str_replace("/name","http://".$this->imdbsite."/name", $this->main_creator);
+    $this->main_creator = str_replace("/name","https://".$this->imdbsite."/name", $this->main_creator);
     $this->main_creator .= "</a>";
    }
    return $this->main_creator;
@@ -979,7 +979,7 @@ $responseBody = $response->getBody();
     $tag_s = strpos ($this->page["Title"], "<td rowspan=\"2\" id=\"img_primary\">");
     if ($tag_s == 0) return FALSE;
 #    $tag_s = strpos ($this->page["Title"], "http://ia.imdb.com/media",$tag_s);
-    $tag_s = strpos ($this->page["Title"], "http://",$tag_s);
+    $tag_s = strpos ($this->page["Title"], "https://",$tag_s);
     $tag_e = strpos ($this->page["Title"], '"', $tag_s);
     $this->main_photo = substr ($this->page["Title"], $tag_s, $tag_e - $tag_s);
     if ($tag_s == 0) return FALSE;
@@ -1185,7 +1185,7 @@ $responseBody = $response->getBody();
   var $page = "";
   var $name = NULL;
   var $resu = array();
-  var $url = "http://www.imdb.com/";
+  var $url = "https://www.imdb.com/";
 
   /** Read the config
    * @constructor imdbsearch
@@ -1225,7 +1225,7 @@ $responseBody = $response->getBody();
        default         : $query = ";tt=on"; // Izzy
      }
      if ($this->maxresults > 0) $query .= ";mx=20";
-     $url = "http://".$this->imdbsite."/find?q=".rawurlencode($this->name).$query;
+     $url = "https://".$this->imdbsite."/find?q=".rawurlencode($this->name).$query;
    }
    return $url;
   }
