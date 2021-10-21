@@ -190,7 +190,7 @@ function get_last_read_post_id($topicid) {
 }
 
 //-------- Inserts a compose frame
-function insert_compose_frame($id, $type = 'new') {
+function insert_compose_frame($id, $type = 'new', $casinomode = false) {
   global $maxsubjectlength, $CURUSER;
   global $lang_forums;
   $hassubject = false;
@@ -264,7 +264,7 @@ function insert_compose_frame($id, $type = 'new') {
   }
   print("<input type=\"hidden\" name=\"id\" value=\"" . $id . "\" />");
   print("<input type=\"hidden\" name=\"type\" value=\"" . $type . "\" />");
-  begin_compose($title, $type, $body, $hassubject, $subject, 100, $hasmodechoose, $forummode);
+  begin_compose($title, $type, $body, $hassubject, $subject, 100, $hasmodechoose, $casinomode);
   end_compose();
   print("</form>");
 }
@@ -340,9 +340,10 @@ if ($action == "editpost") {
   $res = sql_query("SELECT userid, topicid FROM posts WHERE id=" . sqlesc($postid)) or sqlerr(__FILE__, __LINE__);
   $arr = mysql_fetch_assoc($res);
 
-  $res2 = sql_query("SELECT locked FROM topics WHERE id = " . $arr["topicid"]) or sqlerr(__FILE__, __LINE__);
+  $res2 = sql_query("SELECT locked, casinomode FROM topics WHERE id = " . $arr["topicid"]) or sqlerr(__FILE__, __LINE__);
   $arr2 = mysql_fetch_assoc($res2);
   $locked = ($arr2["locked"] == 'yes');
+  $casinomode = $arr2["casinomode"] == 'yes';
 
   $ismod = is_forum_moderator($postid, 'post');
   if (($CURUSER["id"] != $arr["userid"] || $locked) && get_user_class() < $postmanage_class && !$ismod) {
@@ -351,7 +352,7 @@ if ($action == "editpost") {
 
   stdhead($lang_forums['text_edit_post']);
   begin_main_frame();
-  insert_compose_frame($postid, 'edit');
+  insert_compose_frame($postid, 'edit', $casinomode);
   end_main_frame();
   stdfoot();
   die;
