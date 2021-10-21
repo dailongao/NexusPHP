@@ -14,8 +14,10 @@
 // the proxy to use for connections to imdb.
 // leave it empty for no proxy.
 // this is only supported with PEAR. 
-define ('PROXY', "10.110.5.171");
+define ('PROXY', "yq2.cc98.fun");
 define ('PROXY_PORT', "808");
+define ('PROXY_USERNAME', 'nhd');
+define ('PROXY_PASSWORD', 'nhd');
 
 
 /** Configuration part of the IMDB classes
@@ -40,7 +42,7 @@ class imdb_config {
    */
   function imdb_config(){
   	// protocol prefix
-    $this->protocol_prefix = "http://";
+    $this->protocol_prefix = "https://";
     // the imdb server to use.
     // choices are us.imdb.com uk.imdb.com german.imdb.com and italian.imdb.com
     // the localized ones (i.e. italian and german) are only qualified to find
@@ -85,6 +87,9 @@ class IMDB_Request extends HTTP_Request2
     parent::__construct($url);
     if ( PROXY != ""){
       $this->setConfig(array('proxy_host' => PROXY, 'proxy_port' => PROXY_PORT));
+    }
+    if (PROXY_USERNAME != "") {
+      $this->setConfig(array('proxy_user' => PROXY_USERNAME, 'proxy_password' => PROXY_PASSWORD));
     }
     $this->setConfig('follow_redirects', false);
 	$this->setHeader('Host','72.21.211.32');
