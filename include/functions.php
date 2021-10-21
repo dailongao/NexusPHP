@@ -3220,13 +3220,10 @@ function stdhead($title = "", $msgalert = true, $script = "", $place = "")
                                     <td class="bottom" align="left"><span
                                                 class="medium"><?= $lang_functions['text_welcome_back'] ?>, <?= get_username($CURUSER['id']) ?>
 													[<a
-                                                    href="logout.php"><?= $lang_functions['text_logout'] ?></a>]<?php if (get_user_class() >= UC_MODERATOR) { ?> [
-                                                <a href="staffpanel.php"><?= $lang_functions['text_staff_panel'] ?></a>] <?php } ?> <?php if (get_user_class() >= UC_SYSOP) { ?> [
-                                                <a href="settings.php"><?= $lang_functions['text_site_settings'] ?></a>]<?php } ?> [<a
+                                                    href="logout.php"><?= $lang_functions['text_logout'] ?></a>]<?php if (get_user_class() >= UC_MODERATOR) { ?> [<a href="staffpanel.php"><?= $lang_functions['text_staff_panel'] ?></a>] <?php } ?> <?php if (get_user_class() >= UC_SYSOP) { ?> [<a href="settings.php"><?= $lang_functions['text_site_settings'] ?></a>]<?php } ?> [<a
                                                     href="torrents.php?inclbookmarked=1&amp;allsec=1"><?= $lang_functions['text_bookmarks'] ?></a>] [<a
                                                     href="bitbucket-list.php?mode=1"><?= $lang_functions['text_attachments'] ?></a>] <font
-                                                    class='color_bonus'><?= $lang_functions['text_bonus'] ?></font><?php if ($casino_tweak == "yes" && get_user_class() >= $casino_class) { ?> [
-                                                <a href="casino.php#tabs-2"><?= $lang_functions['text_casino'] ?></a>]<?php } ?>[<a
+                                                    class='color_bonus'><?= $lang_functions['text_bonus'] ?></font><?php if ($casino_tweak == "yes" && get_user_class() >= $casino_class) { ?> [<a href="casino.php#tabs-2"><?= $lang_functions['text_casino'] ?></a>]<?php } ?>[<a
                                                     href="mybonus.php"><?= $lang_functions['text_use'] ?></a>]: <?= number_format($CURUSER['seedbonus'], 1) ?> <font
                                                     class='color_invite'><?= $lang_functions['text_invite'] ?></font>[<a
                                                     href="invite.php?id=<?= $CURUSER['id'] ?>"><?= $lang_functions['text_send'] ?></a>]: <?= $CURUSER['invites'] ?><br/>
