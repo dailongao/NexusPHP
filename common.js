@@ -382,7 +382,7 @@ function formatTorrentName(torrentName) {
     torrentName
       .replace(/(\.(mkv|mp4|avi|ts|wmv|mpg|torrent))+$/, "")
       .replace(/\bh\.(26[45])\b/gi, "H/$1")
-      .replace(/(\b[a-zA-Z]*\d{1,2})\.(?=\d{1,2}\b)/g, function (_, p1, p2) {
+      .replace(/(\b[a-zA-Z]*\d{1,2})\.(\d{1,2}\b)/g, function (_, p1, p2) {
         return p1 + "/" + p2;
       })
       //.replace(/(?<=\b[a-zA-Z]*\d{1,2})\.(?=\d{1,2}\b)/g, "/")
