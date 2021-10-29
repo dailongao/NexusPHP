@@ -362,7 +362,7 @@ function parseTorrentName() {
   }
   if (file) {
     try {
-      parseTorrent.remote(file, (err, parsedTorrent) => {
+      parseTorrent.remote(file, function (err, parsedTorrent) {
         if (err) {
           throw err;
         }
@@ -378,30 +378,45 @@ function parseTorrentName() {
 }
 
 function formatTorrentName(torrentName) {
-  return torrentName
-    .replace(/(\.(mkv|mp4|avi|ts|wmv|mpg|torrent))+$/, "")
-    .replace(/\bh\.(26[45])\b/gi, "H/$1")
-    .replace(/(?<=\b[a-zA-Z]*\d{1,2})\.(?=\d{1,2}\b)/g, "/")
-    .replace(/\b\((\d{4})\)\b/g, "$1")
-    .replace(/\bWEB(?!-DL)\b/gi, "WEB-DL")
-    .replace(/\bweb-?rip\b/gi, "WEBRip")
-    .replace(/\bblu-?ray\b/gi, "BluRay")
-    .replace(/\bdvd(rip)?\b/gi, (_, p1) => `DVD${p1 ? "Rip" : ""}`)
-    .replace(/(?<=\b(?:480|720|1080|2160))[pi]\b/gi, (m) => m.toLowerCase())
-    .replace(/\bx\.?(26[45])\b/gi, "x$1")
-    .replace(/\./g, " ")
-    .replace(/\//g, ".");
+  return (
+    torrentName
+      .replace(/(\.(mkv|mp4|avi|ts|wmv|mpg|torrent))+$/, "")
+      .replace(/\bh\.(26[45])\b/gi, "H/$1")
+      .replace(/(\b[a-zA-Z]*\d{1,2})\.(?=\d{1,2}\b)/g, function (_, p1, p2) {
+        return p1 + "/" + p2;
+      })
+      //.replace(/(?<=\b[a-zA-Z]*\d{1,2})\.(?=\d{1,2}\b)/g, "/")
+      .replace(/\b\((\d{4})\)\b/g, "$1")
+      .replace(/\bWEB(?!-DL)\b/gi, "WEB-DL")
+      .replace(/\bweb-?rip\b/gi, "WEBRip")
+      .replace(/\bblu-?ray\b/gi, "BluRay")
+      .replace(/\bdvd(rip)?\b/gi, function (_, p1) {
+        return "DVD" + (p1 ? "Rip" : "");
+        // return `DVD${p1 ? "Rip" : ""}`;
+      })
+      .replace(/\b(480|720|1080|2160)([PI])\b/g, function (_, p1, p2) {
+        return p1 + p2.toLowerCase();
+      })
+      /*
+      .replace(/(?<=\b(?:480|720|1080|2160))[pi]\b/gi, function (m) {
+        return m.toLowerCase();
+      })
+      */
+      .replace(/\bx\.?(26[45])\b/gi, "x$1")
+      .replace(/\./g, " ")
+      .replace(/\//g, ".")
+  );
 }
 
 function previewDescription() {
   var description = encodeURIComponent(document.getElementById("descr").value);
   var req = new XMLHttpRequest();
-	req.addEventListener("load", function () {
+  req.addEventListener("load", function () {
     var descr_editor = document.getElementById("descr-editor");
     var descr_previewer = document.getElementById("descr-previewer");
     var descr_edit_button = document.getElementById("bj");
     var descr_preview_button = document.getElementById("yl");
-    
+
     descr_previewer.innerHTML = this.responseText;
     descr_previewer.style.display = "";
     descr_edit_button.style.display = "";
