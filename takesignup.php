@@ -1,6 +1,6 @@
 <?php
 /*
- * 2014-11-12 (Ó£ÌÒ): ¶ÌÏûÏ¢²¿·ÖĞŞ¸Ä
+ * 2014-11-12 (Ó£ï¿½ï¿½): ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ş¸ï¿½
  */
 
 require_once("include/bittorrent.php");
@@ -146,7 +146,7 @@ $wantpasshash = md5($secret . $wantpassword . $secret);
 $editsecret = ($verification == 'admin' ? '' : $secret);
 $invite_count = (int) $invite_count;
 
-// ±¸·İ
+// ï¿½ï¿½ï¿½ï¿½
 $wantusernameraw = $wantusername;
 
 $wantusername = sqlesc($wantusername);
@@ -164,12 +164,12 @@ $res_check_user = sql_query("SELECT * FROM users WHERE username = " . $wantusern
 if(mysql_num_rows($res_check_user) == 1)
   bark($lang_takesignup['std_username_exists']);
 
-$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, email, country, gender, status, class, invites, ".($type == 'invite' ? "invited_by," : "")." added, last_access, lang, stylesheet".($showschool == 'yes' ? ", school" : "").", uploaded,ip) VALUES (" . $wantusername . "," . $wantpasshash . "," . $secret . "," . $editsecret . "," . $email . "," . $country . "," . $gender . ", 'pending', ".$defaultclass_class.",". $invite_count .", ".($type == 'invite' ? "'$inviter'," : "") ." '". date("Y-m-d H:i:s") ."' , " . " '". date("Y-m-d H:i:s") ."' , ".$sitelangid . ",".$defcss.($showschool == 'yes' ? ",".$school : "").",".($iniupload_main > 0 ? $iniupload_main : 0).",'".getip()."')") or sqlerr(__FILE__, __LINE__);
+$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, email, country, gender, status, class, invites, ".($type == 'invite' ? "invited_by," : "")." added, last_access, lang, stylesheet".($showschool == 'yes' ? ", school" : "").", uploaded,ip) VALUES (" . "'$wantusername'" . "," . $wantpasshash . "," . $secret . "," . $editsecret . "," . $email . "," . $country . "," . $gender . ", 'pending', ".$defaultclass_class.",". $invite_count .", ".($type == 'invite' ? "'$inviter'," : "") ." '". date("Y-m-d H:i:s") ."' , " . " '". date("Y-m-d H:i:s") ."' , ".$sitelangid . ",".$defcss.($showschool == 'yes' ? ",".$school : "").",".($iniupload_main > 0 ? $iniupload_main : 0).",'".getip()."')") or sqlerr(__FILE__, __LINE__);
 $id = mysql_insert_id();
 
-// ·¢ËÍ»¶Ó­ÏûÏ¢
+// ï¿½ï¿½ï¿½Í»ï¿½Ó­ï¿½ï¿½Ï¢
 
-// ÏûÏ¢¿ÉÑ¡²ÎÊı
+// ï¿½ï¿½Ï¢ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½
 $messageParams = array($wantusernameraw, $SITENAME);
 
 $title = MessageFormatter::formatMessage(get_current_user_lang(), get_current_user_resource()['signup']['welcome_message_title'], $messageParams);

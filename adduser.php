@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$passhash = sqlesc(md5($secret . $password . $secret));
 	$secret = sqlesc($secret);
 
-	sql_query("INSERT INTO users (added, last_access, secret, username, passhash, status, stylesheet, class,email) VALUES(NOW(), NOW(), $secret, $username, $passhash, 'confirmed', ".$defcss.",".$defaultclass_class.",$email)") or sqlerr(__FILE__, __LINE__);
+	sql_query("INSERT INTO users (added, last_access, secret, username, passhash, status, stylesheet, class, email) VALUES(NOW(), NOW(), $secret, '$username', $passhash, 'confirmed', ".$defcss.",".$defaultclass_class.",$email)") or sqlerr(__FILE__, __LINE__);
 	$res = sql_query("SELECT id FROM users WHERE username=$username");
 	$arr = mysql_fetch_row($res);
 	if (!$arr)
