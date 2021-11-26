@@ -159,12 +159,24 @@ $country = sqlesc($country);
 $gender = sqlesc($gender);
 $sitelangid = sqlesc(get_langid_from_langcookie());
 
-$res_check_user = sql_query("SELECT * FROM users WHERE username = " . $wantusername);
+$is_username_digits = ctype_digit($wantusername);
+
+if ($is_username_digits) {
+	$res_check_user = sql_query("SELECT * FROM users WHERE username = '" . $wantusername . "'");
+} else {
+	$res_check_user = sql_query("SELECT * FROM users WHERE username = " . $wantusername);
+}
 
 if(mysql_num_rows($res_check_user) == 1)
   bark($lang_takesignup['std_username_exists']);
 
-$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, email, country, gender, status, class, invites, ".($type == 'invite' ? "invited_by," : "")." added, last_access, lang, stylesheet".($showschool == 'yes' ? ", school" : "").", uploaded,ip) VALUES (" . "'$wantusername'" . "," . $wantpasshash . "," . $secret . "," . $editsecret . "," . $email . "," . $country . "," . $gender . ", 'pending', ".$defaultclass_class.",". $invite_count .", ".($type == 'invite' ? "'$inviter'," : "") ." '". date("Y-m-d H:i:s") ."' , " . " '". date("Y-m-d H:i:s") ."' , ".$sitelangid . ",".$defcss.($showschool == 'yes' ? ",".$school : "").",".($iniupload_main > 0 ? $iniupload_main : 0).",'".getip()."')") or sqlerr(__FILE__, __LINE__);
+if ($is_username_digits) {
+	$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, email, country, gender, status, class, invites, ".($type == 'invite' ? "invited_by," : "")." added, last_access, lang, stylesheet".($showschool == 'yes' ? ", school" : "").", uploaded,ip) VALUES ('" . "$wantusername" . "', " . $wantpasshash . "," . $secret . "," . $editsecret . "," . $email . "," . $country . "," . $gender . ", 'pending', ".$defaultclass_class.",". $invite_count .", ".($type == 'invite' ? "'$inviter'," : "") ." '". date("Y-m-d H:i:s") ."' , " . " '". date("Y-m-d H:i:s") ."' , ".$sitelangid . ",".$defcss.($showschool == 'yes' ? ",".$school : "").",".($iniupload_main > 0 ? $iniupload_main : 0).",'".getip()."')") or sqlerr(__FILE__, __LINE__);
+} else {
+	$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, email, country, gender, status, class, invites, ".($type == 'invite' ? "invited_by," : "")." added, last_access, lang, stylesheet".($showschool == 'yes' ? ", school" : "").", uploaded,ip) VALUES (" . "$wantusername" . ", " . $wantpasshash . "," . $secret . "," . $editsecret . "," . $email . "," . $country . "," . $gender . ", 'pending', ".$defaultclass_class.",". $invite_count .", ".($type == 'invite' ? "'$inviter'," : "") ." '". date("Y-m-d H:i:s") ."' , " . " '". date("Y-m-d H:i:s") ."' , ".$sitelangid . ",".$defcss.($showschool == 'yes' ? ",".$school : "").",".($iniupload_main > 0 ? $iniupload_main : 0).",'".getip()."')") or sqlerr(__FILE__, __LINE__);
+}
+
+
 $id = mysql_insert_id();
 
 // ���ͻ�ӭ��Ϣ
